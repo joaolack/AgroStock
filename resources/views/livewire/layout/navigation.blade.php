@@ -34,11 +34,17 @@ new class extends Component
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">    
-                    <x-nav-link :href="route('produtos.index')" :active="request()->routeIs('alunos.*')" wire:navigate>
+                    <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')" wire:navigate>
                         {{ __('Estoque') }}
                     </x-nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">    
+                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')" wire:navigate>
+                        {{ __('Categorias') }}
+                    </x-nav-link>
             </div>
 
             <!-- Settings Dropdown -->

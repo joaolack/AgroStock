@@ -10,13 +10,14 @@
                     Lista de Produtos
                 </h1>
 
-                <a href="{{ route('produtos.create') }}" class="bg-green-600 hover:bg-[#015724] text-white font-bold py-3 px-4 rounded transition duration-200 inline-block">
+                <a href="{{ route('products.create') }}" class="bg-green-600 hover:bg-[#015724] text-white font-bold py-3 px-4 rounded transition duration-200 inline-block">
                     + Novo Produto
                 </a>
 
                 <div class="overflow-x-auto mt-6 rounded">
                     <table class="w-full">
                         <thead class="bg-gray-100 dark:bg-gray-700 border-x border-gray-100 dark:border-gray-700">
+                            <tr>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium
                                     text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Produto
@@ -52,19 +53,19 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-600 border border-gray-300 dark:border-gray-600 rounded">
-                            @forelse ($produtos as $produto)
+                            @forelse ($products as $product)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $produto->nome }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $product->name }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
-                                    <span class="font-semibold {{ $produto->quant_estoque <= 5 ? 'text-red-600' : 'text-green-600' }}">
-                                        {{ $produto->quant_estoque }}
+                                    <span class="font-semibold {{ $product->stock_quantity <= 5 ? 'text-red-600' : 'text-green-600' }}">
+                                        {{ $product->stock_quantity }}
                                     </span>
-                                    <small class="text-gray-500 block">Min: {{ $produto->estoque_min }}</small>
+                                    <small class="text-gray-500 block">Min: {{ $product->minimum_stock }}</small>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">R$ {{ number_format($produto->preco_venda, 2, ',', '.') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">R$ {{ number_format($product->selling_price, 2, ',', '.') }}</td>
                                 <td class="px-6 py-4 text-center whitespace-nowrap">
                                     @php
-                                        $status = $produto->estoque_status;
+                                        $status = $product->stock_status;
                                         $class = '';
                                         if ($status == 'Em Falta') $class = 'bg-red-100 text-red-800';
                                         else if ($status == 'Estoque Baixo') $class = 'bg-yellow-100 text-yellow-800';
@@ -74,35 +75,35 @@
                                         {{ $status }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $produto->categoria->nome ?? 'N/A' }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $produto->descricao }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $product->category->name ?? 'N/A' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $product->description }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500 text-center">
-                                    @if ($produto->data_validade)
+                                    @if ($product->expiration_date)
                                         @php
-                                            $validade = \Carbon\Carbon::parse($produto->data_validade)->startOfDay();
-                                            $hoje = \Carbon\Carbon::now()->startOfDay();
-                                            $diasStatus = $hoje->diffInDays($validade, false);  
-                                            $diasAbsolutos = abs($diasStatus); 
+                                            $expiryDate = \Carbon\Carbon::parse($product->expiration_date)->startOfDay();
+                                            $today = \Carbon\Carbon::now()->startOfDay();
+                                            $statusDays = $today->diffInDays($expiryDate, false);  
+                                            $absoluteDays = abs($statusDays); 
                                         @endphp
-                                        @if ($diasStatus < 0) 
-                                            <span class="text-red-500 font-bold">EXPIRADO HÁ {{ $diasAbsolutos }} DIAS!</span>
-                                        @elseif ($diasStatus === 0)
+                                        @if ($statusDays < 0) 
+                                            <span class="text-red-500 font-bold">EXPIRADO HÁ {{ $absoluteDays }} DIAS!</span>
+                                        @elseif ($statusDays === 0)
                                             <span class="text-red-600 font-bold">VENCE HOJE!</span>
-                                        @elseif ($diasStatus <= 30) 
-                                            <span class="text-yellow-600">Vence em {{ $diasAbsolutos }} dias</span>
+                                        @elseif ($statusDays <= 30) 
+                                            <span class="text-yellow-600">Vence em {{ $absoluteDays }} dias</span>
                                         @else
-                                            {{ $validade->format('d/m/Y') }}
+                                            {{ $expiryDate->format('d/m/Y') }}
                                         @endif
                                     @else
                                         N/A
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <a href="{{ route('produtos.edit', $produto->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3 transition duration-150">
+                                    <a href="{{ route('products.edit', $product->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3 transition duration-150">
                                         Editar
                                     </a>
                             
-                                    <form action="{{ route('produtos.destroy', $produto) }}" method="POST" class="inline-block" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');">
+                                    <form action="{{ route('products.destroy', $product) }}" method="POST" class="inline-block" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition duration-150">
@@ -117,7 +118,7 @@
                     </table>
                 </div>
                 <div class="mt-4">
-                    {{ $produtos->links()}}
+                    {{ $products->links()}}
                 </div>
             </div>    
         </div>

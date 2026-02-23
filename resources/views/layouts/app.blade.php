@@ -32,5 +32,15 @@
                 @yield('slot')
             </main>
         </div>
+
+        {{-- Toast --}}
+        @if (session('success'))
+            <x-toast type="success">{{ session('success') }}</x-toast>
+        @endif
+
+        @if (session('error'))
+            <x-toast type="error">{{ session('error') }}</x-toast>
+        @endif
+
     </body>
 </html>

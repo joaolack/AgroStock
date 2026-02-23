@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,9 +15,10 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-Route::resource('produtos', ProdutoController::class)->middleware(['auth']);
-Route::post('produtos/{produto}/move', [ProdutoController::class, 'moveEstoque'])
-    ->name('produtos.moveEstoque');
+Route::resource('products', ProductController::class)->middleware(['auth']);
+Route::post('products/{product}/move', [ProductController::class, 'moveStock'])
+    ->name('products.moveStock');
 
+Route::resource('categories', CategoryController::class)->middleware(['auth']);
 
 require __DIR__.'/auth.php';

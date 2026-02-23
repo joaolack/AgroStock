@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Produto;
+use App\Models\Product; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -11,29 +11,29 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $estoqueCritico = Produto::whereColumn('quant_estoque', '<=', 'estoque_min')
-                                   ->with('categoria')
-                                   ->orderBy('quant_estoque', 'asc')
+        $criticalStock = Product::whereColumn('stock_quantity', '<=', 'minimum_stock')
+                                   ->with('category')
+                                   ->orderBy('stock_quantity', 'asc')
                                    ->get();
                                    
-        $vencimentoProximo = Produto::whereNotNull('data_validade')
-            ->whereDate('data_validade', '>=', Carbon::now()->startOfDay())
-            ->whereDate('data_validade', '<=', Carbon::now()->addDays(60)->endOfDay())   
-            ->orderBy('data_validade', 'asc')
+        $closeToExpiry = Product::whereNotNull('expiration_date')
+            ->whereDate('expiration_date', '>=', Carbon::now()->startOfDay())
+            ->whereDate('expiration_date', '<=', Carbon::now()->addDays(60)->endOfDay())   
+            ->orderBy('expiration_date', 'asc')
             ->get();
         
-        $totalProdutos = Produto::count();
-        $produtosEmFalta = Produto::where('quant_estoque', 0)->count();
+        $totalProducts = Product::count();
+        $outOfStockProducts = Product::where('stock_quantity', 0)->count();
 
-        $valorTotalEstoque = Produto::select(DB::raw('SUM(preco_custo * quant_estoque) as total_custo'))
-                                      ->value('total_custo') ?? 0;
+        $totalStockValue = Product::select(DB::raw('SUM(cost_price * stock_quantity) as total_cost'))
+                                      ->value('total_cost') ?? 0;
 
         return view('dashboard', compact(
-            'estoqueCritico', 
-            'vencimentoProximo', 
-            'totalProdutos', 
-            'produtosEmFalta', 
-            'valorTotalEstoque'
+            'criticalStock', 
+            'closeToExpiry', 
+            'totalProducts', 
+            'outOfStockProducts', 
+            'totalStockValue'
         ));                              
     }
 }
