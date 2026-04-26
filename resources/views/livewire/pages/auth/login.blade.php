@@ -67,7 +67,7 @@ new #[Layout('layouts.guest')] class extends Component
             </h1>
 
             <p class="text-sm leading-relaxed max-w-xs mb-10" style="color:rgba(255,255,255,0.5);">
-                Gerencie insumos, sementes, defensivos e equipamentos em uma plataforma integrada, desenhada para o campo.
+                Gerencie insumos, sementes, defensivos e equipamentos em uma plataforma integrada, desenhada para o seu negócio.
             </p>
         </div>
 
@@ -198,7 +198,7 @@ new #[Layout('layouts.guest')] class extends Component
                 </div>
                 
                 <!-- Submit-->
-                <x-primary-button>
+                <x-primary-button class="w-full">
                     <span class="relative z-10">{{ __('Entrar na plataforma') }}</span>
                     <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(135deg, rgba(76,175,80,0.2) 0%,transparent 60%);"></div>
                 </x-primary-button>

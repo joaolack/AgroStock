@@ -53,10 +53,25 @@
                         <select id="category_id" name="category_id" class="form-select mt-1 block rounded-lg shadow-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-green-500 focus:ring-green-500 @error('category_id') border-red-500 @enderror" required>
                             <option value="">Selecione uma categoria</option>
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach    
                         </select>
                         @error('category_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="supplier_id" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                            Fornecedor:
+                        </label>
+                        <select id="supplier_id" name="supplier_id" class="form-select mt-1 block rounded-lg shadow-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-green-500 focus:ring-green-500 @error('supplier_id') border-red-500 @enderror">
+                            <option value="">Selecione um fornecedor</option>
+                            @foreach ($suppliers as $supplier)
+                                <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                                    {{ $supplier->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('supplier_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="mb-4">

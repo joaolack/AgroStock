@@ -1,7 +1,42 @@
 @extends('layouts.app')
 
 @section('slot')
-<div class="py-12">
+<div class="flex-1 flex flex-col min-h-screen overflow-hidden">
+
+    <header class="sticky top-0 z-20 flex items-center justify-between px-6 py-3.5 border-b bg-white/80 backdrop-blur-md"
+            style="border-color:#d4e8d6;">
+        <div class="flex items-center gap-3">
+            <button class="lg:hidden p-2 rounded-lg hover:bg-agro-pale transition colors" style="color:#4a5c4c;">
+                ☰
+            </button>
+            <a href="{{ route('products.index') }}"
+                        class="inline-flex items-center text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-green-600 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M15 19l-7-7 7-7" />
+                        </svg>
+                </a>
+            <div>
+                <h1 class="font-display text-xl font-bold tracking-tight" style="color:#1a3df;">Editar Produto</h1>
+                <p class="text-[11px]" style="color:#8a9e8c;">Altere as informações do produto</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white cursor-pointer"
+                 style="background:linear-gradient(135deg,#4caf50,#2d6a35);">
+                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+            </div>
+        </div>
+    </header>
+
+
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 bg-white dark:bg-gray-800">
@@ -39,13 +74,27 @@
                         <select id="category_id" name="category_id" class="form-select mt-1 block rounded-lg shadow-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-green-500 focus:ring-green-500" required>
                             <option value="">Selecione uma categoria</option>
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">
-                                    {{ old('category_id', $product->category_id) == $category->id ? 'atual' : ''}}
+                                <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
                                     {{ $category->name }}
                                 </option>
                             @endforeach
                         </select>
                         @error('category_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="supplier_id" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                            Fornecedor:
+                        </label>
+                        <select id="supplier_id" name="supplier_id" class="form-select mt-1 block rounded-lg shadow-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-green-500 focus:ring-green-500 @error('supplier_id') border-red-500 @enderror">
+                            <option value="">Selecione um fornecedor</option>
+                            @foreach ($suppliers as $supplier)
+                                <option value="{{ $supplier->id }}" {{ old('supplier_id', $product->supplier_id) == $supplier->id ? 'selected' : '' }}>
+                                    {{ $supplier->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('supplier_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="mb-4">
@@ -97,53 +146,6 @@
                         </a>
                     </div>
                 </form>
-
-                <hr class="my-8">
-
-                <h2 class="text-2xl font-semibold mb-4"> Movimentação de Estoque</h2>
-                <p class="mb-2">Estoque Atual: **{{ $product->stock_quantity }}**</p>
-                <p class="mb-4 text-sm text-gray-500">Estoque Mínimo: **{{ $product->minimum_stock }}**</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="p-6 border border-green-300 rounded-lg bg-green-50">
-                        <h3 class="text-xl font-medium text-green-700 mb-4">Entrada (Adicionar)</h3>
-                        <form action="{{ route('products.moveStock', $product->id) }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="operation" value="input">
-                            <div class="mb-4">
-                                <label for="inputQuantity" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    Quantidade a Adicionar: <span class="text-red-600">*</span>
-                                </label>
-                                <input type="number" min="1" id="inputQuantity" name="quantity" value="{{ old('quantity') }}" required class="form-input mt-1 block w-full rounded-lg shadow-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-green-500 focus:ring-green-500">
-                                @if (session('operation') == 'input') 
-                                    @error('quantity') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                                @endif    
-                            </div>
-                            <button type="submit" class="bg-green-600 hover:bg-[#015724] text-white font-bold py-2 px-4 rounded transition duration-200">
-                                Registrar Entrada
-                            </button>
-                        </form> 
-                    </div>
-
-                    <div class="p-6 border border-red-300 rounded-lg bg-red-50">
-                        <h3 class="text-xl font-medium text-red-700 mb-4">Saída (Remover)</h3>
-                        <form action="{{ route('products.moveStock', $product->id) }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="operation" value="output">
-                            <div class="mb-4">
-                                <label for="outputQuantity" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    Quantidade a Remover: <span class="text-red-600">*</span>
-                                </label>
-                                <input type="number" min="1" id="outputQuantity" name="quantity" value="{{ old('quantity') }}" required class="form-input mt-1 block w-full rounded-lg shadow-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-red-500 focus:ring-red-500">
-                                @if (session('operation') == 'output')
-                                    @error('quantity') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                                @endif    
-                            </div>
-                            <button type="submit" class="bg-red-600 hover:bg-[#7A0C0C] text-white font-bold py-2 px-4 rounded transition duration-200">
-                                Registrar Saída
-                            </button>    
-                        </form>
-                    </div>
             </div>
         </div>
     </div>        

@@ -17,6 +17,7 @@ class Product extends Model
         'selling_price', 
         'cost_price', 
         'category_id', 
+        'supplier_id',
         'stock_quantity', 
         'minimum_stock',
         'expiration_date',
@@ -40,6 +41,16 @@ class Product extends Model
             return 'Estoque Baixo';
         }
         return 'Estoque Normal';
+    }
+
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
     }
    
 }
