@@ -91,19 +91,19 @@
                                 <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
                                     @if ($supplier->active)
                                         <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
-                                            âœ“ Ativo
+                                            Ativo
                                         </span>
                                     @else
                                         <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">
-                                            âœ— Inativo
+                                            Inativo
                                         </span>
                                     @endif
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
                                     <button onclick="SupplierModal.show({{ $supplier->id }})"
-                                        class="cursor-pointer text-blue-600 transition hover:text-blue-900"
+                                        class="mr-3 inline-flex items-center align-middle cursor-pointer text-blue-600 transition hover:text-blue-900"
                                         title="Ver detalhes">
-                                        ðŸ‘ï¸
+                                        <x-fas-eye class="h-4 w-4" />
                                     </button>
 
                                     <a href="{{ route('suppliers.edit', $supplier->id) }}"
@@ -146,3 +146,5 @@
 @push('scripts')
 <script src="{{ asset('js/suppliers.js') }}"></script>
 @endpush
+
+

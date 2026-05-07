@@ -5,22 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class StockMovement extends Model
+class ProductBatch extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'product_id',
-        'product_batch_id',
-        'user_id',
-        'type',
+        'supplier_id',
+        'number',
+        'original_quantity',
         'quantity',
-        'previous_quantity',
-        'new_quantity',
+        'expiration_date',
     ];
 
     protected $casts = [
-        'created_at' => 'datetime',
+        'expiration_date' => 'date',
     ];
 
     public function product()
@@ -28,13 +27,13 @@ class StockMovement extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function productBatch()
+    public function supplier()
     {
-        return $this->belongsTo(ProductBatch::class);
+        return $this->belongsTo(Supplier::class);
     }
 
-    public function user()
+    public function stockMovements()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(StockMovement::class);
     }
 }

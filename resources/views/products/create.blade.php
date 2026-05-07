@@ -61,7 +61,7 @@
 
                     <div class="mb-4">
                         <label for="supplier_id" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
-                            Fornecedor:
+                            Fornecedor do lote inicial:
                         </label>
                         <select id="supplier_id" name="supplier_id" class="form-select mt-1 block rounded-lg shadow-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-green-500 focus:ring-green-500 @error('supplier_id') border-red-500 @enderror">
                             <option value="">Selecione um fornecedor</option>
@@ -72,6 +72,14 @@
                             @endforeach
                         </select>
                         @error('supplier_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="batch_number" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                            Numero do Lote Inicial:
+                        </label>
+                        <input type="text" id="batch_number" name="batch_number" value="{{ old('batch_number') }}" class="form-input mt-1 block w-full rounded-lg shadow-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-green-500 focus:ring-green-500 @error('batch_number') border-red-500 @enderror" placeholder="Ex: LOTE-001">
+                        @error('batch_number') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="mb-4">
@@ -108,7 +116,7 @@
 
                     <div class="mb-4">
                         <label for="expiration_date" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
-                            Data de Validade: 
+                            Validade do Lote Inicial:
                         </label>
                         <input type="date" id="expiration_date" name="expiration_date" value="{{ old('expiration_date') }}" class="form-input mt-1 block w-full rounded-lg shadow-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-green-500 focus:ring-green-500 @error('expiration_date') border-red-500 @enderror rounded-lg shadow-md">
                         @error('expiration_date') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror

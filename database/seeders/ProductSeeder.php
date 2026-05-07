@@ -149,6 +149,15 @@ class ProductSeeder extends Seeder
             'minimum_stock' => 20,
             'expiration_date' => now()->addMonths(4), 
         ]);
-        
+        Product::where('stock_quantity', '>', 0)->each(function (Product $product) {
+            $product->batches()->create([
+                'number' => 'INICIAL-' . $product->id,
+                'original_quantity' => $product->stock_quantity,
+                'quantity' => $product->stock_quantity,
+                'expiration_date' => $product->expiration_date,
+                'supplier_id' => $product->supplier_id,
+            ]);
+        });
+
     }
 }

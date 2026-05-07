@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StockMovementController;
+use App\Http\Controllers\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
@@ -31,9 +32,9 @@ Route::post('stock-movements', [StockMovementController::class, 'store'])
     ->middleware(['auth'])
     ->name('stock-movements.store');
 
-Route::get('/charts', function () {
-    return view('charts.index');
-})->name('charts.index');
+Route::get('/analytics', [AnalyticsController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('analytics.index');
 
 Route::get('/expiration-date', function () {
     return view('expiration_date.index');

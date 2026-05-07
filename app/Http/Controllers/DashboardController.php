@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product; 
+use App\Models\ProductBatch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -16,7 +17,9 @@ class DashboardController extends Controller
                                    ->orderBy('stock_quantity', 'asc')
                                    ->get();
                                    
-        $closeToExpiry = Product::whereNotNull('expiration_date')
+        $closeToExpiry = ProductBatch::with('product')
+            ->where('quantity', '>', 0)
+            ->whereNotNull('expiration_date')
             ->whereDate('expiration_date', '>=', Carbon::now()->startOfDay())
             ->whereDate('expiration_date', '<=', Carbon::now()->addDays(60)->endOfDay())   
             ->orderBy('expiration_date', 'asc')

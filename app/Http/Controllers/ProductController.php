@@ -15,7 +15,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {   
         
-        $query = Product::with(['category', 'supplier']);
+        $query = Product::with(['category', 'supplier', 'batches.supplier']);
 
         //Name or description search
         if ($request->filled('search')) {
@@ -84,14 +84,35 @@ class ProductController extends Controller
             'selling_price' => ['required', 'numeric', 'min:0.01'],
             'cost_price' => ['required', 'numeric', 'min:0.'],
             'category_id' => ['required', 'exists:categories,id'],
-            'supplier_id' => ['nullable', 'exists:suppliers,id'],
+            'supplier_id' => [Rule::requiredIf(fn () => (int) $request->input('stock_quantity', 0) > 0), 'nullable', 'exists:suppliers,id'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'minimum_stock' => ['required', 'integer', 'min:0'],
-            'expiration_date' => ['nullable', 'date', 'after:today'],
+            'expiration_date' => [Rule::requiredIf(fn () => (int) $request->input('stock_quantity', 0) > 0), 'nullable', 'date', 'after:today'],
+            'batch_number' => [
+                Rule::requiredIf(fn () => (int) $request->input('stock_quantity', 0) > 0),
+                'nullable',
+                'string',
+                'max:100',
+            ],
             
         ]);
 
-        Product::create($validated);
+        DB::transaction(function () use ($validated) {
+            $batchNumber = $validated['batch_number'] ?? null;
+            unset($validated['batch_number']);
+
+            $product = Product::create($validated);
+
+            if ($product->stock_quantity > 0) {
+                $product->batches()->create([
+                    'supplier_id' => $product->supplier_id,
+                    'number' => $batchNumber,
+                    'original_quantity' => $product->stock_quantity,
+                    'quantity' => $product->stock_quantity,
+                    'expiration_date' => $product->expiration_date,
+                ]);
+            }
+        });
 
         return redirect()->route('products.index')
                        ->with('success', 'Produto cadastrado com sucesso!');

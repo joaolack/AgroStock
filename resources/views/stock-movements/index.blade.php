@@ -73,6 +73,36 @@
                                     class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
                                     placeholder="Ex: 50">
                             </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Numero do Lote *
+                                </label>
+                                <input type="text" name="batch_number" required
+                                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                                    placeholder="Ex: LOTE-001">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Fornecedor *
+                                </label>
+                                <select name="supplier_id" required
+                                        class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                                    <option value="">Selecione um fornecedor</option>
+                                    @foreach($suppliers as $supplier)
+                                        <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Validade (opcional)
+                                </label>
+                                <input type="date" name="expiration_date"
+                                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                            </div>
                             <button type="submit" 
                                     class="w-full px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200">
                                 ✅ Registrar Entrada
@@ -204,6 +234,10 @@
                                 </th>
                                 <th class="text-left px-6 py-3 text-[11px] font-semibold uppercase tracking-wider"
                                     style="color:#8a9e8c;">
+                                    Lote
+                                </th>
+                                <th class="text-left px-6 py-3 text-[11px] font-semibold uppercase tracking-wider"
+                                    style="color:#8a9e8c;">
                                     Tipo
                                 </th>
                                 <th class="text-left px-6 py-3 text-[11px] font-semibold uppercase tracking-wider"
@@ -228,6 +262,14 @@
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
                                         {{ $movement->product->name }}
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                        @if($movement->productBatch)
+                                            <div class="font-semibold">{{ $movement->productBatch->number }}</div>
+                                            <div class="text-xs text-gray-500">{{ $movement->productBatch->supplier->name ?? 'Fornecedor N/A' }}</div>
+                                        @else
+                                            N/A
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         @if($movement->type === 'entry')

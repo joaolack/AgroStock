@@ -48,6 +48,21 @@ class Product extends Model
         return $this->hasMany(StockMovement::class);
     }
 
+    public function batches()
+    {
+        return $this->hasMany(ProductBatch::class);
+    }
+
+    public function availableBatches()
+    {
+        return $this->batches()
+            ->where('quantity', '>', 0)
+            ->orderByRaw('expiration_date IS NULL')
+            ->orderBy('expiration_date')
+            ->orderBy('created_at')
+            ->orderBy('id');
+    }
+
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);

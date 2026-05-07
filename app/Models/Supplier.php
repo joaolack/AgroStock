@@ -32,6 +32,11 @@ class Supplier extends Model
         return $this->hasMany(Product::class);
     }
 
+    public function productBatches()
+    {
+        return $this->hasMany(ProductBatch::class);
+    }
+
     //Scopes
     public function scopeActive($query)
     {

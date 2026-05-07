@@ -5,6 +5,7 @@
                 <th class="text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Produto</th>
                 <th class="text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Categoria</th>
                 <th class="text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Fornecedor</th>
+                <th class="text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Lotes</th>
                 <th class="text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Estoque Atual</th>
                 <th class="text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Preço Unit.</th>
                 <th class="text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Status</th>
@@ -25,6 +26,17 @@
 
                     <td class="px-3 py-3.5 whitespace-nowrap text-gray-900 dark:text-gray-100">
                         <span class="text-xs font-medium px-2.5 py-1 rounded-full">{{ $product->supplier->name ?? 'N/A' }}</span>
+                    </td>
+
+                    <td class="px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                        @forelse ($product->batches->where('quantity', '>', 0)->sortBy(fn ($batch) => $batch->expiration_date?->format('Y-m-d') ?? '9999-12-31')->take(3) as $batch)
+                            <div class="text-xs">
+                                <span class="font-semibold">{{ $batch->number }}</span>
+                                <span class="text-gray-500">({{ $batch->quantity }})</span>
+                            </div>
+                        @empty
+                            <span class="text-xs text-gray-500">Sem lotes</span>
+                        @endforelse
                     </td>
 
                     <td class="px-3 py-3.5 whitespace-nowrap text-gray-900 dark:text-gray-100">
@@ -57,9 +69,13 @@
                     </td>
 
                     <td class="px-6 py-4 text-sm text-gray-500 text-center">
-                        @if ($product->expiration_date)
+                        @php
+                            $nextBatch = $product->batches->where('quantity', '>', 0)->sortBy(fn ($batch) => $batch->expiration_date?->format('Y-m-d') ?? '9999-12-31')->first();
+                            $expiration = $nextBatch?->expiration_date ?? $product->expiration_date;
+                        @endphp
+                        @if ($expiration)
                             @php
-                                $expiryDate = \Carbon\Carbon::parse($product->expiration_date)->startOfDay();
+                                $expiryDate = \Carbon\Carbon::parse($expiration)->startOfDay();
                                 $today = \Carbon\Carbon::now()->startOfDay();
                                 $statusDays = $today->diffInDays($expiryDate, false);
                                 $absoluteDays = abs($statusDays);
@@ -95,7 +111,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="text-center py-4">Nenhum produto encontrado</td>
+                    <td colspan="9" class="text-center py-4">Nenhum produto encontrado</td>
                 </tr>
             @endforelse
         </tbody>

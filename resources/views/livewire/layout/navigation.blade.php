@@ -99,14 +99,14 @@ new class extends Component
             <p class="text-[10px] font-semibold uppercase tracking-widest px-3 mb-2 mt-4"
             style="color:rgba(168,213,171,0.5);">Relatórios</p>
 
-            <a href="{{ route('charts.index') }}"
+            <a href="{{ route('analytics.index') }}"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
-            @if(request()->routeIs('charts.*'))
+            @if(request()->routeIs('analytics.*'))
                 style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
             @else
                 style="color:rgba(255,255,255,0.6);"
             @endif>
-                <span @if(request()->routeIs('charts.*')) style="color:#4caf50;" @endif class="w-5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-line-icon lucide-chart-line"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>
+                <span @if(request()->routeIs('analytics.*')) style="color:#4caf50;" @endif class="w-5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-line-icon lucide-chart-line"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>
                  Análises
             </a>
 

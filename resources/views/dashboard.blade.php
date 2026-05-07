@@ -101,11 +101,13 @@
                     <p class="text-gray-500">Nenhum produto vencendo em breve.</p>
                 @else
                     <ul class="divide-y divide-gray-100">
-                        @foreach ($closeToExpiry->take(5) as $product)
+                        @foreach ($closeToExpiry->take(5) as $batch)
                             <li class="py-3 flex justify-between itens-center text-sm">
-                                <span class="font-medium text-gray-900">{{ $product->name }}</span>
+                                <span class="font-medium text-gray-900">
+                                    {{ $batch->product->name }} - Lote {{ $batch->number }}
+                                </span>
                                 @php
-                                    $expiryDate = \Carbon\Carbon::parse($product->expiration_date)->startOfDay();
+                                    $expiryDate = \Carbon\Carbon::parse($batch->expiration_date)->startOfDay();
                                     $today = \Carbon\Carbon::now()->startOfDay();
                                     $statusDays = $today->diffInDays($expiryDate, false); 
                                     $absoluteDays = abs($statusDays); 
