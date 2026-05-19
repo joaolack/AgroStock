@@ -54,5 +54,8 @@ Route::get('/export/reports/preview', [ExportController::class, 'reportPreviewPd
     ->middleware(['auth'])
     ->name('export.reports.preview');
 
+Route::get('/export/reports/excel', [ExportController::class, 'reportExcel'])
+    ->middleware(['auth'])
+    ->name('export.reports.excel');
 
 require __DIR__.'/auth.php';

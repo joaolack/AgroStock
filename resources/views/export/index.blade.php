@@ -203,6 +203,12 @@
                         Pre-visualizar PDF
                     </button>
                     <button type="submit"
+                            formaction="{{ route('export.reports.excel') }}"
+                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold border"
+                            style="border-color:#2d6a35;color:#2d6a35;background:#eef7ef;">
+                        Baixar Excel
+                    </button>
+                    <button type="submit"
                             class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold text-white"
                             style="background:#2d6a35;">
                         Baixar PDF

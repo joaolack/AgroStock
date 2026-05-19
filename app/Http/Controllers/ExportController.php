@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductsReportExport;
 use App\Models\Category;
 use App\Models\ExportHistory;
 use App\Models\Product;
@@ -10,6 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExportController extends Controller
@@ -70,7 +72,56 @@ class ExportController extends Controller
         return $pdf->stream('preview-relatorio-' . $reportType . '.pdf');
     }
 
+    public function reportExcel(Request $request): Response
+    {
+        [$reportType, $reportTitle, $rows, $columns, $appliedFilters] = $this->buildReportPayload($request);
+
+        ExportHistory::create([
+            'user_id' => auth()->id(),
+            'report_type' => $reportType,
+        ]);
+
+        return Excel::download(
+            new ProductsReportExport($reportTitle, $rows, $columns, $appliedFilters),
+            'relatorio-' . $reportType . '-' . now()->format('Ymd-His') . '.xlsx'
+        );
+    }
+
     private function buildReportPdf(Request $request): array
+    {
+        [$reportType, $reportTitle, $rows, $columns, $appliedFilters] = $this->buildReportPayload($request);
+
+        $pdf = Pdf::loadView('export.pdf.products', [
+            'reportTitle' => $reportTitle,
+            'rows' => $rows,
+            'columns' => $columns,
+            'generatedAt' => now(),
+            'appliedFilters' => $appliedFilters,
+        ])->setPaper('a4', 'portrait');
+
+        return [$pdf, $reportType];
+    }
+
+    private function buildReportPayload(Request $request): array
+    {
+        $filters = $this->validateReportFilters($request);
+        $products = $this->filteredProductQuery($filters, true)
+            ->orderBy('name')
+            ->get();
+
+        $reportType = $filters['report_type'];
+        [$reportTitle, $rows, $columns] = $this->buildReportData($reportType, $products);
+
+        return [
+            $reportType,
+            $reportTitle,
+            $rows,
+            $columns,
+            $this->buildAppliedFilters($filters, $reportType),
+        ];
+    }
+
+    private function validateReportFilters(Request $request): array
     {
         $filters = $request->validate([
             'report_type' => ['required', 'in:general_stock,critical_stock,financial,by_supplier,most_profitable'],
@@ -88,12 +139,11 @@ class ExportController extends Controller
             $filters['price_max'] = $filters['price_min'];
         }
 
-        $query = $this->filteredProductQuery($filters, true)->orderBy('name');
+        return $filters;
+    }
 
-        $products = $query->get();
-        $reportType = $filters['report_type'];
-        [$reportTitle, $rows, $columns] = $this->buildReportData($reportType, $products);
-
+    private function buildAppliedFilters(array $filters, string $reportType): array
+    {
         $selectedCategory = !empty($filters['category_id'])
             ? Category::find($filters['category_id'])?->name
             : null;
@@ -117,15 +167,7 @@ class ExportController extends Controller
             'Preco maximo (venda)' => isset($filters['price_max']) ? 'R$ ' . number_format((float) $filters['price_max'], 2, ',', '.') : '-',
         ];
 
-        $pdf = Pdf::loadView('export.pdf.products', [
-            'reportTitle' => $reportTitle,
-            'rows' => $rows,
-            'columns' => $columns,
-            'generatedAt' => now(),
-            'appliedFilters' => $appliedFilters,
-        ])->setPaper('a4', 'portrait');
-
-        return [$pdf, $reportType];
+        return $appliedFilters;
     }
 
     private function buildExportInsights(array $filters): array
