@@ -14,30 +14,52 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {   
+        $filters = [
+            'search' => trim((string) $request->input('search', '')),
+            'category_id' => $request->input('category_id') ?: '',
+            'stock_status' => $request->input('stock_status') ?: '',
+        ];
         
         $query = Product::with(['category', 'supplier', 'batches.supplier']);
 
-        //Name or description search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%");
+        $query->when($filters['search'] !== '', function ($query) use ($filters) {
+            $search = $filters['search'];
+
+            $query->where(function ($q) use ($search) {
+                if (mb_strlen($search) <= 2) {
+                    $q->where('name', 'LIKE', "{$search}%")
+                        ->orWhere('name', 'LIKE', "% {$search}%");
+
+                    return;
+                }
+
+                $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('description', 'LIKE', "%{$search}%");
+
+                if (mb_strlen($search) >= 3) {
+                    $q->orWhereHas('category', function ($categoryQuery) use ($search) {
+                        $categoryQuery->where('name', 'LIKE', "%{$search}%");
+                    })->orWhereHas('supplier', function ($supplierQuery) use ($search) {
+                        $supplierQuery->where('name', 'LIKE', "%{$search}%");
+                    });
+                }
             });
-        }
+        });
 
         //Category fillter
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
+        if ($filters['category_id'] !== '') {
+            $query->where('category_id', $filters['category_id']);
         }
 
         //Status fillter
-        if ($request->filled('stock_status')) {
-            switch($request->stock_status) {
+        if ($filters['stock_status'] !== '') {
+            switch($filters['stock_status']) {
                 case 'Em Falta':
                     $query->where('stock_quantity', 0);
                     break;
                 case 'Estoque Baixo':
-                    $query->whereColumn('stock_quantity', '<=', 'minimum_stock');
+                    $query->where('stock_quantity', '>', 0)
+                        ->whereColumn('stock_quantity', '<=', 'minimum_stock');
                     break;
                 case 'Estoque Normal':
                     $query->whereColumn('stock_quantity', '>', 'minimum_stock');    
@@ -47,10 +69,6 @@ class ProductController extends Controller
     
         $products = $query->orderBy('name')->paginate(10)->withQueryString();
         $categories = Category::all();
-
-        if ($request->ajax()) {
-            return view('products.partials.table', compact('products'))->render();
-        }
 
         $totalProducts = Product::count();
 
@@ -65,7 +83,7 @@ class ProductController extends Controller
                                       ->value('total_cost') ?? 0;
 
         
-        return view('products.index', compact('products', 'categories', 'totalProducts', 'criticalStock', 'outOfStockProducts', 'totalStockValue'));
+        return view('products.index', compact('products', 'categories', 'filters', 'totalProducts', 'criticalStock', 'outOfStockProducts', 'totalStockValue'));
     }
 
     public function create()

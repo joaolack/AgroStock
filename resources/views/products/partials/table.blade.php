@@ -13,7 +13,7 @@
                 <th class="text-center px-3 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Ações</th>
             </tr>
         </thead>
-        <tbody id="products-table" class="divide-y" style="divide-color:#eef7ef;">
+        <tbody class="divide-y" style="divide-color:#eef7ef;">
             @forelse ($products as $product)
                 <tr class="prod-row animate-fadeIn">
                     <td class="px-3 py-3.5 whitespace-nowrap text-gray-900 dark:text-gray-100">
@@ -61,7 +61,7 @@
                     </td>
 
                     <td class="px-3 py-3.5 whitespace-nowrap text-gray-900 dark:text-gray-100">
-                        <span class="font-semibold {{ $product->stock_quantity <= 5 ? 'text-red-600' : 'text-green-600' }}">
+                        <span class="font-semibold {{ $product->stock_quantity <= $product->minimum_stock ? 'text-red-600' : 'text-green-600' }}">
                             {{ $product->stock_quantity }}
                         </span>
                         <small class="text-gray-500 block">Min: {{ $product->minimum_stock }}</small>

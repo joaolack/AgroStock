@@ -51,7 +51,7 @@ new class extends Component
                 Dashboard
             </a>
 
-            <a href="{{ route('products.index') }}" wire:navigate
+            <a href="{{ route('products.index') }}"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('products.*'))
                 style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
@@ -193,5 +193,4 @@ new class extends Component
         </div>
     </aside>
 </div>   
-
 
