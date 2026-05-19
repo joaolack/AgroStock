@@ -29,14 +29,35 @@
                     </td>
 
                     <td class="px-3 py-3.5 text-gray-900 dark:text-gray-100">
-                        @forelse ($product->batches->where('quantity', '>', 0)->sortBy(fn ($batch) => $batch->expiration_date?->format('Y-m-d') ?? '9999-12-31')->take(3) as $batch)
-                            <div class="text-xs">
-                                <span class="font-semibold">{{ $batch->number }}</span>
-                                <span class="text-gray-500">({{ $batch->quantity }})</span>
+                        @php
+                            $activeBatches = $product->batches
+                                ->where('quantity', '>', 0)
+                                ->sortBy(fn ($batch) => $batch->expiration_date?->format('Y-m-d') ?? '9999-12-31')
+                                ->values();
+                            $primaryBatch = $activeBatches->first();
+                            $remainingBatchesCount = max($activeBatches->count() - 1, 0);
+                            $remainingBatchesTooltip = $activeBatches->slice(1)
+                                ->map(fn ($batch) => $batch->number . ' (' . $batch->quantity . ')')
+                                ->implode(' | ');
+                        @endphp
+
+                        @if ($primaryBatch)
+                            <div class="text-xs flex items-center gap-1.5 whitespace-nowrap">
+                                <span class="font-semibold">{{ $primaryBatch->number }}</span>
+                                <span class="text-gray-500">({{ $primaryBatch->quantity }})</span>
+
+                                @if ($remainingBatchesCount > 0)
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-700 border border-gray-200 cursor-help"
+                                        title="{{ $remainingBatchesTooltip !== '' ? $remainingBatchesTooltip : 'Sem detalhes adicionais' }}"
+                                    >
+                                        +{{ $remainingBatchesCount }}
+                                    </span>
+                                @endif
                             </div>
-                        @empty
+                        @else
                             <span class="text-xs text-gray-500">Sem lotes</span>
-                        @endforelse
+                        @endif
                     </td>
 
                     <td class="px-3 py-3.5 whitespace-nowrap text-gray-900 dark:text-gray-100">

@@ -6,6 +6,8 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\ExpirationDateController;
+use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
@@ -36,13 +38,21 @@ Route::get('/analytics', [AnalyticsController::class, 'index'])
     ->middleware(['auth'])
     ->name('analytics.index');
 
-Route::get('/expiration-date', function () {
-    return view('expiration_date.index');
-})->name('expiration-date.index');
+Route::get('/expiration-date', [ExpirationDateController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('expiration-date.index');
 
-Route::get('/export', function () {
-    return view('export.index');
-})->name('export.index');
+Route::get('/export', [ExportController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('export.index');
+
+Route::get('/export/reports/pdf', [ExportController::class, 'reportPdf'])
+    ->middleware(['auth'])
+    ->name('export.reports.pdf');
+
+Route::get('/export/reports/preview', [ExportController::class, 'reportPreviewPdf'])
+    ->middleware(['auth'])
+    ->name('export.reports.preview');
 
 
 require __DIR__.'/auth.php';
