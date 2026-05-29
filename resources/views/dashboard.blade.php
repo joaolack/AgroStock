@@ -48,7 +48,7 @@
                     <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl" style="background:#fee2e2;">🚨</div>
                     <span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background:#fee2e2;color:#b91c1c;">Crítico</span>
                 </div>
-                <p class="font-display text-3xl font-bold tracking-tight" style="color:#1a3d1f;">{{ $criticalStock->count() }}</p>
+                <p class="font-display text-3xl font-bold tracking-tight" style="color:#1a3d1f;">{{ $criticalStockCount }}</p>
                 <p class="text-xs mt-1" style="color:#8a9e8c;">Total de Alertas</p>
             </div>
 
@@ -56,7 +56,7 @@
                 <div class="flex items-start justify-between mb-4">
                     <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl" style="background:#eef7ef;">🔄</div>
                 </div>
-                <p class="font-display text-3xl font-bold tracking-tight" style="color:#1a3d1f;">4</p>
+                <p class="font-display text-3xl font-bold tracking-tight" style="color:#1a3d1f;">{{ number_format($todayMovementsCount, 0, ',', '.') }}</p>
                 <p class="text-xs mt-1" style="color:#8a9e8c;">Movimentações (hoje)</p>
             </div>
 
@@ -70,6 +70,39 @@
 
         </div>
 
+        <div class="bg-white rounded-xl shadow-sm border p-6" style="border-color:#d4e8d6;">
+            <div class="flex flex-col gap-4 mb-5 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                    <h2 class="text-lg font-bold" style="color:#1a3d1f;">Entradas x Saídas</h2>
+                    <p class="text-sm" style="color:#8a9e8c;">Movimentações dos últimos 30 dias</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:min-w-[520px]">
+                    <div class="rounded-lg border px-4 py-3" style="border-color:#d4e8d6;">
+                        <p class="text-xs uppercase font-semibold" style="color:#8a9e8c;">Entradas</p>
+                        <p class="text-2xl font-bold mt-1" style="color:#166534;">{{ number_format($movementEntriesTotal, 0, ',', '.') }}</p>
+                    </div>
+                    <div class="rounded-lg border px-4 py-3" style="border-color:#d4e8d6;">
+                        <p class="text-xs uppercase font-semibold" style="color:#8a9e8c;">Saídas</p>
+                        <p class="text-2xl font-bold mt-1" style="color:#991b1b;">{{ number_format($movementExitsTotal, 0, ',', '.') }}</p>
+                    </div>
+                    <div class="rounded-lg border px-4 py-3" style="border-color:#d4e8d6;">
+                        <p class="text-xs uppercase font-semibold" style="color:#8a9e8c;">Tendência</p>
+                        <div class="mt-2 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold" style="{{ $stockTrend['badge_style'] }}">
+                                {{ $stockTrend['icon'] }}
+                            </span>
+                            <span class="text-sm font-bold {{ $stockTrend['class'] }}">{{ $stockTrend['label'] }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative h-[320px]">
+                <canvas id="dashboardMovementChart" data-movement-series='@json($movementSeries)'></canvas>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             <div class="bg-white p-6 rounded-lg shadow-md">
@@ -78,7 +111,7 @@
                     <p class="text-gray-500">Nenhum alerta de estoque. Tudo sob controle!</p>
                 @else
                     <ul class="divide-y divide-gray-100">
-                        @foreach ($criticalStock->take(5) as $product)
+                        @foreach ($criticalStock as $product)
                             <li class="py-3 flex justify-between itens-center text-sm">
                                 <span class="font-medium text-gray-900">{{ $product->name }}</span>
                                 <span class="text-red-600 font-bold">
@@ -86,9 +119,9 @@
                                 </span>
                             </li>
                         @endforeach
-                        @if ($criticalStock->count() > 5)
+                        @if ($criticalStockCount > 5)
                         <li class="pt-3 text-center text-sm">
-                            <a href="{{ route('products.index') }}" class="text-indigo-600 hover:underline"> Ver todos os {{ $criticalStock->count() }} alertas</a>       
+                            <a href="{{ route('products.index') }}" class="text-indigo-600 hover:underline"> Ver todos os {{ $criticalStockCount }} alertas</a>
                         </li>
                         @endif    
                     </ul>
@@ -101,7 +134,7 @@
                     <p class="text-gray-500">Nenhum produto vencendo em breve.</p>
                 @else
                     <ul class="divide-y divide-gray-100">
-                        @foreach ($closeToExpiry->take(5) as $batch)
+                        @foreach ($closeToExpiry as $batch)
                             <li class="py-3 flex justify-between itens-center text-sm">
                                 <span class="font-medium text-gray-900">
                                     {{ $batch->product->name }} - Lote {{ $batch->number }}
@@ -122,13 +155,53 @@
                                 @endif
                             </li>
                         @endforeach
-                        <li class="pt-3 text-center text-sm">
-                            <a href="{{ route('products.index') }}" class="text-indigo-600 hover:underline">Ver todos</a>
-                        </li>
+                        @if ($closeToExpiryCount > 5)
+                            <li class="pt-3 text-center text-sm">
+                                <a href="{{ route('products.index') }}" class="text-indigo-600 hover:underline">Ver todos os {{ $closeToExpiryCount }} vencimentos</a>
+                            </li>
+                        @endif
                     </ul>
                 @endif 
             </div>
         </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="flex flex-col gap-1 border-b pb-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h3 class="text-xl font-semibold text-green-800">Sugestão de Compra</h3>
+                    <p class="text-sm text-gray-500">Baseada na margem de segurança: (estoque mínimo x 1,5) - 5.</p>
+                </div>
+                <span class="text-xs font-semibold px-3 py-1 rounded-full self-start" style="background:#eef7ef;color:#2d6a35;">
+                    {{ $criticalStockCount }} {{ $criticalStockCount === 1 ? 'item crítico' : 'itens críticos' }}
+                </span>
+            </div>
+
+            @if ($purchaseSuggestions->isEmpty())
+                <p class="text-gray-500">Nenhuma sugestão de compra no momento.</p>
+            @else
+                <ul class="divide-y divide-gray-100">
+                    @foreach ($purchaseSuggestions as $product)
+                        <li class="py-3 flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <span class="font-medium text-gray-900">{{ $product->name }}</span>
+                                <span class="block text-xs text-gray-500">
+                                    Estoque atual: {{ $product->stock_quantity }} | Mínimo: {{ $product->minimum_stock }}
+                                </span>
+                            </div>
+                            <span class="font-bold text-green-700">
+                                Comprar {{ $product->suggested_purchase_quantity }} {{ $product->suggested_purchase_quantity === 1 ? 'unidade' : 'unidades' }}
+                            </span>
+                        </li>
+                    @endforeach
+                    @if ($criticalStockCount > 5)
+                        <li class="pt-3 text-center text-sm">
+                            <a href="{{ route('products.index') }}" class="text-indigo-600 hover:underline">Ver todos os {{ $criticalStockCount }} itens críticos</a>
+                        </li>
+                    @endif
+                </ul>
+            @endif
+        </div>
+
     </div>
     @endsection
 </main>
