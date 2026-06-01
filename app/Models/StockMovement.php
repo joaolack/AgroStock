@@ -14,6 +14,7 @@ class StockMovement extends Model
         'product_batch_id',
         'user_id',
         'type',
+        'reason',
         'quantity',
         'previous_quantity',
         'new_quantity',

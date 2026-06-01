@@ -85,6 +85,16 @@
             </div>
         </form>
 
+        @if ($errors->any())
+            <div class="rounded-lg border px-4 py-3 text-sm bg-red-50 text-red-700" style="border-color:#fecaca;">
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div class="rounded-xl border px-4 py-3 bg-white" style="border-color:#f5b7b1;">
                 <p class="text-xs font-semibold uppercase tracking-wide text-red-700">Vencidos</p>
@@ -114,10 +124,16 @@
                             <th class="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Fornecedor</th>
                             <th class="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Validade</th>
                             <th class="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Status</th>
+                            <th class="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Ação</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y" style="divide-color:#eef7ef;">
                         @forelse ($items as $item)
+                            @php
+                                $batch = $item['batch'] ?? null;
+                                $writeOffMaxQuantity = $batch ? min((int) $batch->quantity, (int) $item['product']->stock_quantity) : 0;
+                                $canWriteOff = $batch && $item['status'] === 'Vencido' && $writeOffMaxQuantity > 0;
+                            @endphp
                             <tr>
                                 <td class="px-4 py-3.5">
                                     <p class="font-semibold text-gray-900">{{ $item['product']->name }}</p>
@@ -148,10 +164,37 @@
                                         @endif
                                     </div>
                                 </td>
+                                <td class="px-4 py-3.5">
+                                    @if ($canWriteOff)
+                                        <form
+                                            method="POST"
+                                            action="{{ route('expiration-date.batches.write-off', $batch) }}"
+                                            class="flex items-center gap-2"
+                                            onsubmit="return confirm('Confirmar baixa de produto vencido neste lote?')"
+                                        >
+                                            @csrf
+                                            <input
+                                                type="number"
+                                                name="quantity"
+                                                min="1"
+                                                max="{{ $writeOffMaxQuantity }}"
+                                                value="{{ $writeOffMaxQuantity }}"
+                                                class="w-20 rounded-lg border-gray-300 text-sm focus:border-red-500 focus:ring-red-500"
+                                            >
+                                            <button type="submit" class="px-3 py-2 rounded-lg text-xs font-semibold text-white bg-red-600 hover:bg-red-700">
+                                                Dar baixa
+                                            </button>
+                                        </form>
+                                    @elseif (($item['status'] ?? '') === 'Vencido')
+                                        <span class="text-xs text-gray-500">Sem estoque</span>
+                                    @else
+                                        <span class="text-xs text-gray-400">-</span>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ $viewMode === 'batch' ? 7 : 5 }}" class="text-center px-4 py-8 text-gray-500">
+                                <td colspan="{{ $viewMode === 'batch' ? 8 : 6 }}" class="text-center px-4 py-8 text-gray-500">
                                     Nenhum produto com validade cadastrada.
                                 </td>
                             </tr>

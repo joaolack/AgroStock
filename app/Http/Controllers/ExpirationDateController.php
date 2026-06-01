@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductBatch;
+use App\Models\StockMovement;
 use App\Models\Supplier;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class ExpirationDateController extends Controller
 {
@@ -187,5 +190,72 @@ class ExpirationDateController extends Controller
             'filters' => $filters,
             'viewMode' => $viewMode,
         ]);
+    }
+
+    public function writeOffExpiredBatch(Request $request, ProductBatch $batch)
+    {
+        $validated = $request->validate([
+            'quantity' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $removedQuantity = DB::transaction(function () use ($batch, $validated) {
+            $lockedBatch = ProductBatch::query()
+                ->whereKey($batch->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $expirationDate = $lockedBatch->expiration_date
+                ? Carbon::parse($lockedBatch->expiration_date)->startOfDay()
+                : null;
+
+            if (! $expirationDate || $expirationDate->greaterThanOrEqualTo(Carbon::now()->startOfDay())) {
+                throw ValidationException::withMessages([
+                    'quantity' => 'A baixa por vencimento só pode ser feita em lotes vencidos.',
+                ]);
+            }
+
+            $product = Product::query()
+                ->whereKey($lockedBatch->product_id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $availableQuantity = min((int) $lockedBatch->quantity, (int) $product->stock_quantity);
+            $quantity = (int) $validated['quantity'];
+
+            if ($availableQuantity <= 0) {
+                throw ValidationException::withMessages([
+                    'quantity' => 'Este lote vencido não possui quantidade disponível para baixa.',
+                ]);
+            }
+
+            if ($quantity > $availableQuantity) {
+                throw ValidationException::withMessages([
+                    'quantity' => "A quantidade máxima disponível para baixa é {$availableQuantity}.",
+                ]);
+            }
+
+            $previousQuantity = (int) $product->stock_quantity;
+
+            $lockedBatch->quantity -= $quantity;
+            $lockedBatch->save();
+
+            $product->stock_quantity -= $quantity;
+            $product->save();
+
+            StockMovement::create([
+                'product_id' => $product->id,
+                'product_batch_id' => $lockedBatch->id,
+                'user_id' => auth()->id(),
+                'type' => 'exit',
+                'reason' => 'expired',
+                'quantity' => $quantity,
+                'previous_quantity' => $previousQuantity,
+                'new_quantity' => $product->stock_quantity,
+            ]);
+
+            return $quantity;
+        });
+
+        return back()->with('success', "Baixa de {$removedQuantity} unidade(s) vencida(s) registrada com sucesso.");
     }
 }

@@ -242,6 +242,10 @@
                                 </th>
                                 <th class="text-left px-6 py-3 text-[11px] font-semibold uppercase tracking-wider"
                                     style="color:#8a9e8c;">
+                                    Motivo
+                                </th>
+                                <th class="text-left px-6 py-3 text-[11px] font-semibold uppercase tracking-wider"
+                                    style="color:#8a9e8c;">
                                     Quantidade
                                 </th>
                                 <th class="text-left px-6 py-3 text-[11px] font-semibold uppercase tracking-wider"
@@ -283,6 +287,17 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 text-center">
+                                        @if(($movement->reason ?? 'manual') === 'expired')
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                                Vencimento
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                                Manual
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
                                         <span class="text-lg font-semibold {{ $movement->type === 'entry' ? 'text-green-600' : 'text-red-600' }}">
                                             {{ $movement->type === 'entry' ? '+' : '-' }}{{ $movement->quantity }}
                                         </span>
@@ -296,7 +311,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                    <td colspan="8" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                         Nenhuma movimentação encontrada.
                                     </td>
                                 </tr>

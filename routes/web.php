@@ -42,6 +42,10 @@ Route::get('/expiration-date', [ExpirationDateController::class, 'index'])
     ->middleware(['auth'])
     ->name('expiration-date.index');
 
+Route::post('/expiration-date/batches/{batch}/write-off', [ExpirationDateController::class, 'writeOffExpiredBatch'])
+    ->middleware(['auth'])
+    ->name('expiration-date.batches.write-off');
+
 Route::get('/export', [ExportController::class, 'index'])
     ->middleware(['auth'])
     ->name('export.index');
