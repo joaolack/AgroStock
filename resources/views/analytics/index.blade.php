@@ -66,6 +66,91 @@
         <div class="bg-white rounded-xl shadow-sm border p-6" style="border-color:#d4e8d6;">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-5">
                 <div>
+                    <h2 class="text-lg font-bold" style="color:#1a3d1f;">Curva ABC</h2>
+                    <p class="text-sm" style="color:#8a9e8c;">Classificação dos produtos pelo valor em estoque</p>
+                </div>
+                <div class="text-left sm:text-right">
+                    <p class="text-xs uppercase tracking-wide" style="color:#8a9e8c;">Valor total em estoque</p>
+                    <p class="text-xl font-bold" style="color:#1a3d1f;">
+                        R$ {{ number_format($abcCurve['total_stock_value'], 2, ',', '.') }}
+                    </p>
+                </div>
+            </div>
+
+            @if ($abcCurve['products']->isEmpty())
+                <div class="py-12 text-center rounded-lg border border-dashed" style="border-color:#d4e8d6;color:#8a9e8c;">
+                    Não há produtos com estoque positivo para gerar a Curva ABC.
+                </div>
+            @else
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    @foreach ($abcCurve['summary'] as $classSummary)
+                        @php
+                            $classStyles = [
+                                'A' => ['bg' => '#ecfdf3', 'border' => '#86efac', 'text' => '#166534'],
+                                'B' => ['bg' => '#fffbeb', 'border' => '#fcd34d', 'text' => '#92400e'],
+                                'C' => ['bg' => '#eff6ff', 'border' => '#93c5fd', 'text' => '#1d4ed8'],
+                            ][$classSummary['class']];
+                        @endphp
+                        <div class="rounded-lg border p-4" style="background:{{ $classStyles['bg'] }};border-color:{{ $classStyles['border'] }};">
+                            <div class="flex items-center justify-between gap-3">
+                                <p class="text-sm font-semibold" style="color:{{ $classStyles['text'] }};">Classe {{ $classSummary['class'] }}</p>
+                                <span class="text-xs font-semibold px-2 py-1 rounded-full" style="background:#ffffff;color:{{ $classStyles['text'] }};">
+                                    {{ number_format($classSummary['stock_percentage'], 1, ',', '.') }}%
+                                </span>
+                            </div>
+                            <p class="text-2xl font-bold mt-3" style="color:#1a3d1f;">
+                                R$ {{ number_format($classSummary['stock_value'], 2, ',', '.') }}
+                            </p>
+                            <p class="text-sm mt-1" style="color:#4a5c4c;">
+                                {{ $classSummary['products_count'] }} produto{{ $classSummary['products_count'] === 1 ? '' : 's' }}
+                            </p>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="overflow-x-auto rounded-lg border" style="border-color:#d4e8d6;">
+                    <table class="min-w-full divide-y divide-gray-100">
+                        <thead style="background:#f6fbf6;">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide" style="color:#4a5c4c;">Produto</th>
+                                <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide" style="color:#4a5c4c;">Qtd.</th>
+                                <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide" style="color:#4a5c4c;">Custo unit.</th>
+                                <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide" style="color:#4a5c4c;">Valor estoque</th>
+                                <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide" style="color:#4a5c4c;">% acumulado</th>
+                                <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide" style="color:#4a5c4c;">Classe</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            @foreach ($abcCurve['products'] as $abcProduct)
+                                @php
+                                    $badgeStyles = [
+                                        'A' => ['bg' => '#dcfce7', 'text' => '#166534'],
+                                        'B' => ['bg' => '#fef3c7', 'text' => '#92400e'],
+                                        'C' => ['bg' => '#dbeafe', 'text' => '#1d4ed8'],
+                                    ][$abcProduct['class']];
+                                @endphp
+                                <tr>
+                                    <td class="px-4 py-3 text-sm font-medium whitespace-nowrap" style="color:#1a3d1f;">{{ $abcProduct['name'] }}</td>
+                                    <td class="px-4 py-3 text-sm text-right whitespace-nowrap" style="color:#4a5c4c;">{{ number_format($abcProduct['stock_quantity'], 0, ',', '.') }}</td>
+                                    <td class="px-4 py-3 text-sm text-right whitespace-nowrap" style="color:#4a5c4c;">R$ {{ number_format($abcProduct['cost_price'], 2, ',', '.') }}</td>
+                                    <td class="px-4 py-3 text-sm text-right font-semibold whitespace-nowrap" style="color:#1a3d1f;">R$ {{ number_format($abcProduct['stock_value'], 2, ',', '.') }}</td>
+                                    <td class="px-4 py-3 text-sm text-right whitespace-nowrap" style="color:#4a5c4c;">{{ number_format($abcProduct['cumulative_percentage'], 1, ',', '.') }}%</td>
+                                    <td class="px-4 py-3 text-center whitespace-nowrap">
+                                        <span class="inline-flex items-center justify-center min-w-8 rounded-full px-2.5 py-1 text-xs font-bold" style="background:{{ $badgeStyles['bg'] }};color:{{ $badgeStyles['text'] }};">
+                                            {{ $abcProduct['class'] }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border p-6" style="border-color:#d4e8d6;">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-5">
+                <div>
                     <h2 class="text-lg font-bold" style="color:#1a3d1f;">Movimentação de estoque</h2>
                     <p class="text-sm" style="color:#8a9e8c;">Entradas e saídas no periodo selecionado</p>
                 </div>

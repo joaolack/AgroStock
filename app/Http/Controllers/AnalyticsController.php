@@ -59,6 +59,8 @@ class AnalyticsController extends Controller
                 'stock_value' => (float) $category->stock_value,
             ]);
 
+        $abcCurve = $this->buildAbcCurve();
+
         $supplierDependencyDistribution = Supplier::query()
             ->active()
             ->leftJoin('products', function ($join) {
@@ -154,8 +156,82 @@ class AnalyticsController extends Controller
             'movementSeries',
             'supplierDependencyDistribution',
             'staleDays',
-            'staleProducts'
+            'staleProducts',
+            'abcCurve'
         ));
+    }
+
+    private function buildAbcCurve(): array
+    {
+        $products = Product::query()
+            ->where('stock_quantity', '>', 0)
+            ->select('id', 'name', 'stock_quantity', 'cost_price')
+            ->selectRaw('(cost_price * stock_quantity) as stock_value')
+            ->orderByDesc('stock_value')
+            ->orderBy('name')
+            ->get();
+
+        $totalStockValue = (float) $products->sum('stock_value');
+        $cumulativeValue = 0.0;
+        $summary = [
+            'A' => [
+                'class' => 'A',
+                'products_count' => 0,
+                'stock_value' => 0.0,
+                'stock_percentage' => 0.0,
+            ],
+            'B' => [
+                'class' => 'B',
+                'products_count' => 0,
+                'stock_value' => 0.0,
+                'stock_percentage' => 0.0,
+            ],
+            'C' => [
+                'class' => 'C',
+                'products_count' => 0,
+                'stock_value' => 0.0,
+                'stock_percentage' => 0.0,
+            ],
+        ];
+
+        $products = $products->map(function ($product) use (&$cumulativeValue, &$summary, $totalStockValue) {
+            $stockValue = (float) $product->stock_value;
+            $stockPercentage = $totalStockValue > 0 ? ($stockValue / $totalStockValue) * 100 : 0.0;
+
+            $cumulativeValue += $stockValue;
+            $cumulativePercentage = $totalStockValue > 0 ? ($cumulativeValue / $totalStockValue) * 100 : 0.0;
+            $class = match (true) {
+                $cumulativePercentage <= 80 => 'A',
+                $cumulativePercentage <= 95 => 'B',
+                default => 'C',
+            };
+
+            $summary[$class]['products_count']++;
+            $summary[$class]['stock_value'] += $stockValue;
+
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'stock_quantity' => (int) $product->stock_quantity,
+                'cost_price' => (float) $product->cost_price,
+                'stock_value' => $stockValue,
+                'stock_percentage' => $stockPercentage,
+                'cumulative_percentage' => $cumulativePercentage,
+                'class' => $class,
+            ];
+        });
+
+        foreach ($summary as $class => $data) {
+            $summary[$class]['stock_percentage'] = $totalStockValue > 0
+                ? ($data['stock_value'] / $totalStockValue) * 100
+                : 0.0;
+        }
+
+        return [
+            'total_stock_value' => $totalStockValue,
+            'summary' => collect($summary)->values(),
+            'products' => $products,
+        ];
     }
 
     private function resolvePeriod(string $period, ?Carbon $customStart, ?Carbon $customEnd): array
