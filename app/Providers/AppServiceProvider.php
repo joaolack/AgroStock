@@ -2,6 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\StockMovement;
+use App\Models\Supplier;
+use App\Observers\CategoryObserver;
+use App\Observers\ProductObserver;
+use App\Observers\StockMovementObserver;
+use App\Observers\SupplierObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Product::observe(ProductObserver::class);
+        Category::observe(CategoryObserver::class);
+        Supplier::observe(SupplierObserver::class);
+        StockMovement::observe(StockMovementObserver::class);
     }
 }

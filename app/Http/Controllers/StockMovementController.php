@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\StockMovement;
 use App\Models\Supplier;
+use App\Services\AuditService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -76,7 +77,7 @@ class StockMovementController extends Controller
                 $product->stock_quantity += $quantity;
                 $product->supplier_id = $validated['supplier_id'];
                 $product->expiration_date = $validated['expiration_date'] ?? null;
-                $product->save();
+                AuditService::withoutModelAudit(fn () => $product->save());
 
                 StockMovement::create([
                     'product_id' => $product->id,
@@ -94,7 +95,7 @@ class StockMovementController extends Controller
 
             if ($product->stock_quantity < $quantity) {
                 throw ValidationException::withMessages([
-                    'quantity' => 'Estoque insuficiente! Disponivel: ' . $product->stock_quantity,
+                    'quantity' => 'Estoque insuficiente! Disponivel: '.$product->stock_quantity,
                 ]);
             }
 
@@ -112,7 +113,7 @@ class StockMovementController extends Controller
                 $batch->save();
 
                 $product->stock_quantity -= $consumed;
-                $product->save();
+                AuditService::withoutModelAudit(fn () => $product->save());
 
                 StockMovement::create([
                     'product_id' => $product->id,
@@ -130,7 +131,7 @@ class StockMovementController extends Controller
 
             if ($remaining > 0) {
                 throw ValidationException::withMessages([
-                    'quantity' => 'Estoque sem lotes suficientes para saida FIFO. Disponivel em lotes: ' . ($quantity - $remaining),
+                    'quantity' => 'Estoque sem lotes suficientes para saida FIFO. Disponivel em lotes: '.($quantity - $remaining),
                 ]);
             }
 

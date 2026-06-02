@@ -132,6 +132,17 @@ new class extends Component
                 Exportar
             </a>
 
+            <a href="{{ route('audit-logs.index')}}"
+            class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
+            @if(request()->routeIs('audit-logs.*'))
+                style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
+            @else
+                style="color:rgba(255,255,255,0.6);"
+            @endif>
+                <span @if(request()->routeIs('audit-logs.*')) style="color:#4caf50;" @endif class="w-5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+                Auditoria
+            </a>
+
         </nav>
 
         {{-- User footer com dropdown --}}
@@ -193,4 +204,3 @@ new class extends Component
         </div>
     </aside>
 </div>   
-

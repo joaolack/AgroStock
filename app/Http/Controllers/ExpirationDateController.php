@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ProductBatch;
 use App\Models\StockMovement;
 use App\Models\Supplier;
+use App\Services\AuditService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -240,7 +241,7 @@ class ExpirationDateController extends Controller
             $lockedBatch->save();
 
             $product->stock_quantity -= $quantity;
-            $product->save();
+            AuditService::withoutModelAudit(fn () => $product->save());
 
             StockMovement::create([
                 'product_id' => $product->id,

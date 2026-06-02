@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpirationDateController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StockMovementController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
@@ -37,6 +38,10 @@ Route::post('stock-movements', [StockMovementController::class, 'store'])
 Route::get('/analytics', [AnalyticsController::class, 'index'])
     ->middleware(['auth'])
     ->name('analytics.index');
+
+Route::get('/audit-logs', [AuditLogController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('audit-logs.index');
 
 Route::get('/expiration-date', [ExpirationDateController::class, 'index'])
     ->middleware(['auth'])
