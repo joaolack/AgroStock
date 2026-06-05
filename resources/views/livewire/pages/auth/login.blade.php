@@ -24,93 +24,46 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-sans">
-    <div class="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden" 
-         style="background-color:#1a3d1f;">
-        
-        <!--radial glows--> 
-        <div class="absolute inset-0 pointer-event-none">
-            <div class="absolute w-96 h-96 rounded-full"
-                 style="background:radial-gradient(ellipse, rgba(76,175,80,0.18) 0%,transparent 70%);top: -80px;right: -80px;"></div>
-            <div class="absolute w-64 h-64 rounded-full" 
-                 style="background:radial-gradient(ellipse,rgba(168,213,171,0.12) 0%,transparent 70%);bottom:-60px;left:-60px;"></div>
-        </div>
-
-        <div class="absolute rounded-full pointer-events-none"
-             style="width:440px;height:440px;top:-130px;right:-130px;border:1px solid rgba(168,213,171,0.1);"></div>
-        <div class="absolute rounded-full pointer-events-none"
-             style="width:260px;height:260px;top:50px;right:-50px;border:1px solid rgba(168,213,171,0.1);"></div>
-        <div class="absolute rounded-full pointer-events-none"
-             style="width:320px;height:320px;bottom:-90px;left:-90px;border:1px solid rgba(168,213,171,0.08);"></div>
-
-        
-        <div class="relative z-10 flex items-center gap-3">
-            <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl"
-                 style="background-color:#4caf50;">🌾</div>
-            <span class="text-xl font-bold text-white tracking-tight"
-                  style="font-family:'Georgia',serif;">
-                Agro<span style="color:#4caf50;">Stock</span>
-            </span>
-        </div>
-
-        <!--Hero principal-->
-        <div class="relative z-10 flex-1 flex flex-col justify-center py-10">
-            <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 w-fit mb-7" 
-                 style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);">
-                <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:#4caf50;"></span>
-                <span class="text-xs font-semibold tracking-widest uppercase" style="color:#a8d5ab;">Gestão de Estoque</span> 
-            </div>
-
-            <h1 class="text-5xl font-bold text-white leading-tight tracking-tight mb-5" 
-                style="font-family:'Georgia',serif;">
-                Controle total<br> do seu <em class="font-light italic" style="color:#a8d5ab;">agronegócio</em>
-            </h1>
-
-            <p class="text-sm leading-relaxed max-w-xs mb-10" style="color:rgba(255,255,255,0.5);">
-                Gerencie insumos, sementes, defensivos e equipamentos em uma plataforma integrada, desenhada para o seu negócio.
-            </p>
-        </div>
-
-        <!--Features-->
-        <div class="relative z-10 flex flex-col gap-2.5">
-            @foreach([['📦','Controle de estoque em tempo real'],['📊','Relatórios e análises automáticas'],['🔔','Alertas de validade e reposição']] as [$icon, $text])
-            <div class="flex items-center gap-3 rounded-xl px-4 py-3"
-                 style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);">
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0"
-                     style="background:rgba(76,175,80,0.2);">{{ $icon }}</div>
-                <span class="text-sm font-medium" style="color:rgba(255,255,255,0.65);">{{ $text }}</span>
-            </div>
-            @endforeach
-        </div>
-    </div>    
+<div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#f7faf3]">
+    <div class="relative hidden lg:flex min-h-screen bg-[#f7faf3] overflow-hidden">
+    <img
+        src="{{ asset('images/agrostock.png') }}"
+        alt="AgroStock"
+        class="w-full h-full object-cover"
+    >
+</div>
  
 
 
-    <div class="relative flex items-center justify-center p-8 sm:p-12 bg-white dark:bg-gray-900 overflow-hidde">    
+    <div class="relative flex items-center justify-center p-6 sm:p-12 bg-white dark:bg-gray-900 overflow-hidde">    
         
         <div class="absolute top-0 right-0 w-72 h-72 pointer-events-none" 
              style="background:radial-gradient(ellipse at top right,#eef7ef 0%,transparent 70%);"></div>
 
-        <div class="relative z-10 w-full max-w-sm">
+        <div class="relative z-10 w-full max-w-lg">
 
             <!--Mobile-->
-            <div class="lg:hidden text-center mb-8">
+            <div class="lg:hidden text-center mb-20">
                 <div class="inline-flex items-center gap-2 mb-2">
-                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg"
-                         style="background-color:#4caf50;">🌾</div>
-                    <span class="text-xl font-bold tracking-tight" style="font-family:'Georgia',serif;color:#1a3d1f;">
-                        Agro<span style="color:#4caf50;">Stock</span>
-                    </span>     
+                    <img
+                        src="{{ asset('images/logo-agrostock.png') }}"
+                        alt="AgroStock logo"
+                        class="h-24 w-auto mx-auto"
+                    >
+
+                    <img
+                        src="{{ asset('images/agrostock-tipografia.png') }}"
+                        alt="Agrostock tipografia"
+                        class="h-12 w-auto mx-auto mt-6"
+                    >
                 </div>
             </div>
 
-
             <x-auth-session-status class="mb-4" :status="session('status')"/>
             
-
             <div class="mb-12">
                 <p class="text-xs font-semibold tracking-widest uppercase mb-2" style="color:#4caf50;">Acesso ao Sistema</p>
-                <h2 class="text-4xl font-bold tracking-tight leading-tight mb-2 dark:text-white"
+                <h2 class="text-5xl font-bold tracking-tight leading-tight mb-2 dark:text-white"
                     style="font-family:'Georgia',serif;color:#1a3d1f;">
                     Bem-vindo<br>de volta
                 </h2>
@@ -138,7 +91,7 @@ new #[Layout('layouts.guest')] class extends Component
                             <x-fas-user class="w-5 h-4 text-gray-900 dark:text-gray-400"/> 
                         </span>
                         <input wire:model="form.email" id="email" name="email" type="email" required autofocus autocomplete="username" 
-                               placeholder="seu@email.com" class="w-full pl-10 pr-4 py-3 rounded-xl text-sm transition-all duration-200 
+                               placeholder="seu@email.com" class="w-full h-12 pl-10 pr-4 py-3 rounded-xl text-sm transition-all duration-200 
                                     border border-gray-200 bg-gray-50 text-gray-900
                                     focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white
                                     dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-500
@@ -160,7 +113,7 @@ new #[Layout('layouts.guest')] class extends Component
                         </span>
 
                         <input wire:model="form.password" id="password" name="password" type="password" required autocomplete="current-password"
-                               placeholder="••••••••" class="w-full pl-10 pr-4 py-3 rounded-xl text-sm transition-all duration-200 
+                               placeholder="••••••••" class="w-full h-12 pl-10 pr-4 py-3 rounded-xl text-sm transition-all duration-200 
                                     border border-gray-200 bg-gray-50 text-gray-900
                                     focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white
                                     dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-500
@@ -198,10 +151,12 @@ new #[Layout('layouts.guest')] class extends Component
                 </div>
                 
                 <!-- Submit-->
-                <x-primary-button class="w-full">
-                    <span class="relative z-10">{{ __('Entrar na plataforma') }}</span>
-                    <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(135deg, rgba(76,175,80,0.2) 0%,transparent 60%);"></div>
-                </x-primary-button>
+                <div class="pt-4"> 
+                    <x-primary-button class="w-3/4 mx-auto block">
+                        <span class="relative z-10">{{ __('Entrar na plataforma') }}</span>
+                        <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(135deg, rgba(76,175,80,0.2) 0%,transparent 60%);"></div>
+                    </x-primary-button>
+                </div>    
             </form>
 
             <div class="flex items-center gap-3 my-5">
