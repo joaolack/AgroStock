@@ -106,7 +106,7 @@
                                 <span class="text-red-500 font-bold">EXPIRADO Há {{ $absoluteDays }} DIAS!</span>
                             @elseif ($statusDays === 0)
                                 <span class="text-red-600 font-bold">VENCE HOJE!</span>
-                            @elseif ($statusDays <= 30)
+                            @elseif ($statusDays <= 60)
                                 <span class="text-yellow-600">Vence em {{ $absoluteDays }} dias</span>
                             @else
                                 {{ $expiryDate->format('d/m/Y') }}

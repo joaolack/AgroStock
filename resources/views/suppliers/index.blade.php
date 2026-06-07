@@ -5,9 +5,6 @@
     <header class="sticky top-0 z-20 flex items-center justify-between border-b bg-white/80 px-6 py-3.5 backdrop-blur-md"
         style="border-color:#d4e8d6;">
         <div class="flex items-center gap-3">
-            <button class="lg:hidden rounded-lg p-2 transition colors hover:bg-agro-pale" style="color:#4a5c4c;">
-                â˜°
-            </button>
             <div>
                 <h1 class="font-display text-xl font-bold tracking-tight" style="color:#1a3d1f;">Fornecedores</h1>
                 <p class="text-[11px]" style="color:#8a9e8c;">Gerencie seus fornecedores</p>
@@ -33,7 +30,7 @@
 
                 <div class="flex flex-wrap items-center gap-2">
                     <form action="{{ route('suppliers.index') }}" method="GET" class="relative">
-                        <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color:#8a9e8c;">ðŸ”</span>
+                        <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color:#8a9e8c;"><x-fas-magnifying-glass class="h-3 w-auto"/></span>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Buscar fornecedor..."
                             class="rounded-xl border pl-8 pr-3 py-2 text-sm transition-all duration-200 focus:ring-4"
                             style="border-color:#d4e8d6;background:#f9f6f0;color:#1a3d1f;"

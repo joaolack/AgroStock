@@ -26,38 +26,62 @@
     <div class="flex-1 p-6 overflow-y-auto space-y-5">
 
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
-            <div class="bg-white rounded-2xl p-4 border animate-fadeIn" style="border-color:#d4e8d6;animation-delay:0s;">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:#eef7ef;">P</div>
+
+            <div class="rounded-2xl p-5 border border-slate-200 bg-white shadow-sm">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm font-medium text-slate-500">Total de produtos</p>
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                        <x-fas-box class="h-4 w-4"/>
+                    </div>
                 </div>
-                <p class="font-display text-2xl font-bold" style="color:#1a3d1f;">{{ number_format($totalProducts, 0, ',', '.') }}</p>
-                <p class="text-xs mt-0.5" style="color:#8a9e8c;">Total de produtos</p>
+
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-900">
+                    {{ number_format($totalProducts, 0, ',', '.') }}
+                </p>
+
+                <p class="mt-1 text-xs text-slate-400">
+                    Produtos cadastrados
+                </p>
             </div>
 
-            <div class="bg-white rounded-2xl p-4 border animate-fadeIn" style="border-color:#d4e8d6;animation-delay:0.06s;">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:#eef7ef;">!</div>
-                    <span class="text-[10px] font-semibold uppercase tracking-widest px-2 py-1 rounded-full" style="background:#fef9c3;color:#854d0e;">Atencao</span>
+            <div class="rounded-2xl p-5 border border-slate-200 bg-white shadow-sm">
+                <div class="flex items-start justify-between">
+                    <p class="text-sm font-medium text-slate-500">Estoque baixo</p>
+                    
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                        <x-fas-triangle-exclamation class="h-4 w-4" />
+                    </div>
                 </div>
-                <p class="font-display text-2xl font-bold" style="color:#1a3d1f;">{{ $criticalStock->count() }}</p>
-                <p class="text-xs mt-0.5" style="color:#8a9e8c;">Estoque baixo</p>
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-900">{{ $lowStockProducts }}</p>
+                <div class="mt-2 inline-flex rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+                    Requer atenção
+                </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-4 border animate-fadeIn" style="border-color:#d4e8d6;animation-delay:0.12s;">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:#fee2e2;">X</div>
-                    <span class="text-[10px] font-semibold uppercase tracking-widest px-2 py-1 rounded-full" style="background:#fee2e2;color:#b91c1c;">Critico</span>
+            <div class="rounded-2xl p-5 border border-slate-200 bg-white shadow-sm">
+                <div class="flex items-start justify-between">
+                    <p class="text-sm font-medium text-slate-500">Sem estoque</p>
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-700">
+                        <x-fas-circle-xmark class="h-4 w-4" />
+                    </div>
                 </div>
-                <p class="font-display text-2xl font-bold" style="color:#1a3d1f;">{{ $outOfStockProducts }}</p>
-                <p class="text-xs mt-0.5" style="color:#8a9e8c;">Sem estoque</p>
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-900">{{ $outOfStockProducts }}</p>
+                <div class="mt-2 inline-flex rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-red-700">
+                    Crítico
+                </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-4 border animate-fadeIn" style="border-color:#d4e8d6;animation-delay:0.18s;">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:#eef7ef;">R$</div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-start justify-between">
+                    <p class="text-sm font-medium text-slate-500">Valor em estoque</p>
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                        <x-fas-dollar-sign class="h-4 w-4" />
+                    </div>
                 </div>
-                <p class="font-display text-2xl font-bold" style="color:#1a3d1f;">R$ {{ number_format($totalStockValue, 2, ',', '.') }}</p>
-                <p class="text-xs mt-0.5" style="color:#8a9e8c;">Valor em estoque</p>
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-900">R$ {{ number_format($totalStockValue, 2, ',', '.') }}</p>
+                <p class="mt-1 text-xs text-slate-400">Custo total armazenado</p>
             </div>
         </div>
 
@@ -92,6 +116,7 @@
                     <select id="stock_status" name="stock_status" class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500 text-sm">
                         <option value="">Todos</option>
                         <option value="Estoque Normal" @selected($filters['stock_status'] === 'Estoque Normal')>Estoque normal</option>
+                        <option value="Crítico" @selected($filters['stock_status'] === 'Crítico')>Estoque crítico</option>
                         <option value="Estoque Baixo" @selected($filters['stock_status'] === 'Estoque Baixo')>Estoque baixo</option>
                         <option value="Em Falta" @selected($filters['stock_status'] === 'Em Falta')>Sem estoque</option>
                     </select>

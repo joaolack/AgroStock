@@ -106,7 +106,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold mb-4 text-red-700 border-b pb-2">Itens Abaixo do Estoque Mínimo</h3>
+                <h3 class="text-xl font-semibold mb-4 text-red-700 border-b pb-2">Itens no Estoque Mínimo ou Abaixo</h3>
                 @if ($criticalStock->isEmpty())
                     <p class="text-gray-500">Nenhum alerta de estoque. Tudo sob controle!</p>
                 @else
@@ -121,7 +121,7 @@
                         @endforeach
                         @if ($criticalStockCount > 5)
                         <li class="pt-3 text-center text-sm">
-                            <a href="{{ route('products.index') }}" class="text-indigo-600 hover:underline"> Ver todos os {{ $criticalStockCount }} alertas</a>
+                            <a href="{{ route('products.index', ['stock_status' => 'Crítico']) }}" class="text-indigo-600 hover:underline"> Ver todos os {{ $criticalStockCount }} alertas</a>
                         </li>
                         @endif    
                     </ul>
@@ -157,7 +157,7 @@
                         @endforeach
                         @if ($closeToExpiryCount > 5)
                             <li class="pt-3 text-center text-sm">
-                                <a href="{{ route('products.index') }}" class="text-indigo-600 hover:underline">Ver todos os {{ $closeToExpiryCount }} vencimentos</a>
+                                <a href="{{ route('expiration-date.index', ['view' => 'batch', 'status' => 'Vence em breve', 'stock_only' => 1]) }}" class="text-indigo-600 hover:underline">Ver todos os {{ $closeToExpiryCount }} vencimentos</a>
                             </li>
                         @endif
                     </ul>

@@ -10,10 +10,27 @@ use Illuminate\Validation\Rule;
 class CategoryController extends Controller
 {
     
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::withCount('products')->orderBy('name')->paginate(10);
-        return view('categories.index', compact('categories'));
+        $query = Category::withCount('products');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $categories = $query
+            ->orderBy('name')
+            ->paginate(15)
+            ->withQueryString();
+
+        $totalCategories = Category::count();
+
+        return view('categories.index', compact('categories', 'totalCategories'));
     }
 
     public function create()

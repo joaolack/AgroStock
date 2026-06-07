@@ -22,6 +22,7 @@ class ProductRepository
             'filters' => $filters,
             'totalProducts' => $this->totalProducts(),
             'criticalStock' => $this->criticalStock(),
+            'lowStockProducts' => $this->lowStockProducts(),
             'outOfStockProducts' => $this->outOfStockProducts(),
             'totalStockValue' => $this->totalStockValue(),
         ];
@@ -79,6 +80,7 @@ class ProductRepository
 
         if ($filters['stock_status'] !== '') {
             match ($filters['stock_status']) {
+                'Crítico' => $query->whereColumn('stock_quantity', '<=', 'minimum_stock'),
                 'Em Falta' => $query->where('stock_quantity', 0),
                 'Estoque Baixo' => $query->where('stock_quantity', '>', 0)
                     ->whereColumn('stock_quantity', '<=', 'minimum_stock'),
@@ -115,6 +117,13 @@ class ProductRepository
     private function outOfStockProducts(): int
     {
         return Product::where('stock_quantity', 0)->count();
+    }
+
+    private function lowStockProducts(): int
+    {
+        return Product::where('stock_quantity', '>', 0)
+            ->whereColumn('stock_quantity', '<=', 'minimum_stock')
+            ->count();
     }
 
     private function totalStockValue(): float

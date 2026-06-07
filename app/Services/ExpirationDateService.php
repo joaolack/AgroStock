@@ -11,6 +11,8 @@ use Illuminate\Support\Collection;
 
 class ExpirationDateService
 {
+    private const SOON_DAYS = 60;
+
     private const VALID_STATUSES = ['Vencido', 'Vence em breve', 'Seguro'];
 
     private const VALID_VIEW_MODES = ['product', 'batch'];
@@ -48,7 +50,7 @@ class ExpirationDateService
                     ->sortBy(fn ($batch) => $batch->expiration_date?->format('Y-m-d'))
                     ->first();
 
-                $expirationDate = $nextBatch?->expiration_date ?? $product->expiration_date;
+                $expirationDate = $this->productExpirationDate($product, $nextBatch);
                 if (! $expirationDate) {
                     return null;
                 }
@@ -70,6 +72,19 @@ class ExpirationDateService
                 [fn ($item) => $item['product']->name, 'asc'],
             ])
             ->values();
+    }
+
+    private function productExpirationDate(Product $product, ?ProductBatch $nextBatch): mixed
+    {
+        if ($nextBatch?->expiration_date) {
+            return $nextBatch->expiration_date;
+        }
+
+        if ((int) $product->stock_quantity <= 0) {
+            return null;
+        }
+
+        return $product->expiration_date;
     }
 
     private function batchItems(array $filters, Carbon $today): Collection
@@ -110,7 +125,7 @@ class ExpirationDateService
             ];
         }
 
-        if ($daysToExpire <= 30) {
+        if ($daysToExpire <= self::SOON_DAYS) {
             return [
                 'days_to_expire' => $daysToExpire,
                 'status' => 'Vence em breve',

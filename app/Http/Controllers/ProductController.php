@@ -48,7 +48,7 @@ class ProductController extends Controller
 
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
+        $this->productService->updateWithActiveBatches($product, $request->validated());
 
         return redirect()->route('products.index')->with('success', 'Produto atualizado com sucesso');
     }

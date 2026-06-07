@@ -101,7 +101,7 @@
                 <p class="text-2xl font-bold text-red-700">{{ $summary['expired'] }}</p>
             </div>
             <div class="rounded-xl border px-4 py-3 bg-white" style="border-color:#f8e7a3;">
-                <p class="text-xs font-semibold uppercase tracking-wide text-yellow-700">Vence em 30 dias</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-yellow-700">Vence em 60 dias</p>
                 <p class="text-2xl font-bold text-yellow-700">{{ $summary['soon'] }}</p>
             </div>
             <div class="rounded-xl border px-4 py-3 bg-white" style="border-color:#b8dfbd;">
@@ -157,7 +157,7 @@
                                             <span class="text-xs text-red-600">Há {{ abs($item['days_to_expire']) }} dias</span>
                                         @elseif ($item['days_to_expire'] === 0)
                                             <span class="text-xs text-red-600">Vence hoje</span>
-                                        @elseif ($item['days_to_expire'] <= 30)
+                                        @elseif ($item['days_to_expire'] <= 60)
                                             <span class="text-xs text-yellow-700">Em {{ $item['days_to_expire'] }} dias</span>
                                         @else
                                             <span class="text-xs text-green-700">Em {{ $item['days_to_expire'] }} dias</span>

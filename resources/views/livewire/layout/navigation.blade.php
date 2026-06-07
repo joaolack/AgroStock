@@ -24,26 +24,39 @@ new class extends Component
 --}}
 <div x-data="{ mobileOpen: false, userOpen: false }">
     
-    <aside class="hidden lg:flex flex-col w-60 shrink-0 h-screen sticky top-0 border-r" style="background:#1a3d1f;border-color:rgba(168,213,171,0.1); ">
-        <div class="flex items-center gap-3 px-6 py-5 border-b" style="border-color:rgba(168,213,171,0.1);">
-            <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0"
-                    style="background:#4caf50;">
-                    🌾
-                </div>
+    <aside class="hidden lg:flex flex-col w-64 shrink-0 h-screen sticky top-0 border-r" style="background:radial-gradient(circle at top, rgba(168,213,171,0.12) 0%, transparent 30%), linear-gradient(180deg, #214f27 0%, #1a3d1f 40%, #122d16 100%);border-color:rgba(168,213,171,0.1); ">
+        <div class="flex items-center gap-3 px-3 py-5 border-b" style="border-color:rgba(168,213,171,0.1);">
+            <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3 rounded-2xl px-3 py-3 transition-all duration-200 hover:bg-white/5">
+            <div class="flex h-16 w-16 items-center justify-center rounded-2xl"> 
+                <img 
+                    src="{{ asset('images/logo-agrostock.png') }}"
+                    alt="AgroStock logo"
+                    class="h-12 w-auto rounded-xl"
+                >
+            </div>    
+            <div class="leading-tight">
+                <h1 class="text-xl  text-white font-bold tracking-tight">
+                    AgroStock
+                </h1>
+                <p class="text-xs font-medium" style="color:rgba(255,255,255,0.6);">
+                    Gestão agropecuária
+                </p>
+            </div>    
             </a>
         </div>
 
         {{-- Nav --}}
         <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
 
-            <p class="text-[10px] font-semibold uppercase tracking-widest px-3 mb-2 mt-1"
-            style="color:rgba(168,213,171,0.5);">Principal</p>
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] px-3 mb-4 mt-4"
+                style="color:rgba(168,213,171,0.5);">Principal</p>
+            </div>    
 
             <a href="{{ route('dashboard') }}" wire:navigate
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('dashboard'))
-                style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
+                style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
             @else
                 style="color:rgba(255,255,255,0.6);"
             @endif>
@@ -54,7 +67,7 @@ new class extends Component
             <a href="{{ route('products.index') }}"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('products.*'))
-                style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
+                style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
             @else
                 style="color:rgba(255,255,255,0.6);"
             @endif>
@@ -65,7 +78,7 @@ new class extends Component
             <a href="{{ route('categories.index') }}" wire:navigate
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('categories.*'))
-                style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
+                style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
             @else
                 style="color:rgba(255,255,255,0.6);"
             @endif>
@@ -76,7 +89,7 @@ new class extends Component
             <a href="{{ route('stock-movements.index') }}" wire:navigate
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('stock-movements.*'))
-                style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
+                style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
             @else
                 style="color:rgba(255,255,255,0.6);"
             @endif>
@@ -87,22 +100,23 @@ new class extends Component
             <a href="{{ route('suppliers.index') }}"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('suppliers.*'))
-                style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
+                style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
             @else
                 style="color:rgba(255,255,255,0.6);"
             @endif>
                 <span @if(request()->routeIs('suppliers.*')) style="color:#4caf50;" @endif class="w-5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck-icon lucide-truck"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span> 
                 Fornecedores
             </a>
-
-            <br>
-            <p class="text-[10px] font-semibold uppercase tracking-widest px-3 mb-2 mt-4"
-            style="color:rgba(168,213,171,0.5);">Relatórios</p>
+            
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] px-3 mb-4 mt-8"
+                style="color:rgba(168,213,171,0.5);">Relatórios</p>
+            </div>
 
             <a href="{{ route('analytics.index') }}"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('analytics.*'))
-                style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
+                style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
             @else
                 style="color:rgba(255,255,255,0.6);"
             @endif>
@@ -113,7 +127,7 @@ new class extends Component
             <a href="{{ route('expiration-date.index')}}"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
              @if(request()->routeIs('expiration-date.*'))
-                style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
+                style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
             @else
                 style="color:rgba(255,255,255,0.6);"
             @endif>
@@ -124,7 +138,7 @@ new class extends Component
             <a href="{{ route('export.index')}}"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('export.*'))
-                style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
+                style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
             @else
                 style="color:rgba(255,255,255,0.6);"
             @endif>
@@ -135,7 +149,7 @@ new class extends Component
             <a href="{{ route('audit-logs.index')}}"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('audit-logs.*'))
-                style="color:#f9f6f0;background:rgba(76,175,80,0.14);"
+                style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
             @else
                 style="color:rgba(255,255,255,0.6);"
             @endif>
@@ -146,7 +160,7 @@ new class extends Component
         </nav>
 
         {{-- User footer com dropdown --}}
-        <div class="px-3 pb-4 pt-3 border-t" style="border-color:rgba(168,213,171,0.1);">
+        <div class="p-4 border-t" style="border-color:rgba(168,213,171,0.1);">
             <div x-data="{ dropOpen: false }" class="relative">
 
                 <button @click="dropOpen = !dropOpen"
@@ -161,7 +175,7 @@ new class extends Component
                         <p class="text-sm font-semibold text-white truncate" x-text="name">
                             {{ auth()->user()->name }}
                         </p>
-                        <p class="text-[11px] truncate" style="color:rgba(168,213,171,0.6);">
+                        <p class="text-[12px] truncate" style="color:rgba(255,255,255,0.6);">
                             {{ auth()->user()->email }}
                         </p>
                     </div>
@@ -189,15 +203,19 @@ new class extends Component
                     <a href="{{ route('profile') }}" wire:navigate
                     class="flex items-center gap-2.5 px-4 py-3 text-sm transition-colors hover:bg-white/5"
                     style="color:rgba(255,255,255,0.75);">
-                        <span>👤</span> Perfil
+                        <span>
+                            <x-fas-user class="w-5 h-4" style="color:rgba(255,255,255,0.6);"/>
+                        </span> Perfil
                     </a>
 
                     <div style="height:1px;background:rgba(168,213,171,0.1);"></div>
 
                     <button wire:click="logout"
-                            class="w-full flex items-center gap-2.5 px-4 py-3 text-sm transition-colors hover:bg-red-900/30 text-left"
-                            style="color:rgba(255,100,100,0.85);">
-                        <span>🚪</span> Sair
+                            class="w-full flex items-center gap-2.5 px-4 py-3 text-sm transition-colors hover:bg-white/5 text-left"
+                            style="color:rgba(255,255,255,0.75);">
+                        <span>
+                            <x-fas-sign-out-alt class="w-5 h-4" style="color:rgba(255,255,255,0.6);"/>
+                        </span> Sair
                     </button>
                 </div>
             </div>
