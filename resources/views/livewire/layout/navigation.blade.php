@@ -12,7 +12,7 @@ new class extends Component
     {
         $logout();
 
-        $this->redirect('/', navigate: true);
+        $this->redirect('/');
     }
 }; ?>
 
@@ -26,7 +26,7 @@ new class extends Component
     
     <aside class="hidden lg:flex flex-col w-64 shrink-0 h-screen sticky top-0 border-r" style="background:radial-gradient(circle at top, rgba(168,213,171,0.12) 0%, transparent 30%), linear-gradient(180deg, #214f27 0%, #1a3d1f 40%, #122d16 100%);border-color:rgba(168,213,171,0.1); ">
         <div class="flex items-center gap-3 px-3 py-5 border-b" style="border-color:rgba(168,213,171,0.1);">
-            <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3 rounded-2xl px-3 py-3 transition-all duration-200 hover:bg-white/5">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 rounded-2xl px-3 py-3 transition-all duration-200 hover:bg-white/5">
             <div class="flex h-16 w-16 items-center justify-center rounded-2xl"> 
                 <img 
                     src="{{ asset('images/logo-agrostock.png') }}"
@@ -53,7 +53,7 @@ new class extends Component
                 style="color:rgba(168,213,171,0.5);">Principal</p>
             </div>    
 
-            <a href="{{ route('dashboard') }}" wire:navigate
+            <a href="{{ route('dashboard') }}"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('dashboard'))
                 style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
@@ -75,7 +75,7 @@ new class extends Component
                 Estoque
             </a>
 
-            <a href="{{ route('categories.index') }}" wire:navigate
+            <a href="{{ route('categories.index') }}"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('categories.*'))
                 style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
@@ -86,7 +86,7 @@ new class extends Component
                 Categorias
             </a>
 
-            <a href="{{ route('stock-movements.index') }}" wire:navigate
+            <a href="{{ route('stock-movements.index') }}"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/5"
             @if(request()->routeIs('stock-movements.*'))
                 style="color:#f9f6f0;background:rgba(76,175,80,0.18);"
@@ -200,7 +200,7 @@ new class extends Component
                     style="background:#1e4a24;border-color:rgba(168,213,171,0.15);"
                     x-cloak>
 
-                    <a href="{{ route('profile') }}" wire:navigate
+                    <a href="{{ route('profile') }}"
                     class="flex items-center gap-2.5 px-4 py-3 text-sm transition-colors hover:bg-white/5"
                     style="color:rgba(255,255,255,0.75);">
                         <span>

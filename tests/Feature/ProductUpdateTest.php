@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductBatch;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -92,13 +93,13 @@ class ProductUpdateTest extends TestCase
 
     private function assertProductAndBatchExpirationDate(int $productId, int $batchId, string $expirationDate): void
     {
-        $this->assertDatabaseHas('products', [
-            'id' => $productId,
-            'expiration_date' => $expirationDate,
-        ]);
-        $this->assertDatabaseHas('product_batches', [
-            'id' => $batchId,
-            'expiration_date' => $expirationDate,
-        ]);
+        $this->assertSame(
+            $expirationDate,
+            Product::findOrFail($productId)->expiration_date?->toDateString()
+        );
+        $this->assertSame(
+            $expirationDate,
+            ProductBatch::findOrFail($batchId)->expiration_date?->toDateString()
+        );
     }
 }

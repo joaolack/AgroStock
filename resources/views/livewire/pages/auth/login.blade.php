@@ -20,7 +20,7 @@ new #[Layout('layouts.guest')] class extends Component
 
         Session::regenerate();
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        $this->redirectIntended(default: route('dashboard', absolute: false));
     }
 }; ?>
 
@@ -70,7 +70,7 @@ new #[Layout('layouts.guest')] class extends Component
                 @if (Route::has('register'))
                 <p class="text-sm" style="color:#8a9e8c;">
                     Não tem cadastro?
-                    <a href="{{ route('register') }}" wire:navigate
+                    <a href="{{ route('register') }}"
                        class="font-semibold hover:opacity-70 transition-opacity" style="color:#2d6a35;">
                         Crie sua conta grátis
                     </a>
@@ -143,7 +143,7 @@ new #[Layout('layouts.guest')] class extends Component
                     </label>
                     
                     @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" wire:navigate 
+                        <a href="{{ route('password.request') }}"
                             class="text-sm text-green-600 font-semibold hover:opacity-70 transition-opacity" style="color:#2d6a35">
                             {{ __('Esqueceu sua senha?') }}
                         </a>

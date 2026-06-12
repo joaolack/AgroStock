@@ -33,39 +33,91 @@
 
     <div class="flex-1 p-6 overflow-y-auto space-y-5">
         <!--Cards-->    
-        <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
 
-            <div class="card bg-white rounded-2xl p-5 border relative overflow-hidden" style="border-color:#d4e8d6;">  
-                <div class="flex items-start justify-between mb-4">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl" style="background:#eef7ef;">📦</div>
+            <div class="rounded-2xl p-5 border border-slate-200 bg-white shadow-sm">
+                <div class="flex items-center justify-between">
+                    <p class="text-md font-medium text-slate-500">Total de produtos</p>
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                        <x-fas-box class="h-4 w-4"/>
+                    </div>
                 </div>
-                <p class="font-display text-3xl font-bold tracking-tight" style="color:#1a3d1f;"> {{ number_format($totalProducts, 0, ',', '.')}}</p>
-                <p class="text-xs mt-1" style="color:#8a9e8c;">Total de Produtos Cadastrados</p>
+
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-900">
+                    {{ number_format($totalProducts, 0, ',', '.') }}
+                </p>
+
+                <p class="mt-1 text-sm text-slate-400">
+                    Produtos cadastrados
+                </p>
             </div>
 
-            <div class="card bg-white rounded-2xl p-5 border relative overflow-hidden" style="border-color:#fecaca;">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl" style="background:#fee2e2;">🚨</div>
-                    <span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background:#fee2e2;color:#b91c1c;">Crítico</span>
+            <div class="rounded-2xl p-5 border border-slate-200 bg-white shadow-sm">
+                <div class="flex items-start justify-between">
+                    <p class="text-sm font-medium text-slate-500">Alertas críticos</p>
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-700">
+                        <x-fas-triangle-exclamation class="h-4 w-4" />
+                    </div>
                 </div>
-                <p class="font-display text-3xl font-bold tracking-tight" style="color:#1a3d1f;">{{ $criticalStockCount }}</p>
-                <p class="text-xs mt-1" style="color:#8a9e8c;">Total de Alertas</p>
+
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-900">{{ $criticalStockCount }}</p>
+
+                <div class="mt-2 inline-flex rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">
+                    Crítico
+                </div>
             </div>
 
-            <div class="card bg-white rounded-2xl p-5 border relative overflow-hidden" style="border-color:#d4e8d6;">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl" style="background:#eef7ef;">🔄</div>
+            <div class="rounded-2xl p-5 border border-slate-200 bg-white shadow-sm">
+                <div class="flex items-start justify-between">
+                    <p class="text-md font-medium text-slate-500">Movimentações</p>
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M17 3v4h-4M7 21v-4h4M18.5 9A7 7 0 0 0 6.8 5.8L5 7.5M5.5 15a7 7 0 0 0 11.7 3.2L19 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
                 </div>
-                <p class="font-display text-3xl font-bold tracking-tight" style="color:#1a3d1f;">{{ number_format($todayMovementsCount, 0, ',', '.') }}</p>
-                <p class="text-xs mt-1" style="color:#8a9e8c;">Movimentações (hoje)</p>
+
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-900">{{ number_format($todayMovementsCount, 0, ',', '.') }}</p>
+
+                <p class="mt-1 text-sm text-slate-400">
+                    Movimentações hoje
+                </p>
             </div>
 
-            <div class="card bg-white rounded-2xl p-5 border relative overflow-hidden" style="border-color:#d4e8d6;">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl" style="background:#eef7ef;">💰</div>
+            @php
+                $movementBalance30Days = $movementEntriesTotal - $movementExitsTotal;
+                $movementBalancePrefix = $movementBalance30Days > 0 ? '+' : '';
+                $movementBalanceTone = match (true) {
+                    $movementBalance30Days > 0 => [
+                        'icon' => 'bg-emerald-50 text-emerald-700',
+                        'badge' => 'bg-emerald-50 text-emerald-700',
+                        'label' => 'Crescimento',
+                    ],
+                    $movementBalance30Days < 0 => [
+                        'icon' => 'bg-red-50 text-red-700',
+                        'badge' => 'bg-red-50 text-red-700',
+                        'label' => 'Declínio',
+                    ],
+                    default => [
+                        'icon' => 'bg-amber-50 text-amber-700',
+                        'badge' => 'bg-amber-50 text-amber-700',
+                        'label' => 'Estável',
+                    ],
+                };
+            @endphp
+            <div class="rounded-2xl p-5 border border-slate-200 bg-white shadow-sm">
+                <div class="flex items-start justify-between">
+                    <p class="text-md font-medium text-slate-500">Saldo de movimentações</p>
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl {{ $movementBalanceTone['icon'] }}">
+                        <span class="text-base font-bold">{{ $stockTrend['icon'] }}</span>
+                    </div>
                 </div>
-                    <p class="font-display text-3xl font-bold tracking-tight" style="color:#1a3d1f;">R$ {{ number_format($totalStockValue, 2, ',', '.')}}</p>
-                    <p class="text-xs mt-1" style="color:#8a9e8c;">Valor Total do Estoque</p>      
+
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-900">{{ $movementBalancePrefix }}{{ number_format($movementBalance30Days, 0, ',', '.') }}</p>
+
+                <p class="mt-1 text-sm text-slate-400">
+                    Entradas - saídas em 30 dias
+                </p>
             </div>
 
         </div>

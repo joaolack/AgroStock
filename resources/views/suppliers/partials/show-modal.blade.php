@@ -5,34 +5,53 @@
      role="dialog" 
      aria-modal="true">
     
-    {{-- Backdrop com blur --}}
+    {{-- Backdrop --}}
     <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
          onclick="SupplierModal.close()"></div>
     
     {{-- Modal Card --}}
-    <div class="flex min-h-full items-center justify-center p-4">
-        <div class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-2xl transition-all w-full max-w-3xl"
+    <div class="flex min-h-full items-center justify-center p-4 sm:p-6">
+        <div class="relative w-full max-w-4xl transform overflow-hidden rounded-2xl border bg-white shadow-2xl shadow-[#1a3d1f]/25 transition-all"
+             style="border-color:#d4e8d6;"
              onclick="event.stopPropagation()">
             
             {{-- Header do Modal --}}
-            <div class="bg-gradient-to-r from-green-600 to-green-700 px-6 py-4 flex items-center justify-between">
-                <h3 class="text-xl font-semibold text-white flex items-center gap-2">
-                    🏭 Detalhes do Fornecedor
-                </h3>
+            <div class="flex items-start justify-between gap-4 border-b bg-[#f9f6f0] px-6 py-5"
+                 style="border-color:#d4e8d6;">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-xl border bg-white shadow-sm"
+                         style="border-color:#d4e8d6;color:#2d6a35;">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M16 11a4 4 0 1 0-8 0v1H6a2 2 0 0 0-2 2v5h16v-5a2 2 0 0 0-2-2h-2v-1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 7a4 4 0 0 1 6 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-bold uppercase tracking-[0.2em]" style="color:#8a9e8c;">
+                            Cadastro de fornecedor
+                        </p>
+                        <h3 id="modal-title" class="mt-1 text-xl font-bold tracking-tight" style="color:#1a3d1f;">
+                            Detalhes do fornecedor
+                        </h3>
+                    </div>
+                </div>
                 <button onclick="SupplierModal.close()" 
-                        class="text-white/80 hover:text-white transition">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        class="flex h-10 w-10 items-center justify-center rounded-xl border bg-white text-slate-500 shadow-sm transition hover:bg-[#eef7ef] hover:text-[#1a3d1f] focus:outline-none focus:ring-2 focus:ring-[#2d6a35] focus:ring-offset-2"
+                        style="border-color:#d4e8d6;"
+                        aria-label="Fechar modal">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
 
             {{-- Conteúdo do Modal --}}
-            <div id="modalContent" class="p-6 max-h-[70vh] overflow-y-auto">
+            <div id="modalContent" class="max-h-[72vh] overflow-y-auto bg-white p-6">
                 {{-- Carregando... --}}
-                <div class="text-center py-8">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-                    <p class="mt-4 text-gray-600 dark:text-gray-400">Carregando...</p>
+                <div class="flex flex-col items-center justify-center py-12 text-center">
+                    <div class="h-12 w-12 animate-spin rounded-full border-4 border-[#d4e8d6] border-t-[#2d6a35]"></div>
+                    <p class="mt-4 text-sm font-semibold" style="color:#1a3d1f;">Carregando fornecedor</p>
+                    <p class="mt-1 text-xs" style="color:#8a9e8c;">Buscando detalhes e produtos vinculados.</p>
                 </div>
             </div>
         </div>
