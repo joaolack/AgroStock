@@ -20,72 +20,157 @@ new #[Layout('layouts.guest')] class extends Component
 
         Session::regenerate();
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        $this->redirectIntended(default: route('dashboard', absolute: false));
     }
 }; ?>
 
-<div>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')"/>
-    <div class="w-full max-w-md mx-auto my-12 bg-white dark:bg-gray-800 rounded-xl p-8 sm:p-10">
+<div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#f7faf3]">
+    <div class="relative hidden lg:flex min-h-screen bg-[#f7faf3] overflow-hidden">
+    <img
+        src="{{ asset('images/agrostock.png') }}"
+        alt="AgroStock"
+        class="w-full h-full object-cover"
+    >
+</div>
+ 
 
 
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold text-green-700 dark:text-green-500 tracking-tight">AgroStock</h1>
-            <p class="text-gray-500 dark:text-gray-400 mt-2 text-base">Acesse sua conta para gerenciar seu estoque!</p>
-        </div>
+    <div class="relative flex items-center justify-center p-6 sm:p-12 bg-white dark:bg-gray-900 overflow-hidde">    
+        
+        <div class="absolute top-0 right-0 w-72 h-72 pointer-events-none" 
+             style="background:radial-gradient(ellipse at top right,#eef7ef 0%,transparent 70%);"></div>
 
+        <div class="relative z-10 w-full max-w-lg">
 
+            <!--Mobile-->
+            <div class="lg:hidden text-center mb-20">
+                <div class="inline-flex items-center gap-2 mb-2">
+                    <img
+                        src="{{ asset('images/logo-agrostock.png') }}"
+                        alt="AgroStock logo"
+                        class="h-24 w-auto mx-auto"
+                    >
 
-        <form wire:submit="login">
-            <!-- Email Address -->
-            <div class="mb-4">
-                <x-input-label for="email" :value="__('Email')" />
-                <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full rounded-lg" type="email" name="email" required autofocus autocomplete="username" />
-                <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
+                    <img
+                        src="{{ asset('images/agrostock-tipografia.png') }}"
+                        alt="Agrostock tipografia"
+                        class="h-12 w-auto mx-auto mt-6"
+                    >
+                </div>
             </div>
 
-            <!-- Password -->
-            <div class="mb-6">
-                <x-input-label for="password" :value="__('Senha')" />
-
-                <x-text-input wire:model="form.password" id="password" class="block mt-1 w-full rounded-lg"
-                                type="password"
-                                name="password"
-                                required autocomplete="current-password" />
-
-                <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
-            </div>
-
-            <!-- Remember Me -->
-            <div class="block mt-4">
-                <label for="remember" class="inline-flex items-center">
-                    <input wire:model="form.remember" id="remember" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-green-600 shadow-sm focus:ring-green-500 dark:focus:ring-green-600 dark:focus:ring-offset-gray-800" name="remember">
-                    <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Lembre-se de mim') }}</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-6">
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}" wire:navigate>
-                        {{ __('Esqueceu sua senha?') }}
+            <x-auth-session-status class="mb-4" :status="session('status')"/>
+            
+            <div class="mb-12">
+                <p class="text-xs font-semibold tracking-widest uppercase mb-2" style="color:#4caf50;">Acesso ao Sistema</p>
+                <h2 class="text-5xl font-bold tracking-tight leading-tight mb-2 dark:text-white"
+                    style="font-family:'Georgia',serif;color:#1a3d1f;">
+                    Bem-vindo<br>de volta
+                </h2>
+                @if (Route::has('register'))
+                <p class="text-sm" style="color:#8a9e8c;">
+                    Não tem cadastro?
+                    <a href="{{ route('register') }}"
+                       class="font-semibold hover:opacity-70 transition-opacity" style="color:#2d6a35;">
+                        Crie sua conta grátis
                     </a>
+                </p>
                 @endif
-
-                <x-primary-button class="ms-3 bg-green-600 hover:bg-[#015724]">
-                    {{ __('Entrar') }}
-                </x-primary-button>
             </div>
-        </form>
 
-        @if (Route::has('register'))
-            <div class="mt-6 text-center border-t pt-4">
-                <span class="text-sm text-gray-600 dark:text-gray-400">Novo no AgroStock?</span>
-                <a class="underline text-sm text-green-600 hover:text-[#015724] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 ms-1" href="{{ route('register') }}" wire:navigate>
-                    {{ __('Criar Conta') }}
+
+            <form wire:submit="login" class="space-y-4 mb-4">
+
+                <!-- Email Address -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {{ __('E-mail') }}
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">
+                            <x-fas-user class="w-5 h-4 text-gray-900 dark:text-gray-400"/> 
+                        </span>
+                        <input wire:model="form.email" id="email" name="email" type="email" required autofocus autocomplete="username" 
+                               placeholder="seu@email.com" class="w-full h-12 pl-10 pr-4 py-3 rounded-xl text-sm transition-all duration-200 
+                                    border border-gray-200 bg-gray-50 text-gray-900
+                                    focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white
+                                    dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-500
+                                    dark:focus:border-green-500 dark:focus:bg-gray-800" 
+                               style="border-color:#d4e8d6;background-color:#f9f6f0;">
+                    </div>
+                    <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
+                </div> 
+
+                <!-- Password -->
+                <div x-data="{ showPassword: false }">
+                    <label for="password" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {{ __('Senha') }}
+                    </label>
+                    <div class="relative">
+
+                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">
+                            <x-uni-lock class="w-5 h-5 text-gray-900 dark:text-gray-400"/>
+                        </span>
+
+                        <input wire:model="form.password" id="password" name="password" type="password" required autocomplete="current-password"
+                               placeholder="••••••••" class="w-full h-12 pl-10 pr-4 py-3 rounded-xl text-sm transition-all duration-200 
+                                    border border-gray-200 bg-gray-50 text-gray-900
+                                    focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white
+                                    dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-500
+                                    dark:focus:border-green-500 dark:focus:bg-gray-800" 
+                               style="border-color:#d4e8d6;background-color:#f9f6f0;"
+                               :type="showPassword ? 'text' : 'password'">
+
+                        <button type="button" 
+                            @click="showPassword = !showPassword"
+                            class="absolute right-3.5 top-1/2 -translate-y-1/2 text-base transition-colors hover:opacity-60"
+                            style="color:#8a9e8c;" 
+                            tabindex="-1">
+                            <x-fas-eye x-show="!showPassword" class="w-5 h-4 text-gray-900 dark:text-gray-400"/>
+                            <x-fas-eye-slash x-show="showPassword" class="w-5 h-4 text-gray-900 dark:text-gray-400" style="display: none;"/>
+                        </button>        
+                    </div>
+                    <x-input-error :messages="$errors->get('form.password')" class="mt-2" />    
+                </div>
+
+                <!-- Remember Me --> 
+                <div class="flex items-center justify-between pt-1">
+                    <label for="remember" class="inline-flex items-center gap-2 cursor-pointer select-none">
+                        <input wire:model="form.remember" id="remember" name="remember" type="checkbox"
+                            class="rounded border-gray-300 text-green-600 shadow-sm focus:ring-green-500 
+                            dark:bg-gray-900 dark:border-gray-700 dark:focus:ring-green-600">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{{ __('Lembre-se de mim') }}</span>
+                    </label>
+                    
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}"
+                            class="text-sm text-green-600 font-semibold hover:opacity-70 transition-opacity" style="color:#2d6a35">
+                            {{ __('Esqueceu sua senha?') }}
+                        </a>
+                    @endif    
+                </div>
+                
+                <!-- Submit-->
+                <div class="pt-4"> 
+                    <x-primary-button class="w-3/4 mx-auto block">
+                        <span class="relative z-10">{{ __('Entrar na plataforma') }}</span>
+                        <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(135deg, rgba(76,175,80,0.2) 0%,transparent 60%);"></div>
+                    </x-primary-button>
+                </div>    
+            </form>
+
+            <div class="flex items-center gap-3 my-5">
+                <div class="flex-1 h-px" style="background-color:#d4e8d6;"></div>
+            </div>
+
+            <p class="text-center text-sm" style="color:#8a9e8c;">
+                Suporte técnico?
+                <a href="mailto:suporte@agrostock.com.br"
+                   class="font-bold hover:opacity-70 transition-opacity" style="color:#2d6a35;">
+                    Fale conosco
                 </a>
-            </div>
-        @endif
-
-    </div>    
+            </p>
+   
+        </div>    
+    </div>        
 </div>
