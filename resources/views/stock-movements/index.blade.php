@@ -20,10 +20,10 @@
         </div>
     </header>
 
-    <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg mb-6">
+    <div class="bg-white shadow-sm sm:rounded-lg mb-6">
 
         <div class="p-6">
-            <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">
                 Registrar Movimentação
             </h2>
 
@@ -40,11 +40,11 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {{-- FORMULÁRIO 1: Entrada --}}
-                <div class="relative overflow-hidden rounded-lg border bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-gray-800 dark:border-gray-700"
+                <div class="relative overflow-hidden rounded-lg border bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                      style="border-color:#d4e8d6;">
                     <div class="absolute inset-x-0 top-0 h-1" style="background:#2d6a35;"></div>
                     <div class="mb-5 flex items-center justify-between gap-4">
-                        <h3 class="flex items-center gap-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        <h3 class="flex items-center gap-3 text-lg font-semibold text-gray-900">
                             <span class="flex h-10 w-10 items-center justify-center rounded-lg border bg-white shadow-sm" style="border-color:#d4e8d6;color:#2d6a35;">
                                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                    <path d="M12 19V5m0 0 6 6m-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -61,11 +61,11 @@
 
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Produto *
                                 </label>
                                 <select name="product_id" required
-                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]">
                                     <option value="">Selecione um produto</option>
                                     @foreach($products as $product)
                                         <option value="{{ $product->id }}">
@@ -76,29 +76,29 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Quantidade *
                                 </label>
                                 <input type="number" name="quantity" min="1" required
-                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]"
                                     placeholder="Ex: 50">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Numero do Lote *
                                 </label>
                                 <input type="text" name="batch_number" required
-                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]"
                                     placeholder="Ex: LOTE-001">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Fornecedor *
                                 </label>
                                 <select name="supplier_id" required
-                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]">
                                     <option value="">Selecione um fornecedor</option>
                                     @foreach($suppliers as $supplier)
                                         <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
@@ -107,11 +107,11 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Validade (opcional)
                                 </label>
                                 <input type="date" name="expiration_date"
-                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]">
                             </div>
                             <button type="submit" 
                                     class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#1a3d1f] px-4 py-3 font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2d6a35] focus:outline-none focus:ring-2 focus:ring-[#2d6a35] focus:ring-offset-2">
@@ -125,11 +125,11 @@
                 </div>
 
                 {{-- FORMULÁRIO 2: Saída --}}
-                <div class="relative overflow-hidden rounded-lg border bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-gray-800 dark:border-gray-700"
+                <div class="relative overflow-hidden rounded-lg border bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                      style="border-color:#d4e8d6;">
                     <div class="absolute inset-x-0 top-0 h-1" style="background:#8a9e8c;"></div>
                     <div class="mb-5 flex items-center justify-between gap-4">
-                        <h3 class="flex items-center gap-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        <h3 class="flex items-center gap-3 text-lg font-semibold text-gray-900">
                             <span class="flex h-10 w-10 items-center justify-center rounded-lg border bg-white shadow-sm" style="border-color:#d4e8d6;color:#6f7f71;">
                                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                     <path d="M12 5v14m0 0 6-6m-6 6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -146,11 +146,11 @@
 
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Produto *
                                 </label>
                                 <select name="product_id" required
-                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]">
                                     <option value="">Selecione um produto</option>
                                     @foreach($products as $product)
                                         <option value="{{ $product->id }}">
@@ -161,11 +161,11 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Quantidade *
                                 </label>
                                 <input type="number" name="quantity" min="1" required
-                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]"
                                     placeholder="Ex: 20">
                             </div>
                             <button type="submit" 
@@ -183,18 +183,18 @@
     </div>
 
         {{-- Histórico de Movimentações --}}
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white dark:bg-gray-800">
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-6 bg-white">
 
                 {{-- Filtros --}}
-                <form method="GET" action="{{ route('stock-movements.index') }}" class="mb-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <form method="GET" action="{{ route('stock-movements.index') }}" class="mb-6 p-4 bg-gray-50 rounded-lg">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         {{-- Filtro por Produto --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Produto
                             </label>
-                            <select name="product_id" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                            <select name="product_id" class="w-full rounded-lg border-gray-300">
                                 <option value="">Todos os produtos</option>
                                 @foreach($products as $product)
                                     <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : '' }}>
@@ -206,10 +206,10 @@
 
                         {{-- Filtro por Tipo --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Tipo
                             </label>
-                            <select name="type" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                            <select name="type" class="w-full rounded-lg border-gray-300">
                                 <option value="">Todos</option>
                                 <option value="entry" {{ request('type') == 'entry' ? 'selected' : '' }}>Entrada</option>
                                 <option value="exit" {{ request('type') == 'exit' ? 'selected' : '' }}>Saída</option>
@@ -218,20 +218,20 @@
 
                         {{-- Filtro por Data Inicial --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Data Inicial
                             </label>
                             <input type="date" name="date_from" value="{{ request('date_from') }}" 
-                                   class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                                   class="w-full rounded-lg border-gray-300">
                         </div>
 
                         {{-- Filtro por Data Final --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Data Final
                             </label>
                             <input type="date" name="date_to" value="{{ request('date_to') }}" 
-                                   class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                                   class="w-full rounded-lg border-gray-300">
                         </div>
                     </div>
 
@@ -284,16 +284,16 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($movements as $movement)
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {{ $movement->created_at->format('d/m/Y H:i') }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                    <td class="px-6 py-4 text-sm text-gray-900">
                                         {{ $movement->product->name }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                    <td class="px-6 py-4 text-sm text-gray-900">
                                         @if($movement->productBatch)
                                             <div class="font-semibold">{{ $movement->productBatch->number }}</div>
                                             <div class="text-xs text-gray-500">{{ $movement->productBatch->supplier->name ?? 'Fornecedor N/A' }}</div>
@@ -303,13 +303,13 @@
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         @if($movement->type === 'entry')
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                                     <path d="M12 19V5m0 0 6 6m-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 </svg> Entrada
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                                     <path d="M12 5v14m0 0 6-6m-6 6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 </svg> Saída
@@ -332,16 +332,16 @@
                                             {{ $movement->type === 'entry' ? '+' : '-' }}{{ $movement->quantity }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">
+                                    <td class="px-6 py-4 text-center text-sm text-gray-600">
                                         {{ $movement->previous_quantity }} → {{ $movement->new_quantity }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                    <td class="px-6 py-4 text-sm text-gray-900">
                                         {{ $movement->user->name }}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                    <td colspan="8" class="px-6 py-8 text-center text-gray-500">
                                         Nenhuma movimentação encontrada.
                                     </td>
                                 </tr>

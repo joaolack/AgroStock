@@ -78,25 +78,25 @@
                     <tbody class="divide-y" style="divide-color:#eef7ef;">
                         @forelse ($categories as $category)
                             <tr class="prod-row animate-fadeIn">
-                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900">
                                     <p class="font-semibold">{{ $category->name }}</p>
                                 </td>
-                                <td class="max-w-xl px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                                <td class="max-w-xl px-3 py-3.5 text-gray-900">
                                     <p class="line-clamp-2 text-sm">{{ $category->description ?? '-' }}</p>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900">
                                     <p class="font-semibold">{{ $category->products_count }} produto(s)</p>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900">
                                     <a href="{{ route('categories.edit', $category->id) }}"
-                                        class="mr-3 text-indigo-600 transition duration-150 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                        class="mr-3 text-indigo-600 transition duration-150 hover:text-indigo-900">
                                         Editar
                                     </a>
 
                                     @if ($category->products_count > 0)
                                         <div x-data="{ open: false }" class="inline-block">
                                             <button type="button" @click="open = true"
-                                                class="text-orange-600 transition duration-150 hover:text-orange-900 dark:text-orange-400 dark:hover:text-orange-300">
+                                                class="text-orange-600 transition duration-150 hover:text-orange-900">
                                                 Excluir
                                             </button>
 
@@ -160,7 +160,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="text-red-600 transition duration-150 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                                class="text-red-600 transition duration-150 hover:text-red-900">
                                                 Excluir
                                             </button>
                                         </form>

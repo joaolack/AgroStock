@@ -23,11 +23,23 @@ class DashboardService
 
         $purchaseSuggestions = (clone $criticalStockQuery)
             ->with('category')
+            ->withSum([
+                'stockMovements as exits_last_30_days' => function ($query) {
+                    $query->where('type', 'exit')
+                        ->where('created_at', '>=', Carbon::now()->subDays(30)->startOfDay());
+                },
+            ], 'quantity')
             ->orderBy('stock_quantity', 'asc')
             ->limit(5)
             ->get()
             ->map(function (Product $product) {
-                $product->suggested_purchase_quantity = max(0, (int) ceil(($product->minimum_stock * 1.5) - 5));
+                $monthlyExits = (int) ($product->exits_last_30_days ?? 0);
+                $safetyTarget = (int) ceil($product->minimum_stock * 1.5);
+                $targetStock = max($safetyTarget, $monthlyExits);
+
+                $product->monthly_exits = $monthlyExits;
+                $product->suggested_target_stock = $targetStock;
+                $product->suggested_purchase_quantity = max(0, $targetStock - (int) $product->stock_quantity);
 
                 return $product;
             });

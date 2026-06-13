@@ -131,7 +131,7 @@
         <label class="flex items-center gap-3">
             <input type="checkbox" name="active" value="1" {{ old('active', $supplier?->active ?? true) ? 'checked' : '' }}
                 class="h-5 w-5 rounded text-green-600 focus:ring-green-500">
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Fornecedor ativo</span>
+            <span class="text-sm font-medium text-gray-700">Fornecedor ativo</span>
         </label>
     </div>
 

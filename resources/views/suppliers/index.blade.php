@@ -64,16 +64,16 @@
                     <tbody class="divide-y" style="divide-color:#eef7ef;">
                         @forelse ($suppliers as $supplier)
                             <tr class="prod-row animate-fadeIn">
-                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900">
                                     <p class="font-semibold">{{ $supplier->name }}</p>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900">
                                     <p class="font-semibold">{{ $supplier->contact_name ?? '-' }}</p>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900">
                                     <p class="font-semibold">{{ $supplier->phone }}</p>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900">
                                     <p class="font-semibold">
                                         @if ($supplier->city && $supplier->state)
                                             {{ $supplier->city }}/{{ $supplier->state }}
@@ -82,10 +82,10 @@
                                         @endif
                                     </p>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900">
                                     <p class="font-semibold">{{ $supplier->products_count }} produto(s)</p>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900">
                                     @if ($supplier->active)
                                         <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
                                             Ativo
@@ -96,7 +96,7 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                                <td class="whitespace-nowrap px-3 py-3.5 text-gray-900">
                                     <button onclick="SupplierModal.show({{ $supplier->id }})"
                                         class="mr-3 inline-flex items-center align-middle cursor-pointer text-blue-600 transition hover:text-blue-900"
                                         title="Ver detalhes">
@@ -104,7 +104,7 @@
                                     </button>
 
                                     <a href="{{ route('suppliers.edit', $supplier->id) }}"
-                                        class="mr-3 text-indigo-600 transition duration-150 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                        class="mr-3 text-indigo-600 transition duration-150 hover:text-indigo-900">
                                         Editar
                                     </a>
 
@@ -113,7 +113,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                            class="text-red-600 transition duration-150 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                            class="text-red-600 transition duration-150 hover:text-red-900">
                                             Excluir
                                         </button>
                                     </form>

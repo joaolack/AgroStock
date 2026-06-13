@@ -221,7 +221,7 @@
             <div class="flex flex-col gap-1 border-b pb-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h3 class="text-xl font-semibold text-green-800">Sugestão de Compra</h3>
-                    <p class="text-sm text-gray-500">Baseada na margem de segurança: (estoque mínimo x 1,5) - 5.</p>
+                    <p class="text-sm text-gray-500">Baseada no maior valor entre estoque mínimo x 1,5 e saídas dos últimos 30 dias.</p>
                 </div>
                 <span class="text-xs font-semibold px-3 py-1 rounded-full self-start" style="background:#eef7ef;color:#2d6a35;">
                     {{ $criticalStockCount }} {{ $criticalStockCount === 1 ? 'item crítico' : 'itens críticos' }}
@@ -237,7 +237,7 @@
                             <div>
                                 <span class="font-medium text-gray-900">{{ $product->name }}</span>
                                 <span class="block text-xs text-gray-500">
-                                    Estoque atual: {{ $product->stock_quantity }} | Mínimo: {{ $product->minimum_stock }}
+                                    Estoque atual: {{ $product->stock_quantity }} | Mínimo: {{ $product->minimum_stock }} | Saídas 30 dias: {{ $product->monthly_exits }}
                                 </span>
                             </div>
                             <span class="font-bold text-green-700">

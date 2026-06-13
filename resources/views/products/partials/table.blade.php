@@ -16,19 +16,19 @@
         <tbody class="divide-y" style="divide-color:#eef7ef;">
             @forelse ($products as $product)
                 <tr class="prod-row animate-fadeIn">
-                    <td class="px-3 py-3.5 whitespace-nowrap text-gray-900 dark:text-gray-100">
+                    <td class="px-3 py-3.5 whitespace-nowrap text-gray-900">
                         <p class="font-semibold">{{ $product->name }}</p>
                     </td>
 
-                    <td class="px-3 py-3.5 whitespace-nowrap text-gray-900 dark:text-gray-100">
+                    <td class="px-3 py-3.5 whitespace-nowrap text-gray-900">
                         <span class="text-xs font-medium px-2.5 py-1 rounded-full">{{ $product->category->name ?? 'N/A' }}</span>
                     </td>
 
-                    <td class="px-3 py-3.5 whitespace-nowrap text-gray-900 dark:text-gray-100">
+                    <td class="px-3 py-3.5 whitespace-nowrap text-gray-900">
                         <span class="text-xs font-medium px-2.5 py-1 rounded-full">{{ $product->supplier->name ?? 'N/A' }}</span>
                     </td>
 
-                    <td class="px-3 py-3.5 text-gray-900 dark:text-gray-100">
+                    <td class="px-3 py-3.5 text-gray-900">
                         @php
                             $activeBatches = $product->batches
                                 ->where('quantity', '>', 0)
@@ -60,14 +60,14 @@
                         @endif
                     </td>
 
-                    <td class="px-3 py-3.5 whitespace-nowrap text-gray-900 dark:text-gray-100">
+                    <td class="px-3 py-3.5 whitespace-nowrap text-gray-900">
                         <span class="font-semibold {{ $product->stock_quantity <= $product->minimum_stock ? 'text-red-600' : 'text-green-600' }}">
                             {{ $product->stock_quantity }}
                         </span>
                         <small class="text-gray-500 block">Min: {{ $product->minimum_stock }}</small>
                     </td>
 
-                    <td class="px-3 py-3.5 font-semibold text-xs whitespace-nowrap text-gray-900 dark:text-gray-100">
+                    <td class="px-3 py-3.5 font-semibold text-xs whitespace-nowrap text-gray-900">
                         R$ {{ number_format($product->selling_price, 2, ',', '.') }}
                     </td>
 
@@ -117,14 +117,14 @@
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <a href="{{ route('products.edit', $product->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3 transition duration-150">
+                        <a href="{{ route('products.edit', $product->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3 transition duration-150">
                             Editar
                         </a>
 
                         <form action="{{ route('products.destroy', $product) }}" method="POST" class="inline-block" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition duration-150">
+                            <button type="submit" class="text-red-600 hover:text-red-900 transition duration-150">
                                 Excluir
                             </button>
                         </form>

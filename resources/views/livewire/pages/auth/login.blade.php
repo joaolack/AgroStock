@@ -24,18 +24,18 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#f7faf3]">
-    <div class="relative hidden lg:flex min-h-screen bg-[#f7faf3] overflow-hidden">
-    <img
-        src="{{ asset('images/agrostock.png') }}"
-        alt="AgroStock"
-        class="w-full h-full object-cover"
-    >
-</div>
+<div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#eef7ef]">
+    <div class="relative hidden lg:flex min-h-screen bg-white overflow-hidden items-center justify-center p-1">
+        <img
+            src="{{ asset('images/agrostock.png') }}"
+            alt="AgroStock"
+            class="h-auto w-auto max-h-[calc(100vh-3rem)] max-w-full object-contain rounded-xl"
+        >
+    </div>
  
 
 
-    <div class="relative flex items-center justify-center p-6 sm:p-12 bg-white dark:bg-gray-900 overflow-hidde">    
+    <div class="relative flex items-center justify-center p-6 sm:p-12 bg-white overflow-hidden">
         
         <div class="absolute top-0 right-0 w-72 h-72 pointer-events-none" 
              style="background:radial-gradient(ellipse at top right,#eef7ef 0%,transparent 70%);"></div>
@@ -63,7 +63,7 @@ new #[Layout('layouts.guest')] class extends Component
             
             <div class="mb-12">
                 <p class="text-xs font-semibold tracking-widest uppercase mb-2" style="color:#4caf50;">Acesso ao Sistema</p>
-                <h2 class="text-5xl font-bold tracking-tight leading-tight mb-2 dark:text-white"
+                <h2 class="text-5xl font-bold tracking-tight leading-tight mb-2"
                     style="font-family:'Georgia',serif;color:#1a3d1f;">
                     Bem-vindo<br>de volta
                 </h2>
@@ -83,19 +83,17 @@ new #[Layout('layouts.guest')] class extends Component
 
                 <!-- Email Address -->
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <label for="email" class="block text-sm font-medium text-gray-900">
                         {{ __('E-mail') }}
                     </label>
                     <div class="relative">
                         <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">
-                            <x-fas-user class="w-5 h-4 text-gray-900 dark:text-gray-400"/> 
+                            <x-fas-user class="w-5 h-4 text-gray-900"/>
                         </span>
                         <input wire:model="form.email" id="email" name="email" type="email" required autofocus autocomplete="username" 
                                placeholder="seu@email.com" class="w-full h-12 pl-10 pr-4 py-3 rounded-xl text-sm transition-all duration-200 
                                     border border-gray-200 bg-gray-50 text-gray-900
-                                    focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white
-                                    dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-500
-                                    dark:focus:border-green-500 dark:focus:bg-gray-800" 
+                                    focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white"
                                style="border-color:#d4e8d6;background-color:#f9f6f0;">
                     </div>
                     <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
@@ -103,21 +101,19 @@ new #[Layout('layouts.guest')] class extends Component
 
                 <!-- Password -->
                 <div x-data="{ showPassword: false }">
-                    <label for="password" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <label for="password" class="block text-sm font-medium text-gray-900">
                         {{ __('Senha') }}
                     </label>
                     <div class="relative">
 
                         <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">
-                            <x-uni-lock class="w-5 h-5 text-gray-900 dark:text-gray-400"/>
+                            <x-uni-lock class="w-5 h-5 text-gray-900"/>
                         </span>
 
                         <input wire:model="form.password" id="password" name="password" type="password" required autocomplete="current-password"
                                placeholder="••••••••" class="w-full h-12 pl-10 pr-4 py-3 rounded-xl text-sm transition-all duration-200 
                                     border border-gray-200 bg-gray-50 text-gray-900
-                                    focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white
-                                    dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-500
-                                    dark:focus:border-green-500 dark:focus:bg-gray-800" 
+                                    focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white"
                                style="border-color:#d4e8d6;background-color:#f9f6f0;"
                                :type="showPassword ? 'text' : 'password'">
 
@@ -126,8 +122,8 @@ new #[Layout('layouts.guest')] class extends Component
                             class="absolute right-3.5 top-1/2 -translate-y-1/2 text-base transition-colors hover:opacity-60"
                             style="color:#8a9e8c;" 
                             tabindex="-1">
-                            <x-fas-eye x-show="!showPassword" class="w-5 h-4 text-gray-900 dark:text-gray-400"/>
-                            <x-fas-eye-slash x-show="showPassword" class="w-5 h-4 text-gray-900 dark:text-gray-400" style="display: none;"/>
+                            <x-fas-eye x-show="!showPassword" class="w-5 h-4 text-gray-900"/>
+                            <x-fas-eye-slash x-show="showPassword" class="w-5 h-4 text-gray-900" style="display: none;"/>
                         </button>        
                     </div>
                     <x-input-error :messages="$errors->get('form.password')" class="mt-2" />    
@@ -137,9 +133,8 @@ new #[Layout('layouts.guest')] class extends Component
                 <div class="flex items-center justify-between pt-1">
                     <label for="remember" class="inline-flex items-center gap-2 cursor-pointer select-none">
                         <input wire:model="form.remember" id="remember" name="remember" type="checkbox"
-                            class="rounded border-gray-300 text-green-600 shadow-sm focus:ring-green-500 
-                            dark:bg-gray-900 dark:border-gray-700 dark:focus:ring-green-600">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">{{ __('Lembre-se de mim') }}</span>
+                            class="rounded border-gray-300 text-green-600 shadow-sm focus:ring-green-500">
+                        <span class="text-sm text-gray-600">{{ __('Lembre-se de mim') }}</span>
                     </label>
                     
                     @if (Route::has('password.request'))
