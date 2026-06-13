@@ -26,18 +26,18 @@
         <div class="bg-white rounded-xl shadow-sm border p-4" style="border-color:#d4e8d6;">
             <form method="GET" action="{{ route('analytics.index') }}" class="flex flex-col md:flex-row md:items-end gap-3">
                 <div>
-                    <label for="period" class="block text-xs mb-1" style="color:#4a5c4c;">Periodo</label>
+                    <label for="period" class="block text-xs mb-1" style="color:#4a5c4c;">Período</label>
                     <select id="period" name="period" class="rounded-lg border text-sm px-3 py-2" style="border-color:#d4e8d6;" onchange="this.form.submit()">
                         <option value="today" @selected($period === 'today')>Hoje</option>
-                        <option value="7d" @selected($period === '7d')>Ultimos 7 dias</option>
-                        <option value="30d" @selected($period === '30d')>Ultimos 30 dias</option>
-                        <option value="month" @selected($period === 'month')>Mes atual</option>
+                        <option value="7d" @selected($period === '7d')>Últimos 7 dias</option>
+                        <option value="30d" @selected($period === '30d')>Últimos 30 dias</option>
+                        <option value="month" @selected($period === 'month')>Mês atual</option>
                         <option value="custom" @selected($period === 'custom')>Personalizado</option>
                     </select>
                 </div>
 
                 <div id="startDateWrap" @if($period !== 'custom') style="display:none;" @endif>
-                    <label for="start_date" class="block text-xs mb-1" style="color:#4a5c4c;">Inicio</label>
+                    <label for="start_date" class="block text-xs mb-1" style="color:#4a5c4c;">Ínicio</label>
                     <input id="start_date" type="date" name="start_date" value="{{ $startDate->toDateString() }}" class="rounded-lg border text-sm px-3 py-2" style="border-color:#d4e8d6;">
                 </div>
 
@@ -54,11 +54,11 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-white rounded-xl shadow-sm border p-5" style="border-color:#d4e8d6;">
-                <p class="text-xs uppercase tracking-wide" style="color:#8a9e8c;">Entradas no periodo</p>
+                <p class="text-xs uppercase tracking-wide" style="color:#8a9e8c;">Entradas no período</p>
                 <p class="text-2xl font-bold mt-2" style="color:#1a3d1f;">{{ number_format($entries, 0, ',', '.') }}</p>
             </div>
             <div class="bg-white rounded-xl shadow-sm border p-5" style="border-color:#d4e8d6;">
-                <p class="text-xs uppercase tracking-wide" style="color:#8a9e8c;">Saidas no periodo</p>
+                <p class="text-xs uppercase tracking-wide" style="color:#8a9e8c;">Saídas no período</p>
                 <p class="text-2xl font-bold mt-2" style="color:#1a3d1f;">{{ number_format($exits, 0, ',', '.') }}</p>
             </div>
         </div>
@@ -210,14 +210,14 @@
         <div class="bg-white rounded-xl shadow-sm border p-6" style="border-color:#d4e8d6;">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-5">
                 <div>
-                    <h2 class="text-lg font-bold" style="color:#1a3d1f;">Distribuicao de dependencia</h2>
+                    <h2 class="text-lg font-bold" style="color:#1a3d1f;">Distribuição de dependência</h2>
                     <p class="text-sm" style="color:#8a9e8c;">Percentual do valor em estoque por fornecedor</p>
                 </div>
             </div>
 
             @if ($supplierDependencyDistribution->isEmpty())
                 <div class="py-12 text-center rounded-lg border border-dashed" style="border-color:#d4e8d6;color:#8a9e8c;">
-                    Nao ha estoque com fornecedor para gerar a distribuicao.
+                    Não há estoque com fornecedor para gerar a distribuição.
                 </div>
             @else
                 <div class="relative h-[360px]">
@@ -229,14 +229,14 @@
         <div class="bg-white rounded-xl shadow-sm border p-6" style="border-color:#d4e8d6;">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-5">
                 <div>
-                    <h2 class="text-lg font-bold" style="color:#1a3d1f;">Analise de categorias</h2>
+                    <h2 class="text-lg font-bold" style="color:#1a3d1f;">Análise de categorias</h2>
                     <p class="text-sm" style="color:#8a9e8c;">Top 10 categorias por valor em estoque</p>
                 </div>
             </div>
 
             @if ($categoryAnalysis->isEmpty())
                 <div class="py-12 text-center rounded-lg border border-dashed" style="border-color:#d4e8d6;color:#8a9e8c;">
-                    Nenhuma categoria encontrada para gerar a analise.
+                    Nenhuma categoria encontrada para gerar a análise.
                 </div>
             @else
                 <div class="relative h-[420px]">

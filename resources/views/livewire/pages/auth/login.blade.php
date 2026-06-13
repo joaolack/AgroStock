@@ -29,18 +29,18 @@ new #[Layout('layouts.guest')] class extends Component
         <img
             src="{{ asset('images/agrostock.png') }}"
             alt="AgroStock"
-            class="h-auto w-auto max-h-[calc(100vh-3rem)] max-w-full object-contain rounded-xl"
+            class="h-auto w-auto max-h-[calc(100vh-3rem)] object-contain rounded-lg"
         >
     </div>
  
 
 
-    <div class="relative flex items-center justify-center p-6 sm:p-12 bg-white overflow-hidden">
+    <div class="relative flex items-center justify-center p-6 sm:p-10 lg:p-14 bg-white overflow-hidden">
         
         <div class="absolute top-0 right-0 w-72 h-72 pointer-events-none" 
              style="background:radial-gradient(ellipse at top right,#eef7ef 0%,transparent 70%);"></div>
 
-        <div class="relative z-10 w-full max-w-lg">
+        <div class="relative z-10 w-full max-w-xl">
 
             <!--Mobile-->
             <div class="lg:hidden text-center mb-20">
@@ -61,9 +61,9 @@ new #[Layout('layouts.guest')] class extends Component
 
             <x-auth-session-status class="mb-4" :status="session('status')"/>
             
-            <div class="mb-12">
+            <div class="mb-9">
                 <p class="text-xs font-semibold tracking-widest uppercase mb-2" style="color:#4caf50;">Acesso ao Sistema</p>
-                <h2 class="text-5xl font-bold tracking-tight leading-tight mb-2"
+                <h2 class="text-5xl font-bold tracking-tight leading-tight mb-3 sm:text-6xl"
                     style="font-family:'Georgia',serif;color:#1a3d1f;">
                     Bem-vindo<br>de volta
                 </h2>
@@ -78,43 +78,45 @@ new #[Layout('layouts.guest')] class extends Component
                 @endif
             </div>
 
+            @php
+                $labelClasses = 'block text-sm font-semibold text-gray-900';
+                $inputIconClasses = 'w-5 text-gray-900';
+                $inputClasses = 'w-full h-14 pl-11 pr-4 py-3 rounded-xl text-base transition-all duration-200 border border-gray-200 bg-gray-50 text-gray-900 focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white';
+                $inputStyle = 'border-color:#d4e8d6;background-color:#f9f6f0;';
+            @endphp
 
-            <form wire:submit="login" class="space-y-4 mb-4">
+            <form wire:submit="login" class="space-y-5 mb-5">
 
                 <!-- Email Address -->
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-900">
+                    <label for="email" class="{{ $labelClasses }}">
                         {{ __('E-mail') }}
                     </label>
                     <div class="relative">
-                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">
-                            <x-fas-user class="w-5 h-4 text-gray-900"/>
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">
+                            <x-fas-user class="{{ $inputIconClasses }} h-4"/>
                         </span>
                         <input wire:model="form.email" id="email" name="email" type="email" required autofocus autocomplete="username" 
-                               placeholder="seu@email.com" class="w-full h-12 pl-10 pr-4 py-3 rounded-xl text-sm transition-all duration-200 
-                                    border border-gray-200 bg-gray-50 text-gray-900
-                                    focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white"
-                               style="border-color:#d4e8d6;background-color:#f9f6f0;">
+                               placeholder="seu@email.com" class="{{ $inputClasses }}"
+                               style="{{ $inputStyle }}">
                     </div>
                     <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
                 </div> 
 
                 <!-- Password -->
                 <div x-data="{ showPassword: false }">
-                    <label for="password" class="block text-sm font-medium text-gray-900">
+                    <label for="password" class="{{ $labelClasses }}">
                         {{ __('Senha') }}
                     </label>
                     <div class="relative">
 
-                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">
-                            <x-uni-lock class="w-5 h-5 text-gray-900"/>
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">
+                            <x-uni-lock class="{{ $inputIconClasses }} h-5"/>
                         </span>
 
                         <input wire:model="form.password" id="password" name="password" type="password" required autocomplete="current-password"
-                               placeholder="••••••••" class="w-full h-12 pl-10 pr-4 py-3 rounded-xl text-sm transition-all duration-200 
-                                    border border-gray-200 bg-gray-50 text-gray-900
-                                    focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white"
-                               style="border-color:#d4e8d6;background-color:#f9f6f0;"
+                               placeholder="••••••••" class="{{ $inputClasses }}"
+                               style="{{ $inputStyle }}"
                                :type="showPassword ? 'text' : 'password'">
 
                         <button type="button" 
@@ -122,8 +124,8 @@ new #[Layout('layouts.guest')] class extends Component
                             class="absolute right-3.5 top-1/2 -translate-y-1/2 text-base transition-colors hover:opacity-60"
                             style="color:#8a9e8c;" 
                             tabindex="-1">
-                            <x-fas-eye x-show="!showPassword" class="w-5 h-4 text-gray-900"/>
-                            <x-fas-eye-slash x-show="showPassword" class="w-5 h-4 text-gray-900" style="display: none;"/>
+                            <x-fas-eye x-show="!showPassword" class="{{ $inputIconClasses }} h-4"/>
+                            <x-fas-eye-slash x-show="showPassword" class="{{ $inputIconClasses }} h-4" style="display: none;"/>
                         </button>        
                     </div>
                     <x-input-error :messages="$errors->get('form.password')" class="mt-2" />    
@@ -146,8 +148,8 @@ new #[Layout('layouts.guest')] class extends Component
                 </div>
                 
                 <!-- Submit-->
-                <div class="pt-4"> 
-                    <x-primary-button class="w-3/4 mx-auto block">
+                <div class="pt-3">
+                    <x-primary-button class="w-full block py-4 text-sm">
                         <span class="relative z-10">{{ __('Entrar na plataforma') }}</span>
                         <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(135deg, rgba(76,175,80,0.2) 0%,transparent 60%);"></div>
                     </x-primary-button>

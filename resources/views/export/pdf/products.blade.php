@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Relatorio de Produtos</title>
+    <title>Relatório de Produtos</title>
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;

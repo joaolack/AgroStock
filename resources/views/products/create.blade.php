@@ -106,8 +106,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-base font-bold" style="color:#1a3d1f;">Identifica&ccedil;&atilde;o</h3>
-                                <p class="text-xs" style="color:#8a9e8c;">Nome, categoria e descri&ccedil;&atilde;o do produto</p>
+                                <h3 class="text-base font-bold" style="color:#1a3d1f;">Identificação</h3>
+                                <p class="text-xs" style="color:#8a9e8c;">Nome, categoria e descrição do produto</p>
                             </div>
                         </div>
 
@@ -155,7 +155,7 @@
 
                             <div class="lg:col-span-2">
                                 <label for="description" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
-                                    Descri&ccedil;&atilde;o do produto <span class="text-red-600">*</span>
+                                    Descrição do produto <span class="text-red-600">*</span>
                                 </label>
                                 <textarea id="description" name="description" rows="4"
                                     class="block w-full rounded-xl border-gray-300 bg-white text-sm text-slate-900 shadow-sm transition focus:border-green-600 focus:ring-green-600 @error('description') border-red-500 @enderror"
@@ -175,14 +175,14 @@
                             </div>
                             <div>
                                 <h3 class="text-base font-bold" style="color:#1a3d1f;">Valores e estoque</h3>
-                                <p class="text-xs" style="color:#8a9e8c;">Pre&ccedil;os, quantidade inicial e ponto de reposi&ccedil;&atilde;o</p>
+                                <p class="text-xs" style="color:#8a9e8c;">Preços, quantidade inicial e ponto de reposição</p>
                             </div>
                         </div>
 
                         <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
                             <div>
                                 <label for="cost_price" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
-                                    Pre&ccedil;o de custo (R$) <span class="text-red-600">*</span>
+                                    Preço de custo (R$) <span class="text-red-600">*</span>
                                 </label>
                                 <input type="number" step="0.01" min="0" id="cost_price" value="{{ old('cost_price') }}" name="cost_price"
                                     class="block w-full rounded-xl border-gray-300 bg-white text-sm text-slate-900 shadow-sm transition focus:border-green-600 focus:ring-green-600 @error('cost_price') border-red-500 @enderror"
@@ -192,7 +192,7 @@
 
                             <div>
                                 <label for="selling_price" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
-                                    Pre&ccedil;o de venda (R$) <span class="text-red-600">*</span>
+                                    Preço de venda (R$) <span class="text-red-600">*</span>
                                 </label>
                                 <input type="number" step="0.01" min="0.01" id="selling_price" name="selling_price" value="{{ old('selling_price') }}"
                                     class="block w-full rounded-xl border-gray-300 bg-white text-sm text-slate-900 shadow-sm transition focus:border-green-600 focus:ring-green-600 @error('selling_price') border-red-500 @enderror"
@@ -212,7 +212,7 @@
 
                             <div>
                                 <label for="minimum_stock" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
-                                    Estoque m&iacute;nimo <span class="text-red-600">*</span>
+                                    Estoque mínimo <span class="text-red-600">*</span>
                                 </label>
                                 <input type="number" min="0" id="minimum_stock" name="minimum_stock" value="{{ old('minimum_stock') }}"
                                     class="block w-full rounded-xl border-gray-300 bg-white text-sm text-slate-900 shadow-sm transition focus:border-green-600 focus:ring-green-600 @error('minimum_stock') border-red-500 @enderror"
@@ -233,14 +233,14 @@
                             </div>
                             <div>
                                 <h3 class="text-base font-bold" style="color:#1a3d1f;">Rastreabilidade do lote</h3>
-                                <p class="text-xs" style="color:#8a9e8c;">N&uacute;mero interno e validade do primeiro lote</p>
+                                <p class="text-xs" style="color:#8a9e8c;">Número interno e validade do primeiro lote</p>
                             </div>
                         </div>
 
                         <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
                             <div>
                                 <label for="batch_number" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
-                                    N&uacute;mero do lote inicial
+                                    Número do lote inicial
                                 </label>
                                 <input type="text" id="batch_number" name="batch_number" value="{{ old('batch_number') }}"
                                     class="block w-full rounded-xl border-gray-300 bg-white text-sm text-slate-900 shadow-sm transition focus:border-green-600 focus:ring-green-600 @error('batch_number') border-red-500 @enderror"
@@ -284,38 +284,6 @@
             </main>
 
             <aside class="space-y-5">
-                <div class="overflow-hidden rounded-2xl border text-white shadow-sm"
-                    style="border-color:#1a3d1f;background:radial-gradient(circle at 15% 10%,rgba(168,213,171,0.28),transparent 32%),linear-gradient(160deg,#214f27 0%,#143418 72%);box-shadow:0 18px 45px rgba(26,61,31,0.16);">
-                    <div class="p-5">
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <p class="text-[11px] font-bold uppercase tracking-[0.22em]" style="color:rgba(255,255,255,0.55);">AgroStock</p>
-                                <h2 class="mt-3 text-2xl font-bold leading-tight">Entrada organizada desde o primeiro lote.</h2>
-                            </div>
-                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
-                                style="background:rgba(255,255,255,0.12);color:#a8d5ab;">
-                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="h-5 w-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M5 7l1 12h12l1-12M9 7V5a3 3 0 0 1 6 0v2" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 grid grid-cols-2 gap-3">
-                            <div class="rounded-xl border p-3" style="border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.16em]" style="color:rgba(255,255,255,0.48);">Cadastro</p>
-                                <p class="mt-2 text-lg font-bold">Produto</p>
-                            </div>
-                            <div class="rounded-xl border p-3" style="border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.16em]" style="color:rgba(255,255,255,0.48);">Movimento</p>
-                                <p class="mt-2 text-lg font-bold">Entrada</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border-t px-5 py-4 text-sm" style="border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);">
-                        Campos marcados com <span class="font-bold text-white">*</span> s&atilde;o obrigat&oacute;rios.
-                    </div>
-                </div>
-
                 <div class="rounded-2xl border bg-white p-5 shadow-sm" style="border-color:#d4e8d6;">
                     <h3 class="text-sm font-bold uppercase tracking-[0.16em]" style="color:#1a3d1f;">Resumo do cadastro</h3>
                     <div class="mt-4 space-y-3">
@@ -327,7 +295,7 @@
                             </span>
                             <div>
                                 <p class="text-sm font-semibold text-slate-900">Produto catalogado</p>
-                                <p class="text-xs text-slate-500">Nome, categoria e descri&ccedil;&atilde;o</p>
+                                <p class="text-xs text-slate-500">Nome, categoria e descrição</p>
                             </div>
                         </div>
 
@@ -338,7 +306,7 @@
                                 </svg>
                             </span>
                             <div>
-                                <p class="text-sm font-semibold text-slate-900">Pre&ccedil;os definidos</p>
+                                <p class="text-sm font-semibold text-slate-900">Preços definidos</p>
                                 <p class="text-xs text-slate-500">Custo, venda e estoque m&iacute;nimo</p>
                             </div>
                         </div>
@@ -351,8 +319,8 @@
                                 </svg>
                             </span>
                             <div>
-                                <p class="text-sm font-semibold text-slate-900">Lote rastre&aacute;vel</p>
-                                <p class="text-xs text-slate-500">Fornecedor, n&uacute;mero e validade</p>
+                                <p class="text-sm font-semibold text-slate-900">Lote rastreável</p>
+                                <p class="text-xs text-slate-500">Fornecedor, número e validade</p>
                             </div>
                         </div>
                     </div>

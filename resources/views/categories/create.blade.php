@@ -15,16 +15,12 @@
             </a>
 
             <div class="min-w-0">
-                <p class="text-[11px] font-bold uppercase tracking-[0.22em]" style="color:#6e876f;">Cat&aacute;logo</p>
+                <p class="text-[11px] font-bold uppercase tracking-[0.22em]" style="color:#6e876f;">Catálogo</p>
                 <h1 class="truncate text-xl font-bold tracking-tight sm:text-2xl" style="color:#1a3d1f;">Cadastrar categoria</h1>
             </div>
         </div>
 
         <div class="flex items-center gap-2.5">
-            <div class="hidden rounded-full border px-3 py-1.5 text-xs font-semibold sm:block"
-                style="border-color:#d4e8d6;color:#4a5c4c;background:#f9f6f0;">
-                Classifica&ccedil;&atilde;o
-            </div>
             <div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-sm font-bold text-white"
                 style="background:linear-gradient(135deg,#4caf50,#2d6a35);">
                 {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
@@ -104,7 +100,7 @@
                             </div>
                             <div>
                                 <h3 class="text-base font-bold" style="color:#1a3d1f;">Dados da categoria</h3>
-                                <p class="text-xs" style="color:#8a9e8c;">Nome obrigat&oacute;rio e descri&ccedil;&atilde;o opcional</p>
+                                <p class="text-xs" style="color:#8a9e8c;">Nome obrigatório e descrição opcional</p>
                             </div>
                         </div>
 
@@ -121,7 +117,7 @@
 
                             <div>
                                 <label for="description" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
-                                    Descri&ccedil;&atilde;o
+                                    Descrição
                                 </label>
                                 <textarea id="description" name="description" rows="5"
                                     class="block w-full rounded-xl border-gray-300 bg-white text-sm text-slate-900 shadow-sm transition focus:border-green-600 focus:ring-green-600 @error('description') border-red-500 @enderror"
@@ -156,40 +152,8 @@
             </main>
 
             <aside class="space-y-5">
-                <div class="overflow-hidden rounded-2xl border text-white shadow-sm"
-                    style="border-color:#1a3d1f;background:radial-gradient(circle at 15% 10%,rgba(168,213,171,0.28),transparent 32%),linear-gradient(160deg,#214f27 0%,#143418 72%);box-shadow:0 18px 45px rgba(26,61,31,0.16);">
-                    <div class="p-5">
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <p class="text-[11px] font-bold uppercase tracking-[0.22em]" style="color:rgba(255,255,255,0.55);">AgroStock</p>
-                                <h2 class="mt-3 text-2xl font-bold leading-tight">Categorias deixam o estoque mais f&aacute;cil de encontrar.</h2>
-                            </div>
-                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
-                                style="background:rgba(255,255,255,0.12);color:#a8d5ab;">
-                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="h-5 w-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h10M4 17h7" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 grid grid-cols-2 gap-3">
-                            <div class="rounded-xl border p-3" style="border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.16em]" style="color:rgba(255,255,255,0.48);">Cadastro</p>
-                                <p class="mt-2 text-lg font-bold">Categoria</p>
-                            </div>
-                            <div class="rounded-xl border p-3" style="border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.16em]" style="color:rgba(255,255,255,0.48);">Filtro</p>
-                                <p class="mt-2 text-lg font-bold">Cat&aacute;logo</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border-t px-5 py-4 text-sm" style="border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);">
-                        Campos marcados com <span class="font-bold text-white">*</span> s&atilde;o obrigat&oacute;rios.
-                    </div>
-                </div>
-
                 <div class="rounded-2xl border bg-white p-5 shadow-sm" style="border-color:#d4e8d6;">
-                    <h3 class="text-sm font-bold uppercase tracking-[0.16em]" style="color:#1a3d1f;">Boas pr&aacute;ticas</h3>
+                    <h3 class="text-sm font-bold uppercase tracking-[0.16em]" style="color:#1a3d1f;">Boas práticas</h3>
                     <div class="mt-4 space-y-3">
                         <div class="flex items-center gap-3 rounded-xl border px-3 py-3" style="border-color:#edf4ee;background:#fbfdfb;">
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg" style="background:#eaf6e9;color:#2d6a35;">
@@ -199,7 +163,7 @@
                             </span>
                             <div>
                                 <p class="text-sm font-semibold text-slate-900">Nome curto</p>
-                                <p class="text-xs text-slate-500">Facilita filtros e relat&oacute;rios</p>
+                                <p class="text-xs text-slate-500">Facilita filtros e relatórios</p>
                             </div>
                         </div>
 
@@ -210,7 +174,7 @@
                                 </svg>
                             </span>
                             <div>
-                                <p class="text-sm font-semibold text-slate-900">Descri&ccedil;&atilde;o objetiva</p>
+                                <p class="text-sm font-semibold text-slate-900">Descrição objetiva</p>
                                 <p class="text-xs text-slate-500">Explique o que entra na categoria</p>
                             </div>
                         </div>
@@ -222,7 +186,7 @@
                                 </svg>
                             </span>
                             <div>
-                                <p class="text-sm font-semibold text-slate-900">Padr&atilde;o consistente</p>
+                                <p class="text-sm font-semibold text-slate-900">Padrão consistente</p>
                                 <p class="text-xs text-slate-500">Evite categorias duplicadas</p>
                             </div>
                         </div>

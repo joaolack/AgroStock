@@ -46,10 +46,10 @@
                                 Cadastro
                             </div>
                             <h2 class="mt-4 text-2xl font-bold tracking-tight sm:text-3xl" style="color:#142f18;">
-                                Dados comerciais e localiza&ccedil;&atilde;o
+                                Dados comerciais e localização
                             </h2>
                             <p class="mt-2 max-w-xl text-sm leading-6" style="color:#6e876f;">
-                                Registre a empresa, contato, endere&ccedil;o e informa&ccedil;&otilde;es internas para vincular fornecedores aos produtos.
+                                Registre a empresa, contato, endereço e informações internas para vincular fornecedores aos produtos.
                             </p>
                         </div>
 
@@ -109,7 +109,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-base font-bold" style="color:#1a3d1f;">Informa&ccedil;&otilde;es comerciais</h3>
+                                <h3 class="text-base font-bold" style="color:#1a3d1f;">Informações comerciais</h3>
                                 <p class="text-xs" style="color:#8a9e8c;">Empresa, contato e canais principais</p>
                             </div>
                         </div>
@@ -167,19 +167,19 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-base font-bold" style="color:#1a3d1f;">Endere&ccedil;o</h3>
-                                <p class="text-xs" style="color:#8a9e8c;">Localiza&ccedil;&atilde;o operacional do fornecedor</p>
+                                <h3 class="text-base font-bold" style="color:#1a3d1f;">Endereço</h3>
+                                <p class="text-xs" style="color:#8a9e8c;">Localização operacional do fornecedor</p>
                             </div>
                         </div>
 
                         <div class="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-6">
                             <div class="lg:col-span-6">
                                 <label for="address" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
-                                    Endere&ccedil;o completo <span class="text-red-600">*</span>
+                                    Endereço completo <span class="text-red-600">*</span>
                                 </label>
                                 <input type="text" id="address" name="address" value="{{ old('address') }}"
                                     class="block w-full rounded-xl border-gray-300 bg-white text-sm text-slate-900 shadow-sm transition focus:border-green-600 focus:ring-green-600 @error('address') border-red-500 @enderror"
-                                    placeholder="Ex: Rua, n&uacute;mero, complemento" required>
+                                    placeholder="Ex: Rua, número, complemento" required>
                                 @error('address') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
                             </div>
 
@@ -229,15 +229,15 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-base font-bold" style="color:#1a3d1f;">Observa&ccedil;&otilde;es</h3>
-                                <p class="text-xs" style="color:#8a9e8c;">Anota&ccedil;&otilde;es internas e status de uso</p>
+                                <h3 class="text-base font-bold" style="color:#1a3d1f;">Observações</h3>
+                                <p class="text-xs" style="color:#8a9e8c;">Anotações internas e status de uso</p>
                             </div>
                         </div>
 
                         <div class="mt-5 space-y-5">
                             <div>
                                 <label for="notes" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
-                                    Anota&ccedil;&otilde;es internas
+                                    Anotações internas
                                 </label>
                                 <textarea id="notes" name="notes" rows="4"
                                     class="block w-full rounded-xl border-gray-300 bg-white text-sm text-slate-900 shadow-sm transition focus:border-green-600 focus:ring-green-600 @error('notes') border-red-500 @enderror"
@@ -249,7 +249,7 @@
                                 style="border-color:#d4e8d6;background:#fbfdfb;">
                                 <span>
                                     <span class="block text-sm font-bold text-slate-900">Fornecedor ativo</span>
-                                    <span class="mt-0.5 block text-xs text-slate-500">Dispon&iacute;vel para vincular a produtos e consultas.</span>
+                                    <span class="mt-0.5 block text-xs text-slate-500">Disponível para vincular a produtos e consultas.</span>
                                 </span>
                                 <input type="checkbox" name="active" value="1" {{ old('active', true) ? 'checked' : '' }}
                                     class="h-5 w-5 rounded border-gray-300 text-green-700 focus:ring-green-600">
@@ -282,40 +282,6 @@
             </main>
 
             <aside class="space-y-5">
-                <div class="overflow-hidden rounded-2xl border text-white shadow-sm"
-                    style="border-color:#1a3d1f;background:radial-gradient(circle at 15% 10%,rgba(168,213,171,0.28),transparent 32%),linear-gradient(160deg,#214f27 0%,#143418 72%);box-shadow:0 18px 45px rgba(26,61,31,0.16);">
-                    <div class="p-5">
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <p class="text-[11px] font-bold uppercase tracking-[0.22em]" style="color:rgba(255,255,255,0.55);">AgroStock</p>
-                                <h2 class="mt-3 text-2xl font-bold leading-tight">Fornecedores conectam compra, lote e estoque.</h2>
-                            </div>
-                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
-                                style="background:rgba(255,255,255,0.12);color:#a8d5ab;">
-                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="h-5 w-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 18H9M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
-                                    <circle cx="17" cy="18" r="2" />
-                                    <circle cx="7" cy="18" r="2" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 grid grid-cols-2 gap-3">
-                            <div class="rounded-xl border p-3" style="border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.16em]" style="color:rgba(255,255,255,0.48);">Cadastro</p>
-                                <p class="mt-2 text-lg font-bold">Fornecedor</p>
-                            </div>
-                            <div class="rounded-xl border p-3" style="border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.16em]" style="color:rgba(255,255,255,0.48);">Status</p>
-                                <p class="mt-2 text-lg font-bold">Ativo</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border-t px-5 py-4 text-sm" style="border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);">
-                        Campos marcados com <span class="font-bold text-white">*</span> s&atilde;o obrigat&oacute;rios.
-                    </div>
-                </div>
 
                 <div class="rounded-2xl border bg-white p-5 shadow-sm" style="border-color:#d4e8d6;">
                     <h3 class="text-sm font-bold uppercase tracking-[0.16em]" style="color:#1a3d1f;">Checklist do cadastro</h3>
@@ -340,8 +306,8 @@
                                 </svg>
                             </span>
                             <div>
-                                <p class="text-sm font-semibold text-slate-900">Endere&ccedil;o completo</p>
-                                <p class="text-xs text-slate-500">Cidade, UF e CEP para refer&ecirc;ncia</p>
+                                <p class="text-sm font-semibold text-slate-900">Endereço completo</p>
+                                <p class="text-xs text-slate-500">Cidade, UF e CEP para referência</p>
                             </div>
                         </div>
 
@@ -353,7 +319,7 @@
                             </span>
                             <div>
                                 <p class="text-sm font-semibold text-slate-900">Notas internas</p>
-                                <p class="text-xs text-slate-500">Condi&ccedil;&otilde;es, prazos ou observa&ccedil;&otilde;es</p>
+                                <p class="text-xs text-slate-500">Condições, prazos ou observações</p>
                             </div>
                         </div>
                     </div>

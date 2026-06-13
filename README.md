@@ -1,77 +1,104 @@
 # AgroStock
 
-O **AgroStock** é um sistema web de Gestão dee Estoque e Validade desenvolvido em **Laravel**. O objetivo principal é digitalizar o controle de estoque, reduzindo perdas causadas por produtos vencidos e otimizando a tomada de decisões de compra e descarte.
+AgroStock e um sistema web para controle de estoque, produtos, fornecedores, lotes, validade e movimentacoes.
 
----
+O projeto foi desenvolvido em Laravel e tem foco em organizar a rotina de estoque de forma simples: cadastrar produtos, acompanhar entradas e saidas, visualizar alertas, controlar vencimentos e gerar relatorios.
 
-### Funcionalidades Principais
+## Funcionalidades
 
-- **Autenticação de Usuário:** Login e Registro.
-- **Dashboard:** Visão geral do valor total do estoque e alertas visuais de vencimento.
-- **Gestão de Produtos:** CRUD completo para cadastro de itens, incluindo preço de custo e data de validade.
-- **Controle de Validade:** Exibição de status de validade na tabela de produtos.
-- **Alerta de Próximo Vencimento:** Notificações para produtos que vencem nos próximos 60 dias.
+- Login e cadastro de usuarios.
+- Dashboard com indicadores de estoque.
+- CRUD de produtos, categorias e fornecedores.
+- Controle de entradas e saidas de estoque.
+- Controle de lotes e datas de validade.
+- Alertas para estoque baixo, falta de estoque e vencimentos.
+- Analises com graficos, rankings e curva ABC.
+- Exportacao de relatorios em PDF e Excel.
+- Historico de exportacoes.
+- Logs de auditoria das principais acoes do sistema.
 
----
+## Tecnologias
 
-## 🛠️ Tecnologias Utilizadas
+- PHP 8.2+
+- Laravel 12
+- Laravel Breeze
+- Livewire / Volt
+- Blade
+- Tailwind CSS
+- Vite
+- Chart.js
+- SQLite ou MySQL
+- DomPDF
+- Laravel Excel
 
--**PHP | 8.2+**
--**Laravel | 12.0+**
-**Laravel Breeze | ^2.3**
--**Livewire | ^3.6.4**
--**Livewire/Volt | ^1.7.0**
--**Tailwind Css | ^3.1.0**
--**MySQL | 8.0+** 
+## Estrutura
 
----
+O projeto segue a estrutura padrao do Laravel, com algumas camadas para organizar melhor as regras de negocio:
 
-## Passo a passo para rodar o projeto
+- `Controllers`: entrada das requisicoes.
+- `Requests`: validacoes.
+- `Services`: regras de negocio.
+- `Repositories`: consultas e montagem de dados.
+- `Observers`: registros automaticos de auditoria.
+- `Views`: telas em Blade.
+- `Migrations` e `Seeders`: estrutura e dados iniciais do banco.
 
-### 1) Clone o repositório
+## Como rodar
 
-```bash
-git clone https://github.com/joaolack/Routine_Up.git
-cd Projeto-Agrop
-```
+Instale as dependencias do projeto:
 
-### 2) Configure o ambiente
-
-Crie o arquivo de ambiente e gere a chave do aplicativo:
-```bash
-cp .env.example .env
-php artisan key:generate
-```
-
-> **Importante:** Edite o arquivo .env com suas credenciais de banco de dados (DB_DATABASE, DB_USERNAME, DB_PASSWORD).
-
-### 3) Instale as dependências
-
-Instale as dependências PHP e Javascript:
 ```bash
 composer install
 npm install
 ```
 
-### 4) Geração de Banco de Dados
+Crie o arquivo `.env` e gere a chave da aplicacao:
 
 ```bash
-php artisan migrate
+cp .env.example .env
+php artisan key:generate
 ```
 
-### 5) Compilação do Frontend
+Configure o MySQL no arquivo `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=agrostock
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Crie o banco de dados no MySQL com o mesmo nome configurado em `DB_DATABASE`. Depois execute as migrations e seeders:
+
+```bash
+php artisan migrate --seed
+```
+
+Inicie o Vite e o servidor Laravel:
+
 ```bash
 npm run dev
-```
-
-### 6) Inicialização do Servidor
-
-```bash
 php artisan serve
 ```
 
----
+Acesse:
 
-## Contato
-Desenvolvedor: João Gabriel Lack
-Github: [https://github.com/joaolack](https://github.com/joaolack)
+```text
+http://127.0.0.1:8000
+```
+
+## Comandos uteis
+
+```bash
+php artisan test
+php artisan route:list
+php artisan optimize:clear
+php artisan view:cache
+```
+
+## Autor
+
+Joao Gabriel Lack  
+GitHub: [https://github.com/joaolack](https://github.com/joaolack)

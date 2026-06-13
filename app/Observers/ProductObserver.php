@@ -62,7 +62,7 @@ class ProductObserver
             'products',
             $audit->snapshot($product),
             null,
-            "Produto \"{$product->name}\" excluido."
+            "Produto \"{$product->name}\" excluído."
         );
     }
 }

@@ -24,8 +24,8 @@ class ExportController extends Controller
             [
                 'histories' => ExportHistory::with('user:id,name')
                     ->latest()
-                    ->limit(20)
-                    ->get(),
+                    ->paginate(15)
+                    ->withQueryString(),
             ]
         ));
     }

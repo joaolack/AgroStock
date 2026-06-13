@@ -10,7 +10,7 @@
             </button>
             <div>
                 <h1 class="font-display text-xl font-bold tracking-tight" style="color:#1a3d1f;">Exportar</h1>
-                <p class="text-[11px]" style="color:#8a9e8c;">Exporte seus relátorios</p>
+                <p class="text-[11px]" style="color:#8a9e8c;">Exporte seus relatórios</p>
             </div>
         </div>
 
@@ -25,7 +25,6 @@
     <div class="flex-1 p-6 overflow-y-auto space-y-5">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div class="relative overflow-hidden bg-white rounded-2xl border p-5 shadow-sm" style="border-color:#d4e8d6;">
-                <div class="absolute -right-8 -top-8 h-24 w-24 rounded-full" style="background:rgba(76,175,80,0.12);"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between gap-3">
                         <p class="text-xs font-semibold uppercase tracking-[0.2em]" style="color:#4a5c4c;">Venda potencial</p>
@@ -46,7 +45,6 @@
             </div>
 
             <div class="relative overflow-hidden bg-white rounded-2xl border p-5 shadow-sm" style="border-color:#d4e8d6;">
-                <div class="absolute -right-8 -top-8 h-24 w-24 rounded-full" style="background:rgba(45,106,53,0.12);"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between gap-3">
                         <p class="text-xs font-semibold uppercase tracking-[0.2em]" style="color:#4a5c4c;">Lucro estimado</p>
@@ -66,22 +64,19 @@
             </div>
 
             <div class="relative overflow-hidden bg-white rounded-2xl border p-5 shadow-sm" style="border-color:#d4e8d6;">
-                <div class="absolute -right-8 -top-8 h-24 w-24 rounded-full" style="background:rgba(234,179,8,0.16);"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between gap-3">
                         <p class="text-xs font-semibold uppercase tracking-[0.2em]" style="color:#4a5c4c;">Estoque baixo</p>
                         <span class="flex h-10 w-10 items-center justify-center rounded-xl" style="background:#fef9c3;color:#854d0e;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                                <path d="M12 9v4"/>
-                                <path d="M12 17h.01"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0 3.75h.008v.008H12V16.5Zm8.25 3.75H3.75L12 3.75l8.25 16.5Z" />
                             </svg>
                         </span>
                     </div>
                     <p class="mt-4 font-display text-2xl font-bold tracking-tight" style="color:#1a3d1f;">
                         {{ number_format($insights['low_stock_items'], 0, ',', '.') }}
                     </p>
-                    <p class="mt-1 text-xs" style="color:#8a9e8c;">Itens com estoque acima de zero e no limite minimo.</p>
+                    <p class="mt-1 text-xs" style="color:#8a9e8c;">Itens com estoque acima de zero e no limite mínimo.</p>
                 </div>
             </div>
         </div>
@@ -89,9 +84,9 @@
         <div class="bg-white rounded-xl shadow-sm border p-6" style="border-color:#d4e8d6;">
             <div class="mb-5">
                 <div>
-                    <h2 class="text-lg font-bold" style="color:#1a3d1f;">Relatorios</h2>
+                    <h2 class="text-lg font-bold" style="color:#1a3d1f;">Relatórios</h2>
                     <p class="text-sm" style="color:#8a9e8c;">
-                        Escolha o tipo de relatorio e aplique filtros antes de exportar.
+                        Escolha o tipo de relatório e aplique filtros antes de exportar.
                     </p>
                 </div>
             </div>
@@ -99,22 +94,22 @@
             <form method="GET" action="{{ route('export.reports.pdf') }}" class="space-y-4">
                 <div>
                     <label for="report_type" class="block text-xs font-semibold mb-1" style="color:#4a5c4c;">
-                        Tipo de relatorio
+                        Tipo de relatório
                     </label>
                     <select id="report_type" name="report_type"
                             class="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none"
                             style="border-color:#d4e8d6;">
-                        <option value="general_stock" @selected(old('report_type', $filters['report_type'] ?? 'general_stock') === 'general_stock')>Relatorio de estoque geral</option>
-                        <option value="critical_stock" @selected(old('report_type', $filters['report_type'] ?? '') === 'critical_stock')>Relatorio de estoque critico</option>
-                        <option value="financial" @selected(old('report_type', $filters['report_type'] ?? '') === 'financial')>Relatorio financeiro (custo x venda)</option>
-                        <option value="by_supplier" @selected(old('report_type', $filters['report_type'] ?? '') === 'by_supplier')>Relatorio por fornecedor</option>
-                        <option value="most_profitable" @selected(old('report_type', $filters['report_type'] ?? '') === 'most_profitable')>Relatorio de produtos mais lucrativos</option>
+                        <option value="general_stock" @selected(old('report_type', $filters['report_type'] ?? 'general_stock') === 'general_stock')>Relatório de estoque geral</option>
+                        <option value="critical_stock" @selected(old('report_type', $filters['report_type'] ?? '') === 'critical_stock')>Relatório de estoque crítico</option>
+                        <option value="financial" @selected(old('report_type', $filters['report_type'] ?? '') === 'financial')>Relatório financeiro (custo x venda)</option>
+                        <option value="by_supplier" @selected(old('report_type', $filters['report_type'] ?? '') === 'by_supplier')>Relatório por fornecedor</option>
+                        <option value="most_profitable" @selected(old('report_type', $filters['report_type'] ?? '') === 'most_profitable')>Relatório de produtos mais lucrativos</option>
                     </select>
                 </div>
 
                 <details class="border rounded-lg p-4" style="border-color:#d4e8d6;" open>
                     <summary class="cursor-pointer text-sm font-semibold" style="color:#1a3d1f;">
-                        Filtros avancados
+                        Filtros avançados
                     </summary>
 
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -169,7 +164,7 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label for="price_min" class="block text-xs font-semibold mb-1" style="color:#4a5c4c;">
-                                    Preco minimo (R$)
+                                    Preço minimo (R$)
                                 </label>
                                 <input id="price_min" name="price_min" type="number" step="0.01" min="0"
                                        value="{{ old('price_min', $filters['price_min'] ?? '') }}"
@@ -178,7 +173,7 @@
                             </div>
                             <div>
                                 <label for="price_max" class="block text-xs font-semibold mb-1" style="color:#4a5c4c;">
-                                    Preco maximo (R$)
+                                    Preço maximo (R$)
                                 </label>
                                 <input id="price_max" name="price_max" type="number" step="0.01" min="0"
                                        value="{{ old('price_max', $filters['price_max'] ?? '') }}"
@@ -200,7 +195,7 @@
                             formtarget="_blank"
                             class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold border"
                             style="border-color:#2d6a35;color:#2d6a35;">
-                        Pre-visualizar PDF
+                        Pré-visualizar PDF
                     </button>
                     <button type="submit"
                             formaction="{{ route('export.reports.excel') }}"
@@ -219,9 +214,9 @@
 
         <div class="bg-white rounded-xl shadow-sm border p-6" style="border-color:#d4e8d6;">
             <div class="mb-4">
-                <h2 class="text-lg font-bold" style="color:#1a3d1f;">Historico de exportacoes</h2>
+                <h2 class="text-lg font-bold" style="color:#1a3d1f;">Histórico de exportações</h2>
                 <p class="text-sm" style="color:#8a9e8c;">
-                    Ultimas exportacoes realizadas no sistema.
+                    Últimas exportações realizadas no sistema.
                 </p>
             </div>
 
@@ -230,7 +225,7 @@
                     <thead>
                         <tr class="border-b" style="border-color:#d4e8d6;">
                             <th class="text-left py-2 pr-4" style="color:#4a5c4c;">Data</th>
-                            <th class="text-left py-2 pr-4" style="color:#4a5c4c;">Tipo de relatorio</th>
+                            <th class="text-left py-2 pr-4" style="color:#4a5c4c;">Tipo de relatório</th>
                             <th class="text-left py-2" style="color:#4a5c4c;">Quem gerou</th>
                         </tr>
                     </thead>
@@ -240,25 +235,29 @@
                                 <td class="py-2 pr-4">{{ $history->created_at->timezone('America/Sao_Paulo')->format('d/m/Y H:i') }}</td>
                                 <td class="py-2 pr-4">
                                     @switch($history->report_type)
-                                        @case('general_stock') Relatorio de estoque geral @break
-                                        @case('critical_stock') Relatorio de estoque critico @break
-                                        @case('financial') Relatorio financeiro (custo x venda) @break
-                                        @case('by_supplier') Relatorio por fornecedor @break
-                                        @case('most_profitable') Relatorio de produtos mais lucrativos @break
+                                        @case('general_stock') Relatório de estoque geral @break
+                                        @case('critical_stock') Relatório de estoque crítico @break
+                                        @case('financial') Relatório financeiro (custo x venda) @break
+                                        @case('by_supplier') Relatório por fornecedor @break
+                                        @case('most_profitable') Relatório de produtos mais lucrativos @break
                                         @default {{ $history->report_type }}
                                     @endswitch
                                 </td>
-                                <td class="py-2">{{ $history->user?->name ?? 'Usuario removido' }}</td>
+                                <td class="py-2">{{ $history->user?->name ?? 'Usuário removido' }}</td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="3" class="py-3" style="color:#8a9e8c;">
-                                    Nenhuma exportacao registrada ate o momento.
+                                    Nenhuma exportação registrada ate o momento.
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            <div class="mt-4">
+                {{ $histories->links('vendor.pagination.agro') }}
             </div>
         </div>
     </div>

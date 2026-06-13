@@ -56,7 +56,7 @@ class ExportReportService
         $stockStatus = $filters['stock_status'] ?? 'all';
 
         return [
-            'Tipo de relatorio' => $this->reportTypeLabel($reportType),
+            'Tipo de relatório' => $this->reportTypeLabel($reportType),
             'Categoria' => $selectedCategory ?: 'Todas',
             'Fornecedor' => $selectedSupplier ?: 'Todos',
             'Status de estoque' => match ($stockStatus) {
@@ -65,7 +65,7 @@ class ExportReportService
                 'out_of_stock' => 'Sem estoque',
                 default => 'Todos',
             },
-            'Preco minimo (venda)' => isset($filters['price_min']) ? 'R$ '.number_format((float) $filters['price_min'], 2, ',', '.') : '-',
+            'Preco mínimo (venda)' => isset($filters['price_min']) ? 'R$ '.number_format((float) $filters['price_min'], 2, ',', '.') : '-',
             'Preco maximo (venda)' => isset($filters['price_max']) ? 'R$ '.number_format((float) $filters['price_max'], 2, ',', '.') : '-',
         ];
     }
@@ -74,7 +74,7 @@ class ExportReportService
     {
         return match ($reportType) {
             'general_stock' => 'Estoque geral',
-            'critical_stock' => 'Estoque critico',
+            'critical_stock' => 'Estoque crítico',
             'financial' => 'Financeiro (custo x venda)',
             'by_supplier' => 'Por fornecedor',
             'most_profitable' => 'Produtos mais lucrativos',
@@ -94,7 +94,7 @@ class ExportReportService
             })->values();
 
             return [
-                'Relatorio de Estoque Critico',
+                'Relatório de Estoque Crítico',
                 $critical,
                 [
                     ['label' => 'Produto', 'key' => 'name', 'type' => 'text'],

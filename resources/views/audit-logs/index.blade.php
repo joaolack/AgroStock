@@ -5,8 +5,8 @@
     <header class="sticky top-0 z-20 flex items-center justify-between px-6 py-3.5 border-b bg-white/80 backdrop-blur-md"
             style="border-color:#d4e8d6;">
         <div>
-            <h1 class="font-display text-xl font-bold tracking-tight" style="color:#1a3d1f;">Historico de atividades</h1>
-            <p class="text-[11px]" style="color:#8a9e8c;">Auditoria das principais acoes realizadas no AgroStock</p>
+            <h1 class="font-display text-xl font-bold tracking-tight" style="color:#1a3d1f;">Histórico de atividades</h1>
+            <p class="text-[11px]" style="color:#8a9e8c;">Auditoria das principais ações realizadas no AgroStock</p>
         </div>
 
         <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white"
@@ -19,7 +19,7 @@
         <form method="GET" action="{{ route('audit-logs.index') }}" class="bg-white rounded-2xl border p-4" style="border-color:#d4e8d6;">
             <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
                 <div>
-                    <label for="user_id" class="block text-xs font-semibold uppercase tracking-wide mb-1" style="color:#6e876f;">Usuario</label>
+                    <label for="user_id" class="block text-xs font-semibold uppercase tracking-wide mb-1" style="color:#6e876f;">Usuário</label>
                     <select id="user_id" name="user_id" class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500 text-sm">
                         <option value="">Todos</option>
                         @foreach($users as $user)
@@ -41,7 +41,7 @@
                 </div>
 
                 <div>
-                    <label for="action" class="block text-xs font-semibold uppercase tracking-wide mb-1" style="color:#6e876f;">Acao</label>
+                    <label for="action" class="block text-xs font-semibold uppercase tracking-wide mb-1" style="color:#6e876f;">Ação</label>
                     <select id="action" name="action" class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500 text-sm">
                         <option value="">Todas</option>
                         @foreach($actions as $action => $label)
@@ -51,7 +51,7 @@
                 </div>
 
                 <div>
-                    <label for="date_from" class="block text-xs font-semibold uppercase tracking-wide mb-1" style="color:#6e876f;">Inicio</label>
+                    <label for="date_from" class="block text-xs font-semibold uppercase tracking-wide mb-1" style="color:#6e876f;">Início</label>
                     <input type="date" id="date_from" name="date_from" value="{{ $filters['date_from'] }}"
                            class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500 text-sm">
                 </div>
@@ -88,11 +88,11 @@
                     <thead>
                         <tr class="border-b" style="border-color:#d4e8d6;background:#f9f6f0;">
                             <th class="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Data/Hora</th>
-                            <th class="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Usuario</th>
+                            <th class="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Usuário</th>
                             <th class="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Modulo</th>
-                            <th class="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Acao</th>
-                            <th class="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Descricao</th>
-                            <th class="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Alteracoes</th>
+                            <th class="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Ação</th>
+                            <th class="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Descrição</th>
+                            <th class="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">Alterações</th>
                             <th class="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider" style="color:#8a9e8c;">IP</th>
                         </tr>
                     </thead>
@@ -143,7 +143,7 @@
                                             'category_id' => 'Categoria',
                                             'supplier_id' => 'Fornecedor',
                                             'stock_quantity' => 'Estoque',
-                                            'minimum_stock' => 'Estoque minimo',
+                                            'minimum_stock' => 'Estoque mínimo',
                                             'expiration_date' => 'Validade',
                                             'contact_name' => 'Contato',
                                             'phone' => 'Telefone',

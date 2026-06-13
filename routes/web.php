@@ -21,9 +21,9 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-Route::resource('products', ProductController::class)->middleware(['auth']);
+Route::resource('products', ProductController::class)->except(['show'])->middleware(['auth']);
 
-Route::resource('categories', CategoryController::class)->middleware(['auth']);
+Route::resource('categories', CategoryController::class)->except(['show'])->middleware(['auth']);
 
 Route::resource('suppliers', SupplierController::class)->middleware(['auth']);
 

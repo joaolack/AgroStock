@@ -62,7 +62,7 @@ class SupplierObserver
             'suppliers',
             $audit->snapshot($supplier),
             null,
-            "Fornecedor \"{$supplier->name}\" excluido."
+            "Fornecedor \"{$supplier->name}\" excluído."
         );
     }
 }
