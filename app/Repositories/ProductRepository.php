@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Supplier;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -40,15 +41,28 @@ class ProductRepository
 
     private function paginatedProducts(array $filters): LengthAwarePaginator
     {
-        return $this->filteredProductsQuery($filters)
+        $products = $this->filteredProductsQuery($filters)
             ->orderBy('name')
             ->paginate(10)
             ->withQueryString();
+
+        $products->getCollection()->transform(function (Product $product) {
+            $product->setAttribute(
+                'available_stock_quantity',
+                (int) ($product->available_stock_quantity ?? 0)
+            );
+
+            return $product;
+        });
+
+        return $products;
     }
 
     private function filteredProductsQuery(array $filters): Builder
     {
-        $query = Product::with(['category', 'supplier', 'batches.supplier']);
+        $query = $this->withAvailableStock(
+            Product::with(['category', 'supplier', 'batches.supplier'])
+        );
 
         $query->when($filters['search'] !== '', function ($query) use ($filters) {
             $search = $filters['search'];
@@ -79,14 +93,11 @@ class ProductRepository
         }
 
         if ($filters['stock_status'] !== '') {
-            match ($filters['stock_status']) {
-                'Crítico' => $query->whereColumn('stock_quantity', '<=', 'minimum_stock'),
-                'Em Falta' => $query->where('stock_quantity', 0),
-                'Estoque Baixo' => $query->where('stock_quantity', '>', 0)
-                    ->whereColumn('stock_quantity', '<=', 'minimum_stock'),
-                'Estoque Normal' => $query->whereColumn('stock_quantity', '>', 'minimum_stock'),
-                default => null,
-            };
+            $matchingIds = $this->productIdsForStockStatus($filters['stock_status']);
+
+            $matchingIds->isEmpty()
+                ? $query->whereRaw('1 = 0')
+                : $query->whereIn('products.id', $matchingIds);
         }
 
         return $query;
@@ -108,21 +119,27 @@ class ProductRepository
 
     private function criticalStock(): Collection
     {
-        return Product::whereColumn('stock_quantity', '<=', 'minimum_stock')
-            ->with('category')
-            ->orderBy('stock_quantity', 'asc')
-            ->get();
+        return $this->productsWithAvailableStock()
+            ->filter(fn (Product $product) => (int) $product->available_stock_quantity <= (int) $product->minimum_stock)
+            ->sortBy([
+                ['available_stock_quantity', 'asc'],
+                ['name', 'asc'],
+            ])
+            ->values();
     }
 
     private function outOfStockProducts(): int
     {
-        return Product::where('stock_quantity', 0)->count();
+        return $this->productsWithAvailableStock()
+            ->filter(fn (Product $product) => (int) $product->available_stock_quantity === 0)
+            ->count();
     }
 
     private function lowStockProducts(): int
     {
-        return Product::where('stock_quantity', '>', 0)
-            ->whereColumn('stock_quantity', '<=', 'minimum_stock')
+        return $this->productsWithAvailableStock()
+            ->filter(fn (Product $product) => (int) $product->available_stock_quantity > 0
+                && (int) $product->available_stock_quantity <= (int) $product->minimum_stock)
             ->count();
     }
 
@@ -130,5 +147,54 @@ class ProductRepository
     {
         return (float) (Product::select(DB::raw('SUM(cost_price * stock_quantity) as total_cost'))
             ->value('total_cost') ?? 0);
+    }
+
+    private function withAvailableStock(Builder $query): Builder
+    {
+        $today = Carbon::now()->toDateString();
+
+        return $query->withSum([
+            'batches as available_stock_quantity' => function ($query) use ($today) {
+                $query->where('quantity', '>', 0)
+                    ->where(function ($query) use ($today) {
+                        $query->whereNull('expiration_date')
+                            ->orWhereDate('expiration_date', '>=', $today);
+                    });
+            },
+        ], 'quantity');
+    }
+
+    private function productsWithAvailableStock(): Collection
+    {
+        return $this->withAvailableStock(Product::query())
+            ->with('category')
+            ->get()
+            ->map(function (Product $product) {
+                $product->setAttribute(
+                    'available_stock_quantity',
+                    (int) ($product->available_stock_quantity ?? 0)
+                );
+
+                return $product;
+            });
+    }
+
+    private function productIdsForStockStatus(string $status): Collection
+    {
+        return $this->productsWithAvailableStock()
+            ->filter(function (Product $product) use ($status) {
+                $availableStock = (int) $product->available_stock_quantity;
+                $minimumStock = (int) $product->minimum_stock;
+
+                return match ($status) {
+                    'Crítico' => $availableStock <= $minimumStock,
+                    'Em Falta' => $availableStock === 0,
+                    'Estoque Baixo' => $availableStock > 0 && $availableStock <= $minimumStock,
+                    'Estoque Normal' => $availableStock > $minimumStock,
+                    default => false,
+                };
+            })
+            ->pluck('id')
+            ->values();
     }
 }

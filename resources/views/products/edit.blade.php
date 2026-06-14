@@ -93,6 +93,20 @@
                     </div>
                 @endif
 
+                @php
+                    $today = \Carbon\Carbon::today();
+                    $batches = $product->batches;
+                    $validBatches = $batches
+                        ->filter(fn ($batch) => $batch->quantity > 0 && (! $batch->expiration_date || $batch->expiration_date->copy()->startOfDay()->greaterThanOrEqualTo($today)))
+                        ->sortBy(fn ($batch) => $batch->expiration_date?->format('Y-m-d') ?? '9999-12-31')
+                        ->values();
+                    $expiredQuantity = $batches
+                        ->filter(fn ($batch) => $batch->quantity > 0 && $batch->expiration_date && $batch->expiration_date->copy()->startOfDay()->lessThan($today))
+                        ->sum('quantity');
+                    $nextValidBatch = $validBatches->first();
+                    $validQuantity = $validBatches->sum('quantity');
+                @endphp
+
                 <form action="{{ route('products.update', $product->id) }}" method="POST" class="px-5 py-6 sm:px-6">
                     @csrf
                     @method('PUT')
@@ -177,11 +191,11 @@
                             </div>
                             <div>
                                 <h3 class="text-base font-bold" style="color:#1a3d1f;">Valores e controle</h3>
-                                <p class="text-xs" style="color:#8a9e8c;">Preços, estoque minimo e validade</p>
+                                <p class="text-xs" style="color:#8a9e8c;">Pre&ccedil;os e estoque m&iacute;nimo</p>
                             </div>
                         </div>
 
-                        <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+                        <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
                             <div>
                                 <label for="cost_price" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
                                     Preço de custo (R$) <span class="text-red-600">*</span>
@@ -211,14 +225,60 @@
                                     required>
                                 @error('minimum_stock') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
                             </div>
+                        </div>
 
-                            <div>
-                                <label for="expiration_date" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
-                                    Data de validade <span class="text-red-600">*</span>
-                                </label>
-                                <input type="date" id="expiration_date" name="expiration_date" value="{{ old('expiration_date', $product->expiration_date ? $product->expiration_date->format('Y-m-d') : '') }}"
-                                    class="block w-full rounded-xl border-gray-300 bg-white text-sm text-slate-900 shadow-sm transition focus:border-green-600 focus:ring-green-600 @error('expiration_date') border-red-500 @enderror">
-                                @error('expiration_date') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
+                        <div class="mt-5 rounded-2xl border bg-white p-4 sm:p-5" style="border-color:#d4e8d6;background:#fbfdfb;">
+                            <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                                <div class="flex min-w-0 items-start gap-3">
+                                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style="background:#eff6ff;color:#1d4ed8;">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="h-5 w-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 2v4M16 2v4M3 10h18" />
+                                            <rect width="18" height="18" x="3" y="4" rx="2" />
+                                        </svg>
+                                    </span>
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-bold uppercase tracking-[0.14em]" style="color:#1a3d1f;">Validade dos lotes</p>
+                                        <p class="mt-1 break-words text-sm leading-6" style="color:#5d725f;">
+                                            A validade &eacute; controlada pelos lotes cadastrados, sem edi&ccedil;&atilde;o direta neste formul&aacute;rio.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-wrap gap-2 lg:justify-end">
+                                    <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold" style="background:#eaf6e9;color:#2d6a35;">
+                                        {{ $validQuantity }} @if ($validQuantity === 1) item v&aacute;lido @else itens v&aacute;lidos @endif
+                                    </span>
+                                    @if ($expiredQuantity > 0)
+                                        <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold" style="background:#fee2e2;color:#991b1b;">
+                                            {{ $expiredQuantity }} {{ $expiredQuantity === 1 ? 'item vencido' : 'itens vencidos' }}
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <div class="rounded-xl border bg-white px-4 py-3" style="border-color:#edf4ee;">
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.16em]" style="color:#8a9e8c;">Pr&oacute;ximo lote v&aacute;lido</p>
+                                    <p class="mt-1 break-words text-sm font-bold text-slate-900">
+                                        @if ($nextValidBatch)
+                                            {{ $nextValidBatch->number ?: 'Sem numero' }}
+                                        @else
+                                            Sem lote v&aacute;lido
+                                        @endif
+                                    </p>
+                                </div>
+                                <div class="rounded-xl border bg-white px-4 py-3" style="border-color:#edf4ee;">
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.16em]" style="color:#8a9e8c;">Validade</p>
+                                    <p class="mt-1 break-words text-sm font-bold text-slate-900">
+                                        @if ($nextValidBatch?->expiration_date)
+                                            {{ $nextValidBatch->expiration_date->format('d/m/Y') }}
+                                        @elseif ($nextValidBatch)
+                                            Sem validade
+                                        @else
+                                            Sem estoque v&aacute;lido
+                                        @endif
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </section>

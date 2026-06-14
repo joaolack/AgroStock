@@ -79,11 +79,11 @@ class CategoryController extends Controller
     {
         //Verificar produtos vinculados a categoria
         if ($category->products()->count() > 0) {
-            return back()->withErrors(['delete' => 'Não é possivel excluir esta categoria, pois existem produtos vinculados a ela.']);
+            return back()->withErrors(['delete' => 'Não é possível excluir esta categoria, pois existem produtos vinculados a ela.']);
         }
 
         $category->delete();
-        return redirect()->route('categories.index')->with('success', 'Categoria excluida com sucesso!');
+        return redirect()->route('categories.index')->with('success', 'Categoria excluída com sucesso!');
     }
 
 }

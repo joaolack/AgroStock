@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductBatch;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -53,7 +54,7 @@ class AnalyticsAbcCurveTest extends TestCase
 
     private function createProduct(int $categoryId, string $name, float $costPrice, int $stockQuantity): void
     {
-        Product::create([
+        $product = Product::create([
             'name' => $name,
             'description' => null,
             'selling_price' => $costPrice * 1.5,
@@ -63,5 +64,64 @@ class AnalyticsAbcCurveTest extends TestCase
             'expiration_date' => null,
             'category_id' => $categoryId,
         ]);
+
+        if ($stockQuantity > 0) {
+            ProductBatch::create([
+                'product_id' => $product->id,
+                'supplier_id' => null,
+                'number' => 'LOTE-'.$product->id,
+                'original_quantity' => $stockQuantity,
+                'quantity' => $stockQuantity,
+                'expiration_date' => now()->addMonth()->toDateString(),
+            ]);
+        }
+    }
+
+    public function test_abc_curve_ignores_expired_batch_quantities(): void
+    {
+        $category = Category::create([
+            'name' => 'Defensivos',
+            'description' => null,
+        ]);
+
+        $product = Product::create([
+            'name' => 'Produto parcialmente vencido',
+            'description' => null,
+            'selling_price' => 15,
+            'cost_price' => 10,
+            'stock_quantity' => 12,
+            'minimum_stock' => 0,
+            'expiration_date' => null,
+            'category_id' => $category->id,
+        ]);
+        ProductBatch::create([
+            'product_id' => $product->id,
+            'supplier_id' => null,
+            'number' => 'VALIDO',
+            'original_quantity' => 2,
+            'quantity' => 2,
+            'expiration_date' => now()->addMonth()->toDateString(),
+        ]);
+        ProductBatch::create([
+            'product_id' => $product->id,
+            'supplier_id' => null,
+            'number' => 'VENCIDO',
+            'original_quantity' => 10,
+            'quantity' => 10,
+            'expiration_date' => now()->subDay()->toDateString(),
+        ]);
+
+        $response = $this->actingAs(User::factory()->create())
+            ->get(route('analytics.index'));
+
+        $response->assertOk();
+        $response->assertViewHas('abcCurve', function (array $abcCurve) {
+            $abcProduct = $abcCurve['products']->firstWhere('name', 'Produto parcialmente vencido');
+
+            return $abcCurve['total_stock_value'] === 20.0
+                && $abcProduct
+                && $abcProduct['stock_quantity'] === 2
+                && $abcProduct['stock_value'] === 20.0;
+        });
     }
 }

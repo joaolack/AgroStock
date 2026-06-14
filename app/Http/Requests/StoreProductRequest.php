@@ -36,4 +36,28 @@ class StoreProductRequest extends FormRequest
             ],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'supplier_id.required' => 'Selecione um fornecedor para o lote inicial.',
+            'batch_number.required' => 'Informe o número do lote inicial.',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'name' => 'nome do produto',
+            'description' => 'descrição',
+            'selling_price' => 'preço de venda',
+            'cost_price' => 'preço de custo',
+            'category_id' => 'categoria',
+            'supplier_id' => 'fornecedor',
+            'stock_quantity' => 'quantidade',
+            'minimum_stock' => 'estoque mínimo',
+            'expiration_date' => 'validade',
+            'batch_number' => 'número do lote',
+        ];
+    }
 }

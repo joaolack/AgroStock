@@ -106,12 +106,12 @@ class SupplierController extends Controller
     {
         if ($supplier->products()->count() > 0) {
             return redirect()->route('suppliers.index')
-                ->with('error', 'Não é possivel excluir. Este fornecedor possui produtos vinculados.');
+                ->with('error', 'Não é possível excluir. Este fornecedor possui produtos vinculados.');
         }
 
         $supplier->delete();
 
         return redirect()->route('suppliers.index')
-            ->with('success', 'Fornecedor excluido com sucesso!');
+            ->with('success', 'Fornecedor excluído com sucesso!');
     }
 }

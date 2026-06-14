@@ -65,8 +65,8 @@ class ExportReportService
                 'out_of_stock' => 'Sem estoque',
                 default => 'Todos',
             },
-            'Preco mínimo (venda)' => isset($filters['price_min']) ? 'R$ '.number_format((float) $filters['price_min'], 2, ',', '.') : '-',
-            'Preco maximo (venda)' => isset($filters['price_max']) ? 'R$ '.number_format((float) $filters['price_max'], 2, ',', '.') : '-',
+            'Preço mínimo (venda)' => isset($filters['price_min']) ? 'R$ '.number_format((float) $filters['price_min'], 2, ',', '.') : '-',
+            'Preço máximo (venda)' => isset($filters['price_max']) ? 'R$ '.number_format((float) $filters['price_max'], 2, ',', '.') : '-',
         ];
     }
 
@@ -78,7 +78,7 @@ class ExportReportService
             'financial' => 'Financeiro (custo x venda)',
             'by_supplier' => 'Por fornecedor',
             'most_profitable' => 'Produtos mais lucrativos',
-            default => 'Nao definido',
+            default => 'Não definido',
         };
     }
 
@@ -99,8 +99,8 @@ class ExportReportService
                 [
                     ['label' => 'Produto', 'key' => 'name', 'type' => 'text'],
                     ['label' => 'Fornecedor', 'key' => 'supplier.name', 'type' => 'text'],
-                    ['label' => 'Estoque atual', 'key' => 'stock_quantity', 'type' => 'int'],
-                    ['label' => 'Estoque minimo', 'key' => 'minimum_stock', 'type' => 'int'],
+                    ['label' => 'Estoque válido', 'key' => 'stock_quantity', 'type' => 'int'],
+                    ['label' => 'Estoque mínimo', 'key' => 'minimum_stock', 'type' => 'int'],
                     ['label' => 'Status', 'key' => 'stock_status', 'type' => 'text'],
                 ],
             ];
@@ -108,13 +108,13 @@ class ExportReportService
 
         if ($reportType === 'financial') {
             return [
-                'Relatorio Financeiro (Custo x Venda)',
+                'Relatório Financeiro (Custo x Venda)',
                 $products,
                 [
                     ['label' => 'Produto', 'key' => 'name', 'type' => 'text'],
                     ['label' => 'Categoria', 'key' => 'category.name', 'type' => 'text'],
-                    ['label' => 'Preco custo', 'key' => 'cost_price', 'type' => 'money'],
-                    ['label' => 'Preco venda', 'key' => 'selling_price', 'type' => 'money'],
+                    ['label' => 'Preço custo', 'key' => 'cost_price', 'type' => 'money'],
+                    ['label' => 'Preço venda', 'key' => 'selling_price', 'type' => 'money'],
                 ],
             ];
         }
@@ -138,13 +138,13 @@ class ExportReportService
             })->sortBy('supplier_name')->values();
 
             return [
-                'Relatorio por Fornecedor',
+                'Relatório por Fornecedor',
                 $grouped,
                 [
                     ['label' => 'Fornecedor', 'key' => 'supplier_name', 'type' => 'text'],
                     ['label' => 'Qtd. produtos', 'key' => 'products_count', 'type' => 'int'],
-                    ['label' => 'Estoque total', 'key' => 'total_stock', 'type' => 'int'],
-                    ['label' => 'Valor estoque (custo)', 'key' => 'stock_cost_value', 'type' => 'money'],
+                    ['label' => 'Estoque válido', 'key' => 'total_stock', 'type' => 'int'],
+                    ['label' => 'Valor válido (custo)', 'key' => 'stock_cost_value', 'type' => 'money'],
                 ],
             ];
         }
@@ -157,28 +157,28 @@ class ExportReportService
             })->sortByDesc('unit_margin')->values();
 
             return [
-                'Relatorio de Produtos Mais Lucrativos',
+                'Relatório de Produtos Mais Lucrativos',
                 $profitable,
                 [
                     ['label' => 'Produto', 'key' => 'name', 'type' => 'text'],
                     ['label' => 'Categoria', 'key' => 'category.name', 'type' => 'text'],
-                    ['label' => 'Preco custo', 'key' => 'cost_price', 'type' => 'money'],
-                    ['label' => 'Preco venda', 'key' => 'selling_price', 'type' => 'money'],
-                    ['label' => 'Margem unitaria', 'key' => 'unit_margin', 'type' => 'money'],
+                    ['label' => 'Preço custo', 'key' => 'cost_price', 'type' => 'money'],
+                    ['label' => 'Preço venda', 'key' => 'selling_price', 'type' => 'money'],
+                    ['label' => 'Margem unitária', 'key' => 'unit_margin', 'type' => 'money'],
                 ],
             ];
         }
 
         return [
-            'Relatorio de Estoque Geral',
+            'Relatório de Estoque Geral',
             $products,
             [
                 ['label' => 'Produto', 'key' => 'name', 'type' => 'text'],
                 ['label' => 'Categoria', 'key' => 'category.name', 'type' => 'text'],
                 ['label' => 'Fornecedor', 'key' => 'supplier.name', 'type' => 'text'],
-                ['label' => 'Estoque', 'key' => 'stock_quantity', 'type' => 'int'],
-                ['label' => 'Preco custo', 'key' => 'cost_price', 'type' => 'money'],
-                ['label' => 'Preco venda', 'key' => 'selling_price', 'type' => 'money'],
+                ['label' => 'Estoque válido', 'key' => 'stock_quantity', 'type' => 'int'],
+                ['label' => 'Preço custo', 'key' => 'cost_price', 'type' => 'money'],
+                ['label' => 'Preço venda', 'key' => 'selling_price', 'type' => 'money'],
             ],
         ];
     }

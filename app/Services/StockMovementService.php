@@ -63,9 +63,18 @@ class StockMovementService
             ]);
         }
 
+        $batches = $product->availableBatches()->lockForUpdate()->get();
+        $availableQuantity = (int) $batches->sum('quantity');
+
+        if ($availableQuantity < $quantity) {
+            throw ValidationException::withMessages([
+                'quantity' => 'Estoque disponivel para saida: '.$availableQuantity.'. Itens vencidos devem ser baixados pela tela de validade.',
+            ]);
+        }
+
         $remaining = $quantity;
 
-        foreach ($product->availableBatches()->lockForUpdate()->get() as $batch) {
+        foreach ($batches as $batch) {
             if ($remaining <= 0) {
                 break;
             }
@@ -91,12 +100,6 @@ class StockMovementService
             ]);
 
             $remaining -= $consumed;
-        }
-
-        if ($remaining > 0) {
-            throw ValidationException::withMessages([
-                'quantity' => 'Estoque sem lotes suficientes para saida FIFO. Disponivel em lotes: '.($quantity - $remaining),
-            ]);
         }
 
         return "Saida de {$quantity} unidades registrada usando FIFO.";

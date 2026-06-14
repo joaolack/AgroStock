@@ -34,10 +34,14 @@ class Product extends Model
 
     public function getStockStatusAttribute() 
     {
-        if ($this->stock_quantity <= 0) {
+        $stockQuantity = array_key_exists('available_stock_quantity', $this->attributes)
+            ? (int) $this->attributes['available_stock_quantity']
+            : (int) $this->stock_quantity;
+
+        if ($stockQuantity <= 0) {
             return 'Em Falta';
         }
-        if ($this->stock_quantity <= $this->minimum_stock) {
+        if ($stockQuantity <= $this->minimum_stock) {
             return 'Estoque Baixo';
         }
         return 'Estoque Normal';
@@ -57,6 +61,10 @@ class Product extends Model
     {
         return $this->batches()
             ->where('quantity', '>', 0)
+            ->where(function ($query) {
+                $query->whereNull('expiration_date')
+                    ->orWhereDate('expiration_date', '>=', now()->toDateString());
+            })
             ->orderByRaw('expiration_date IS NULL')
             ->orderBy('expiration_date')
             ->orderBy('created_at')

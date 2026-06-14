@@ -105,6 +105,70 @@ class StockMovementTest extends TestCase
         $this->assertDatabaseCount('stock_movements', 0);
     }
 
+    public function test_exit_does_not_consume_expired_batches(): void
+    {
+        $product = Product::factory()->create([
+            'name' => 'Fertilizante NPK 10-10-10 (25kg)',
+            'stock_quantity' => 12,
+        ]);
+        $expiredBatch = ProductBatch::factory()->for($product)->create([
+            'number' => 'NPK-VENCIDO',
+            'original_quantity' => 10,
+            'quantity' => 10,
+            'expiration_date' => now()->subDay()->toDateString(),
+        ]);
+        $validBatch = ProductBatch::factory()->for($product)->create([
+            'number' => 'NPK-VALIDO',
+            'original_quantity' => 2,
+            'quantity' => 2,
+            'expiration_date' => now()->addDay()->toDateString(),
+        ]);
+
+        $response = $this->actingAs(User::factory()->create())
+            ->from(route('stock-movements.index'))
+            ->post(route('stock-movements.store'), [
+                'product_id' => $product->id,
+                'quantity' => 12,
+                'type' => 'exit',
+            ]);
+
+        $response
+            ->assertRedirect(route('stock-movements.index'))
+            ->assertSessionHasErrors('quantity');
+        $this->assertSame(12, $product->refresh()->stock_quantity);
+        $this->assertSame(10, $expiredBatch->refresh()->quantity);
+        $this->assertSame(2, $validBatch->refresh()->quantity);
+        $this->assertDatabaseCount('stock_movements', 0);
+    }
+
+    public function test_exit_form_shows_only_valid_stock_available_for_exit(): void
+    {
+        $product = Product::factory()->create([
+            'name' => 'Fertilizante NPK 10-10-10 (25kg)',
+            'stock_quantity' => 12,
+        ]);
+        ProductBatch::factory()->for($product)->create([
+            'number' => 'NPK-VENCIDO',
+            'original_quantity' => 10,
+            'quantity' => 10,
+            'expiration_date' => now()->subDay()->toDateString(),
+        ]);
+        ProductBatch::factory()->for($product)->create([
+            'number' => 'NPK-VALIDO',
+            'original_quantity' => 2,
+            'quantity' => 2,
+            'expiration_date' => now()->addDay()->toDateString(),
+        ]);
+
+        $response = $this->actingAs(User::factory()->create())
+            ->get(route('stock-movements.index'));
+
+        $response
+            ->assertOk()
+            ->assertSee('Fertilizante NPK 10-10-10 (25kg) (Disponivel para saida: 2)')
+            ->assertDontSee('Fertilizante NPK 10-10-10 (25kg) (Disponivel para saida: 12)');
+    }
+
     public function test_movement_is_associated_with_product_and_user(): void
     {
         $user = User::factory()->create();

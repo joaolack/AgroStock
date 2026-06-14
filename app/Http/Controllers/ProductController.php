@@ -40,7 +40,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         return view('products.edit', [
-            'product' => $product,
+            'product' => $product->load('batches'),
             'categories' => $this->productRepository->categories(),
             'suppliers' => $this->productRepository->activeSuppliers(),
         ]);
@@ -48,7 +48,7 @@ class ProductController extends Controller
 
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $this->productService->updateWithActiveBatches($product, $request->validated());
+        $this->productService->update($product, $request->validated());
 
         return redirect()->route('products.index')->with('success', 'Produto atualizado com sucesso');
     }

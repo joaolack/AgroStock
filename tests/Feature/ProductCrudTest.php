@@ -90,7 +90,6 @@ class ProductCrudTest extends TestCase
                 'category_id' => $category->id,
                 'supplier_id' => $supplier->id,
                 'minimum_stock' => 8,
-                'expiration_date' => now()->addMonths(3)->toDateString(),
             ]);
 
         $response->assertRedirect(route('products.index'));

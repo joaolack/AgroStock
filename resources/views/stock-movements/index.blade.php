@@ -1,11 +1,17 @@
 @extends('layouts.app')
 
 @section('slot')
+@php
+    $showEntryErrors = old('type') === 'entry';
+    $showExitErrors = old('type') === 'exit';
+@endphp
+
 <div class="flex-1 flex flex-col min-h-screen overflow-hidden">
 
     <header class="sticky top-0 z-20 flex items-center justify-between px-6 py-3.5 mb-6 border-b bg-white/80 backdrop-blur-md"
             style="border-color:#d4e8d6;">
         <div class="flex items-center gap-3">
+            <x-mobile-menu-button />
             <div>
                 <h1 class="font-display text-xl font-bold tracking-tight" style="color:#1a3d1f;">Movimentações do Estoque</h1>
                 <p class="text-[11px]" style="color:#8a9e8c;"></p>
@@ -65,14 +71,17 @@
                                     Produto *
                                 </label>
                                 <select name="product_id" required
-                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]">
+                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] {{ $showEntryErrors && $errors->has('product_id') ? 'border-red-500' : '' }}">
                                     <option value="">Selecione um produto</option>
                                     @foreach($products as $product)
-                                        <option value="{{ $product->id }}">
+                                        <option value="{{ $product->id }}" @selected($showEntryErrors && old('product_id') == $product->id)>
                                             {{ $product->name }} (Estoque: {{ $product->stock_quantity }})
                                         </option>
                                     @endforeach
                                 </select>
+                                @if($showEntryErrors)
+                                    @error('product_id') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
+                                @endif
                             </div>
 
                             <div>
@@ -80,8 +89,12 @@
                                     Quantidade *
                                 </label>
                                 <input type="number" name="quantity" min="1" required
-                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]"
+                                    value="{{ $showEntryErrors ? old('quantity') : '' }}"
+                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] {{ $showEntryErrors && $errors->has('quantity') ? 'border-red-500' : '' }}"
                                     placeholder="Ex: 50">
+                                @if($showEntryErrors)
+                                    @error('quantity') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
+                                @endif
                             </div>
 
                             <div>
@@ -89,8 +102,12 @@
                                     Numero do Lote *
                                 </label>
                                 <input type="text" name="batch_number" required
-                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]"
+                                    value="{{ $showEntryErrors ? old('batch_number') : '' }}"
+                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] {{ $showEntryErrors && $errors->has('batch_number') ? 'border-red-500' : '' }}"
                                     placeholder="Ex: LOTE-001">
+                                @if($showEntryErrors)
+                                    @error('batch_number') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
+                                @endif
                             </div>
 
                             <div>
@@ -98,12 +115,15 @@
                                     Fornecedor *
                                 </label>
                                 <select name="supplier_id" required
-                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]">
+                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] {{ $showEntryErrors && $errors->has('supplier_id') ? 'border-red-500' : '' }}">
                                     <option value="">Selecione um fornecedor</option>
                                     @foreach($suppliers as $supplier)
-                                        <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                        <option value="{{ $supplier->id }}" @selected($showEntryErrors && old('supplier_id') == $supplier->id)>{{ $supplier->name }}</option>
                                     @endforeach
                                 </select>
+                                @if($showEntryErrors)
+                                    @error('supplier_id') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
+                                @endif
                             </div>
 
                             <div>
@@ -111,7 +131,11 @@
                                     Validade (opcional)
                                 </label>
                                 <input type="date" name="expiration_date"
-                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]">
+                                    value="{{ $showEntryErrors ? old('expiration_date') : '' }}"
+                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] {{ $showEntryErrors && $errors->has('expiration_date') ? 'border-red-500' : '' }}">
+                                @if($showEntryErrors)
+                                    @error('expiration_date') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
+                                @endif
                             </div>
                             <button type="submit" 
                                     class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#1a3d1f] px-4 py-3 font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2d6a35] focus:outline-none focus:ring-2 focus:ring-[#2d6a35] focus:ring-offset-2">
@@ -150,14 +174,20 @@
                                     Produto *
                                 </label>
                                 <select name="product_id" required
-                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]">
+                                        class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] {{ $showExitErrors && $errors->has('product_id') ? 'border-red-500' : '' }}">
                                     <option value="">Selecione um produto</option>
                                     @foreach($products as $product)
-                                        <option value="{{ $product->id }}">
-                                            {{ $product->name }} (Estoque: {{ $product->stock_quantity }})
+                                        @php
+                                            $availableForExit = $product->availableBatches->sum('quantity');
+                                        @endphp
+                                        <option value="{{ $product->id }}" @selected($showExitErrors && old('product_id') == $product->id)>
+                                            {{ $product->name }} (Disponivel para saida: {{ $availableForExit }})
                                         </option>
                                     @endforeach
                                 </select>
+                                @if($showExitErrors)
+                                    @error('product_id') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
+                                @endif
                             </div>
 
                             <div>
@@ -165,8 +195,12 @@
                                     Quantidade *
                                 </label>
                                 <input type="number" name="quantity" min="1" required
-                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35]"
+                                    value="{{ $showExitErrors ? old('quantity') : '' }}"
+                                    class="w-full rounded-lg border-gray-300 focus:border-[#2d6a35] focus:ring-[#2d6a35] {{ $showExitErrors && $errors->has('quantity') ? 'border-red-500' : '' }}"
                                     placeholder="Ex: 20">
+                                @if($showExitErrors)
+                                    @error('quantity') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
+                                @endif
                             </div>
                             <button type="submit" 
                                     class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#1a3d1f] px-4 py-3 font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2d6a35] focus:outline-none focus:ring-2 focus:ring-[#2d6a35] focus:ring-offset-2">
@@ -187,66 +221,111 @@
             <div class="p-6 bg-white">
 
                 {{-- Filtros --}}
-                <form method="GET" action="{{ route('stock-movements.index') }}" class="mb-6 p-4 bg-gray-50 rounded-lg">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        {{-- Filtro por Produto --}}
+                <section class="mb-6 overflow-hidden rounded-2xl border bg-white shadow-sm"
+                    style="border-color:#d4e8d6;box-shadow:0 18px 45px rgba(26,61,31,0.06);">
+                    <div class="border-b px-5 py-5 sm:px-6"
+                        style="border-color:#d4e8d6;background:linear-gradient(135deg,#ffffff 0%,#f6fbf4 100%);">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Produto
-                            </label>
-                            <select name="product_id" class="w-full rounded-lg border-gray-300">
-                                <option value="">Todos os produtos</option>
-                                @foreach($products as $product)
-                                    <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : '' }}>
-                                        {{ $product->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        {{-- Filtro por Tipo --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Tipo
-                            </label>
-                            <select name="type" class="w-full rounded-lg border-gray-300">
-                                <option value="">Todos</option>
-                                <option value="entry" {{ request('type') == 'entry' ? 'selected' : '' }}>Entrada</option>
-                                <option value="exit" {{ request('type') == 'exit' ? 'selected' : '' }}>Saída</option>
-                            </select>
-                        </div>
-
-                        {{-- Filtro por Data Inicial --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Data Inicial
-                            </label>
-                            <input type="date" name="date_from" value="{{ request('date_from') }}" 
-                                   class="w-full rounded-lg border-gray-300">
-                        </div>
-
-                        {{-- Filtro por Data Final --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Data Final
-                            </label>
-                            <input type="date" name="date_to" value="{{ request('date_to') }}" 
-                                   class="w-full rounded-lg border-gray-300">
+                            <h2 class="mt-3 font-display text-xl font-bold tracking-tight" style="color:#142f18;">
+                                Filtrar movimentações
+                            </h2>
+                            <p class="mt-1 text-sm" style="color:#6e876f;">
+                                Refine o histórico por produto, tipo de operação e período.
+                            </p>
                         </div>
                     </div>
 
-                    <div class="mt-4 flex items-center gap-2">
-                        <button type="submit" class="px-4 py-2 rounded-lg text-sm font-semibold text-white" style="background:#2d6a35;">
-                            Filtrar
-                        </button>
-                        <a href="{{ route('stock-movements.index') }}" class="px-4 py-2 rounded-lg text-sm font-semibold border" style="border-color:#d4e8d6;color:#4a5c4c;">
-                            Limpar
-                        </a>
-                    </div>
-                </form>
+                    <form method="GET" action="{{ route('stock-movements.index') }}" class="px-5 py-4 sm:px-6">
+                        <div class="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1.2fr)_minmax(170px,0.6fr)_minmax(160px,0.6fr)_minmax(160px,0.6fr)]">
+                            <div>
+                                <label for="product_id" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
+                                    Produto
+                                </label>
+                                <select id="product_id" name="product_id"
+                                    class="h-11 w-full rounded-xl border px-3 text-sm transition-all focus:border-green-600 focus:ring-green-600"
+                                    style="border-color:#d4e8d6;background:#f9f6f0;color:#1a3d1f;">
+                                    <option value="">Todos os produtos</option>
+                                    @foreach($products as $product)
+                                        <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : '' }}>
+                                            {{ $product->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                {{-- Tabela --}}
-                <div class="bg-white rounded-xl border overflow-hidden" style="border-color:#d4e8d6;">
+                            <div>
+                                <label for="type" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
+                                    Tipo
+                                </label>
+                                <select id="type" name="type"
+                                    class="h-11 w-full rounded-xl border px-3 text-sm transition-all focus:border-green-600 focus:ring-green-600"
+                                    style="border-color:#d4e8d6;background:#f9f6f0;color:#1a3d1f;">
+                                    <option value="">Todos</option>
+                                    <option value="entry" {{ request('type') == 'entry' ? 'selected' : '' }}>Entrada</option>
+                                    <option value="exit" {{ request('type') == 'exit' ? 'selected' : '' }}>Saída</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="date_from" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
+                                    Data inicial
+                                </label>
+                                <input id="date_from" type="date" name="date_from" value="{{ request('date_from') }}"
+                                    class="h-11 w-full rounded-xl border px-3 text-sm transition-all focus:border-green-600 focus:ring-green-600"
+                                    style="border-color:#d4e8d6;background:#f9f6f0;color:#1a3d1f;">
+                            </div>
+
+                            <div>
+                                <label for="date_to" class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">
+                                    Data final
+                                </label>
+                                <input id="date_to" type="date" name="date_to" value="{{ request('date_to') }}"
+                                    class="h-11 w-full rounded-xl border px-3 text-sm transition-all focus:border-green-600 focus:ring-green-600"
+                                    style="border-color:#d4e8d6;background:#f9f6f0;color:#1a3d1f;">
+                            </div>
+                        </div>
+
+                        <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+                            <button type="submit"
+                                class="inline-flex h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-px"
+                                style="background:#2d6a35;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"/>
+                                </svg>
+                                Filtrar
+                            </button>
+                            <a href="{{ route('stock-movements.index') }}"
+                                class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-bold transition-all duration-200 hover:bg-red-50"
+                                style="border-color:#fecaca;color:#991b1b;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"/>
+                                </svg>
+                                Limpar
+                            </a>
+                        </div>
+
+                        @if (request('product_id') || request('type') || request('date_from') || request('date_to'))
+                            <div class="mt-4 rounded-xl border px-3 py-2 text-xs" style="border-color:#d4e8d6;background:#f9f6f0;color:#4a5c4c;">
+                                <span class="font-bold">Filtros ativos:</span>
+                                @if (request('product_id'))
+                                    <span class="ml-1 font-semibold">produto selecionado</span>
+                                @endif
+                                @if (request('type'))
+                                    <span class="ml-1 font-semibold">tipo "{{ request('type') === 'entry' ? 'Entrada' : 'Saída' }}"</span>
+                                @endif
+                                @if (request('date_from'))
+                                    <span class="ml-1 font-semibold">início {{ \Carbon\Carbon::parse(request('date_from'))->format('d/m/Y') }}</span>
+                                @endif
+                                @if (request('date_to'))
+                                    <span class="ml-1 font-semibold">fim {{ \Carbon\Carbon::parse(request('date_to'))->format('d/m/Y') }}</span>
+                                @endif
+                            </div>
+                        @endif
+                    </form>
+                </section>
+
+                {{-- Tabela / Cards --}}
+                <div class="hidden bg-white rounded-xl border overflow-hidden xl:block" style="border-color:#d4e8d6;">
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="border-b" style="border-color:#d4e8d6;background:#f9f6f0;">
@@ -348,6 +427,74 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                <div class="grid gap-3 xl:hidden">
+                    @forelse($movements as $movement)
+                        @php
+                            $typeTone = $movement->type === 'entry'
+                                ? ['background:#dcfce7;color:#166534;', 'background:#22c55e;', '+', 'Entrada']
+                                : ['background:#fef2f2;color:#b91c1c;', 'background:#ef4444;', '-', 'Saída'];
+                            $reasonTone = ($movement->reason ?? 'manual') === 'expired'
+                                ? ['background:#fff7ed;color:#c2410c;', 'Vencimento']
+                                : ['background:#f8fafc;color:#475569;', 'Manual'];
+                        @endphp
+
+                        <article class="rounded-2xl border bg-white p-4 shadow-sm" style="border-color:#d4e8d6;">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <h2 class="break-words text-base font-bold" style="color:#1a3d1f;">{{ $movement->product->name }}</h2>
+                                    <p class="mt-1 text-xs" style="color:#8a9e8c;">
+                                        {{ $movement->created_at->format('d/m/Y H:i') }} · {{ $movement->user->name }}
+                                    </p>
+                                </div>
+                                <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold" style="{{ $typeTone[0] }}">
+                                    <span class="h-1.5 w-1.5 rounded-full" style="{{ $typeTone[1] }}"></span>
+                                    {{ $typeTone[3] }}
+                                </span>
+                            </div>
+
+                            <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+                                <div class="rounded-xl border px-3 py-2" style="border-color:#edf4ee;background:#fbfdfb;">
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.14em]" style="color:#8a9e8c;">Quantidade</p>
+                                    <p class="mt-1 text-lg font-bold {{ $movement->type === 'entry' ? 'text-green-700' : 'text-red-600' }}">
+                                        {{ $typeTone[2] }}{{ $movement->quantity }}
+                                    </p>
+                                </div>
+
+                                <div class="rounded-xl border px-3 py-2" style="border-color:#edf4ee;background:#fbfdfb;">
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.14em]" style="color:#8a9e8c;">Estoque</p>
+                                    <p class="mt-1 font-bold" style="color:#1a3d1f;">{{ $movement->previous_quantity }} -> {{ $movement->new_quantity }}</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold" style="{{ $reasonTone[0] }}">
+                                    {{ $reasonTone[1] }}
+                                </span>
+                                @if($movement->productBatch)
+                                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold" style="background:#eef7ef;color:#2d6a35;">
+                                        Lote {{ $movement->productBatch->number }}
+                                    </span>
+                                @else
+                                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold" style="background:#f8fafc;color:#64748b;">
+                                        Sem lote
+                                    </span>
+                                @endif
+                            </div>
+
+                            @if($movement->productBatch)
+                                <div class="mt-4 border-t pt-3 text-sm" style="border-color:#edf4ee;color:#4a5c4c;">
+                                    <span class="font-bold">Fornecedor:</span>
+                                    {{ $movement->productBatch->supplier->name ?? 'Fornecedor N/A' }}
+                                </div>
+                            @endif
+                        </article>
+                    @empty
+                        <div class="rounded-2xl border border-dashed bg-white px-4 py-10 text-center text-sm" style="border-color:#d4e8d6;color:#8a9e8c;">
+                            Nenhuma movimentação encontrada.
+                        </div>
+                    @endforelse
                 </div>
 
                 {{-- Paginação --}}

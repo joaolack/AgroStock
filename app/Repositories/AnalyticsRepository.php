@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductBatch;
 use App\Models\StockMovement;
 use App\Models\Supplier;
 use Carbon\Carbon;
@@ -106,12 +107,27 @@ class AnalyticsRepository
 
     public function productsForAbcCurve(): Collection
     {
+        $today = Carbon::now()->toDateString();
+        $validStockSubquery = ProductBatch::query()
+            ->select('product_id')
+            ->selectRaw('SUM(quantity) as valid_stock_quantity')
+            ->where('quantity', '>', 0)
+            ->where(function ($query) use ($today) {
+                $query->whereNull('expiration_date')
+                    ->orWhereDate('expiration_date', '>=', $today);
+            })
+            ->groupBy('product_id');
+
         return Product::query()
-            ->where('stock_quantity', '>', 0)
-            ->select('id', 'name', 'stock_quantity', 'cost_price')
-            ->selectRaw('(cost_price * stock_quantity) as stock_value')
+            ->leftJoinSub($validStockSubquery, 'valid_stock', function ($join) {
+                $join->on('valid_stock.product_id', '=', 'products.id');
+            })
+            ->whereRaw('COALESCE(valid_stock.valid_stock_quantity, 0) > 0')
+            ->select('products.id', 'products.name', 'products.cost_price')
+            ->selectRaw('COALESCE(valid_stock.valid_stock_quantity, 0) as stock_quantity')
+            ->selectRaw('(products.cost_price * COALESCE(valid_stock.valid_stock_quantity, 0)) as stock_value')
             ->orderByDesc('stock_value')
-            ->orderBy('name')
+            ->orderBy('products.name')
             ->get();
     }
 }

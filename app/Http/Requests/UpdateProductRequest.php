@@ -24,7 +24,19 @@ class UpdateProductRequest extends FormRequest
             'category_id' => ['required', 'exists:categories,id'],
             'supplier_id' => ['nullable', 'exists:suppliers,id'],
             'minimum_stock' => ['required', 'integer', 'min:0'],
-            'expiration_date' => ['nullable', 'date', 'after:today'],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'name' => 'nome do produto',
+            'description' => 'descrição',
+            'selling_price' => 'preço de venda',
+            'cost_price' => 'preço de custo',
+            'category_id' => 'categoria',
+            'supplier_id' => 'fornecedor',
+            'minimum_stock' => 'estoque mínimo',
         ];
     }
 }

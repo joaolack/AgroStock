@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\ProductBatch;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -14,56 +13,58 @@ class ProductUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_updating_product_expiration_date_updates_active_batch_expiration_date(): void
+    public function test_product_edit_page_shows_batch_validity_without_expiration_date_field(): void
     {
         $user = User::factory()->create();
         $category = Category::create([
             'name' => 'Insumos',
             'description' => null,
         ]);
-        $oldExpirationDate = now()->addYear()->toDateString();
-        $newExpirationDate = now()->addMonth()->toDateString();
-        [$product, $batch] = $this->createProductWithBatch($category, $oldExpirationDate, $oldExpirationDate);
+        [$product] = $this->createProductWithBatch(
+            $category,
+            now()->addYear()->toDateString(),
+            now()->addMonth()->toDateString()
+        );
 
-        $response = $this->actingAs($user)->put(route('products.update', $product), [
-            'name' => $product->name,
-            'description' => $product->description,
-            'selling_price' => '15.00',
-            'cost_price' => '10.00',
-            'category_id' => $category->id,
-            'supplier_id' => null,
-            'minimum_stock' => 5,
-            'expiration_date' => $newExpirationDate,
-        ]);
+        $response = $this->actingAs($user)->get(route('products.edit', $product));
 
-        $response->assertRedirect(route('products.index'));
-        $this->assertProductAndBatchExpirationDate($product->id, $batch->id, $newExpirationDate);
+        $response
+            ->assertOk()
+            ->assertSee('Validade dos lotes', false)
+            ->assertDontSee('name="expiration_date"', false);
     }
 
-    public function test_saving_product_again_fixes_existing_expiration_date_mismatch_with_active_batch(): void
+    public function test_updating_product_keeps_product_and_batch_expiration_dates_unchanged(): void
     {
         $user = User::factory()->create();
         $category = Category::create([
             'name' => 'Insumos',
             'description' => null,
         ]);
-        $oldBatchExpirationDate = now()->addYear()->toDateString();
-        $productExpirationDate = now()->addMonth()->toDateString();
-        [$product, $batch] = $this->createProductWithBatch($category, $productExpirationDate, $oldBatchExpirationDate);
+        $productExpirationDate = now()->addYear()->toDateString();
+        $batchExpirationDate = now()->addMonth()->toDateString();
+        [$product, $batch] = $this->createProductWithBatch($category, $productExpirationDate, $batchExpirationDate);
 
         $response = $this->actingAs($user)->put(route('products.update', $product), [
-            'name' => $product->name,
+            'name' => $product->name.' atualizado',
             'description' => $product->description,
             'selling_price' => '15.00',
             'cost_price' => '10.00',
             'category_id' => $category->id,
             'supplier_id' => null,
             'minimum_stock' => 5,
-            'expiration_date' => $productExpirationDate,
+            'expiration_date' => now()->addDays(10)->toDateString(),
         ]);
 
         $response->assertRedirect(route('products.index'));
-        $this->assertProductAndBatchExpirationDate($product->id, $batch->id, $productExpirationDate);
+        $this->assertSame(
+            $productExpirationDate,
+            Product::findOrFail($product->id)->expiration_date?->toDateString()
+        );
+        $this->assertSame(
+            $batchExpirationDate,
+            $batch->refresh()->expiration_date?->toDateString()
+        );
     }
 
     private function createProductWithBatch(Category $category, string $productExpirationDate, string $batchExpirationDate): array
@@ -91,15 +92,4 @@ class ProductUpdateTest extends TestCase
         return [$product, $batch];
     }
 
-    private function assertProductAndBatchExpirationDate(int $productId, int $batchId, string $expirationDate): void
-    {
-        $this->assertSame(
-            $expirationDate,
-            Product::findOrFail($productId)->expiration_date?->toDateString()
-        );
-        $this->assertSame(
-            $expirationDate,
-            ProductBatch::findOrFail($batchId)->expiration_date?->toDateString()
-        );
-    }
 }

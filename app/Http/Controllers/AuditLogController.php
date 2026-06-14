@@ -67,14 +67,14 @@ class AuditLogController extends Controller
                 'products' => 'Produtos',
                 'categories' => 'Categorias',
                 'suppliers' => 'Fornecedores',
-                'stock_movements' => 'Movimentacoes',
+                'stock_movements' => 'Movimentações',
             ],
             'actions' => [
-                'created' => 'Criacao',
-                'updated' => 'Edicao',
-                'deleted' => 'Exclusao',
+                'created' => 'Criação',
+                'updated' => 'Edição',
+                'deleted' => 'Exclusão',
                 'entry' => 'Entrada',
-                'exit' => 'Saida',
+                'exit' => 'Saída',
             ],
         ]);
     }

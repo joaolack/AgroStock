@@ -15,9 +15,7 @@
     <header class="sticky top-0 z-20 flex items-center justify-between px-6 py-3.5 border-b bg-white/80 backdrop-blur-md"
             style="border-color:#d4e8d6;">
         <div class="flex items-center gap-3">
-            <button class="lg:hidden p-2 rounded-lg hover:bg-agro-pale transition colors" style="color:#4a5c4c;">
-                Menu
-            </button>
+            <x-mobile-menu-button />
             <div>
                 <h1 class="font-display text-xl font-bold tracking-tight" style="color:#1a3d1f;">Perfil</h1>
                 <p class="text-[11px]" style="color:#8a9e8c;">Gerencie os dados de acesso da sua conta</p>

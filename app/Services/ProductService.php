@@ -29,51 +29,12 @@ class ProductService
         });
     }
 
-    public function updateWithActiveBatches(Product $product, array $validated): Product
+    public function update(Product $product, array $validated): Product
     {
         return DB::transaction(function () use ($product, $validated) {
-            $originalExpirationDate = $product->expiration_date?->toDateString();
-
             $product->update($validated);
-
-            if (array_key_exists('expiration_date', $validated)) {
-                $this->syncActiveBatchExpirationDate(
-                    $product,
-                    $originalExpirationDate,
-                    $product->expiration_date?->toDateString()
-                );
-            }
 
             return $product->refresh();
         });
-    }
-
-    private function syncActiveBatchExpirationDate(
-        Product $product,
-        ?string $originalExpirationDate,
-        ?string $newExpirationDate
-    ): void {
-        $activeBatches = $product->batches()
-            ->where('quantity', '>', 0)
-            ->get();
-
-        if ($activeBatches->isEmpty()) {
-            return;
-        }
-
-        $batchIds = $activeBatches
-            ->filter(function ($batch) use ($activeBatches, $originalExpirationDate) {
-                return $activeBatches->count() === 1
-                    || $batch->expiration_date?->toDateString() === $originalExpirationDate;
-            })
-            ->modelKeys();
-
-        if ($batchIds === []) {
-            return;
-        }
-
-        $product->batches()
-            ->whereKey($batchIds)
-            ->update(['expiration_date' => $newExpirationDate]);
     }
 }

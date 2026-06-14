@@ -5,9 +5,9 @@ namespace App\Repositories;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Supplier;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class ProductReportRepository
 {
@@ -33,28 +33,23 @@ class ProductReportRepository
 
     public function products(array $filters, bool $withRelations = false): Collection
     {
-        return $this->filteredProductQuery($filters, $withRelations)
+        return $this->normalizeAvailableStock(
+            $this->filteredProductQuery($filters, $withRelations)
             ->orderBy('name')
-            ->get();
+            ->get()
+        );
     }
 
     public function insights(array $filters): array
     {
-        $query = $this->filteredProductQuery($filters);
-
-        $totals = (clone $query)
-            ->select([
-                DB::raw('COALESCE(SUM(selling_price * stock_quantity), 0) as potential_sale_value'),
-                DB::raw('COALESCE(SUM((selling_price - cost_price) * stock_quantity), 0) as estimated_profit'),
-            ])
-            ->first();
+        $products = $this->products($filters);
 
         return [
-            'potential_sale_value' => (float) ($totals->potential_sale_value ?? 0),
-            'estimated_profit' => (float) ($totals->estimated_profit ?? 0),
-            'low_stock_items' => (clone $query)
-                ->where('stock_quantity', '>', 0)
-                ->whereColumn('stock_quantity', '<=', 'minimum_stock')
+            'potential_sale_value' => (float) $products->sum(fn (Product $product) => (float) $product->selling_price * (int) $product->stock_quantity),
+            'estimated_profit' => (float) $products->sum(fn (Product $product) => ((float) $product->selling_price - (float) $product->cost_price) * (int) $product->stock_quantity),
+            'low_stock_items' => $products
+                ->filter(fn (Product $product) => (int) $product->stock_quantity > 0
+                    && (int) $product->stock_quantity <= (int) $product->minimum_stock)
                 ->count(),
         ];
     }
@@ -64,6 +59,8 @@ class ProductReportRepository
         $query = $withRelations
             ? Product::with(['category', 'supplier'])
             : Product::query();
+
+        $this->withAvailableStock($query);
 
         if (! empty($filters['category_id'])) {
             $query->where('category_id', $filters['category_id']);
@@ -82,15 +79,59 @@ class ProductReportRepository
         }
 
         $stockStatus = $filters['stock_status'] ?? 'all';
-        if ($stockStatus === 'in_stock') {
-            $query->whereColumn('stock_quantity', '>', 'minimum_stock');
-        } elseif ($stockStatus === 'low_stock') {
-            $query->where('stock_quantity', '>', 0)
-                ->whereColumn('stock_quantity', '<=', 'minimum_stock');
-        } elseif ($stockStatus === 'out_of_stock') {
-            $query->where('stock_quantity', '<=', 0);
+        if ($stockStatus !== 'all') {
+            $matchingIds = $this->productIdsForStockStatus((clone $query)->get(), $stockStatus);
+
+            $matchingIds->isEmpty()
+                ? $query->whereRaw('1 = 0')
+                : $query->whereIn('products.id', $matchingIds);
         }
 
         return $query;
+    }
+
+    private function withAvailableStock(Builder $query): Builder
+    {
+        $today = Carbon::now()->toDateString();
+
+        return $query->withSum([
+            'batches as available_stock_quantity' => function ($query) use ($today) {
+                $query->where('quantity', '>', 0)
+                    ->where(function ($query) use ($today) {
+                        $query->whereNull('expiration_date')
+                            ->orWhereDate('expiration_date', '>=', $today);
+                    });
+            },
+        ], 'quantity');
+    }
+
+    private function normalizeAvailableStock(Collection $products): Collection
+    {
+        return $products->map(function (Product $product) {
+            $availableStock = (int) ($product->available_stock_quantity ?? 0);
+
+            $product->setAttribute('available_stock_quantity', $availableStock);
+            $product->setAttribute('stock_quantity', $availableStock);
+
+            return $product;
+        });
+    }
+
+    private function productIdsForStockStatus(Collection $products, string $stockStatus): Collection
+    {
+        return $this->normalizeAvailableStock($products)
+            ->filter(function (Product $product) use ($stockStatus) {
+                $availableStock = (int) $product->stock_quantity;
+                $minimumStock = (int) $product->minimum_stock;
+
+                return match ($stockStatus) {
+                    'in_stock' => $availableStock > $minimumStock,
+                    'low_stock' => $availableStock > 0 && $availableStock <= $minimumStock,
+                    'out_of_stock' => $availableStock <= 0,
+                    default => true,
+                };
+            })
+            ->pluck('id')
+            ->values();
     }
 }

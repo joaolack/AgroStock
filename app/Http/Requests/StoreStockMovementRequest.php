@@ -34,4 +34,23 @@ class StoreStockMovementRequest extends FormRequest
             'expiration_date' => ['nullable', 'date', 'after:today'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'product_id.required' => 'Selecione um produto.',
+            'product_id.exists' => 'O produto selecionado não existe.',
+            'quantity.required' => 'Informe a quantidade.',
+            'quantity.integer' => 'A quantidade deve ser um número inteiro.',
+            'quantity.min' => 'A quantidade deve ser pelo menos 1.',
+            'type.required' => 'Informe o tipo de movimentação.',
+            'type.in' => 'O tipo de movimentação selecionado é inválido.',
+            'batch_number.required' => 'Informe o número do lote.',
+            'batch_number.unique' => 'Este número de lote já existe para o produto selecionado.',
+            'supplier_id.required' => 'Selecione um fornecedor.',
+            'supplier_id.exists' => 'O fornecedor selecionado não existe.',
+            'expiration_date.date' => 'Informe uma data de validade válida.',
+            'expiration_date.after' => 'A validade deve ser posterior a hoje.',
+        ];
+    }
 }

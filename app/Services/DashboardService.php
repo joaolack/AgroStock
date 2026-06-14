@@ -6,40 +6,42 @@ use App\Models\Product;
 use App\Models\ProductBatch;
 use App\Models\StockMovement;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class DashboardService
 {
     public function data(): array
     {
-        $criticalStockQuery = Product::whereColumn('stock_quantity', '<=', 'minimum_stock');
+        $productsWithAvailableStock = $this->productsWithAvailableStock();
+        $criticalStockItems = $productsWithAvailableStock
+            ->filter(fn (Product $product) => (int) $product->available_stock_quantity <= (int) $product->minimum_stock)
+            ->sortBy([
+                ['available_stock_quantity', 'asc'],
+                ['name', 'asc'],
+            ])
+            ->values();
 
-        $criticalStockCount = (clone $criticalStockQuery)->count();
-        $criticalStock = (clone $criticalStockQuery)
-            ->with('category')
-            ->orderBy('stock_quantity', 'asc')
-            ->limit(5)
-            ->get();
+        $criticalStockCount = $criticalStockItems->count();
+        $criticalStock = $criticalStockItems->take(5);
 
-        $purchaseSuggestions = (clone $criticalStockQuery)
-            ->with('category')
-            ->withSum([
-                'stockMovements as exits_last_30_days' => function ($query) {
-                    $query->where('type', 'exit')
-                        ->where('created_at', '>=', Carbon::now()->subDays(30)->startOfDay());
-                },
-            ], 'quantity')
-            ->orderBy('stock_quantity', 'asc')
-            ->limit(5)
-            ->get()
-            ->map(function (Product $product) {
-                $monthlyExits = (int) ($product->exits_last_30_days ?? 0);
+        $exitsLast30Days = StockMovement::query()
+            ->where('type', 'exit')
+            ->where('created_at', '>=', Carbon::now()->subDays(30)->startOfDay())
+            ->select('product_id', DB::raw('SUM(quantity) as quantity'))
+            ->groupBy('product_id')
+            ->pluck('quantity', 'product_id');
+
+        $purchaseSuggestions = $criticalStockItems
+            ->take(6)
+            ->map(function (Product $product) use ($exitsLast30Days) {
+                $monthlyExits = (int) ($exitsLast30Days[$product->id] ?? 0);
                 $safetyTarget = (int) ceil($product->minimum_stock * 1.5);
                 $targetStock = max($safetyTarget, $monthlyExits);
 
                 $product->monthly_exits = $monthlyExits;
                 $product->suggested_target_stock = $targetStock;
-                $product->suggested_purchase_quantity = max(0, $targetStock - (int) $product->stock_quantity);
+                $product->suggested_purchase_quantity = max(0, $targetStock - (int) $product->available_stock_quantity);
 
                 return $product;
             });
@@ -79,6 +81,32 @@ class DashboardService
             'movementExitsTotal' => $movementExitsTotal,
             'stockTrend' => $this->stockTrend($movementEntriesTotal, $movementExitsTotal),
         ];
+    }
+
+    private function productsWithAvailableStock(): Collection
+    {
+        $today = Carbon::now()->toDateString();
+
+        return Product::query()
+            ->with('category')
+            ->withSum([
+                'batches as available_stock_quantity' => function ($query) use ($today) {
+                    $query->where('quantity', '>', 0)
+                        ->where(function ($query) use ($today) {
+                            $query->whereNull('expiration_date')
+                                ->orWhereDate('expiration_date', '>=', $today);
+                        });
+                },
+            ], 'quantity')
+            ->get()
+            ->map(function (Product $product) {
+                $product->setAttribute(
+                    'available_stock_quantity',
+                    (int) ($product->available_stock_quantity ?? 0)
+                );
+
+                return $product;
+            });
     }
 
     private function movementSeries()
