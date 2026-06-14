@@ -1,6 +1,6 @@
 # AgroStock
 
-Sistema web em Laravel para controle de estoque, com cadastro de produtos, categorias, fornecedores, lotes, movimentacoes, validade, relatorios e analises.
+Sistema web em Laravel para controle de estoque, com cadastro de produtos, categorias, fornecedores, lotes, movimentações, validade, relatórios e análises.
 
 ## Requisitos
 
@@ -11,19 +11,19 @@ Sistema web em Laravel para controle de estoque, com cadastro de produtos, categ
 
 ## Instalacao
 
-1. Instale as dependencias PHP:
+1. Instale as dependências PHP:
 
 ```bash
 composer install
 ```
 
-2. Instale as dependencias do front-end:
+2. Instale as dependências do front-end:
 
 ```bash
 npm install
 ```
 
-3. Copie o arquivo de configuracao:
+3. Copie o arquivo de configuração:
 
 ```bash
 copy .env.example .env
@@ -35,7 +35,7 @@ No Linux ou macOS:
 cp .env.example .env
 ```
 
-4. Gere a chave da aplicacao:
+4. Gere a chave da aplicação:
 
 ```bash
 php artisan key:generate
@@ -43,7 +43,7 @@ php artisan key:generate
 
 ## Banco de dados
 
-Por padrao, o projeto pode usar SQLite ou MySQL.
+Por padrão, o projeto pode usar SQLite ou MySQL.
 
 ### MySQL
 
@@ -83,7 +83,7 @@ php artisan serve
 No segundo:
 
 ```bash
-npm run dev
+npm run build
 ```
 
 Depois acesse:
