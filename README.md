@@ -1,65 +1,53 @@
 # AgroStock
 
-AgroStock e um sistema web para controle de estoque, produtos, fornecedores, lotes, validade e movimentacoes.
+Sistema web em Laravel para controle de estoque, com cadastro de produtos, categorias, fornecedores, lotes, movimentacoes, validade, relatorios e analises.
 
-O projeto foi desenvolvido em Laravel e tem foco em organizar a rotina de estoque de forma simples: cadastrar produtos, acompanhar entradas e saidas, visualizar alertas, controlar vencimentos e gerar relatorios.
+## Requisitos
 
-## Funcionalidades
+- PHP 8.2 ou superior
+- Composer
+- Node.js e npm
+- Banco de dados MySQL ou SQLite
 
-- Login e cadastro de usuarios.
-- Dashboard com indicadores de estoque.
-- CRUD de produtos, categorias e fornecedores.
-- Controle de entradas e saidas de estoque.
-- Controle de lotes e datas de validade.
-- Alertas para estoque baixo, falta de estoque e vencimentos.
-- Analises com graficos, rankings e curva ABC.
-- Exportacao de relatorios em PDF e Excel.
-- Historico de exportacoes.
-- Logs de auditoria das principais acoes do sistema.
+## Instalacao
 
-## Tecnologias
-
-- PHP 8.2+
-- Laravel 12
-- Laravel Breeze
-- Livewire / Volt
-- Blade
-- Tailwind CSS
-- Vite
-- Chart.js
-- SQLite ou MySQL
-- DomPDF
-- Laravel Excel
-
-## Estrutura
-
-O projeto segue a estrutura padrao do Laravel, com algumas camadas para organizar melhor as regras de negocio:
-
-- `Controllers`: entrada das requisicoes.
-- `Requests`: validacoes.
-- `Services`: regras de negocio.
-- `Repositories`: consultas e montagem de dados.
-- `Observers`: registros automaticos de auditoria.
-- `Views`: telas em Blade.
-- `Migrations` e `Seeders`: estrutura e dados iniciais do banco.
-
-## Como rodar
-
-Instale as dependencias do projeto:
+1. Instale as dependencias PHP:
 
 ```bash
 composer install
+```
+
+2. Instale as dependencias do front-end:
+
+```bash
 npm install
 ```
 
-Crie o arquivo `.env` e gere a chave da aplicacao:
+3. Copie o arquivo de configuracao:
+
+```bash
+copy .env.example .env
+```
+
+No Linux ou macOS:
 
 ```bash
 cp .env.example .env
+```
+
+4. Gere a chave da aplicacao:
+
+```bash
 php artisan key:generate
 ```
 
-Configure o MySQL no arquivo `.env`:
+## Banco de dados
+
+Por padrao, o projeto pode usar SQLite ou MySQL.
+
+### MySQL
+
+Atualize o arquivo `.env` com os dados do seu banco:
 
 ```env
 DB_CONNECTION=mysql
@@ -70,35 +58,53 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Crie o banco de dados no MySQL com o mesmo nome configurado em `DB_DATABASE`. Depois execute as migrations e seeders:
+Depois crie o banco informado em `DB_DATABASE`.
+
+## Criar tabelas e dados iniciais
+
+Execute as migrations e os seeders:
 
 ```bash
 php artisan migrate --seed
 ```
 
-Inicie o Vite e o servidor Laravel:
+Os seeders criam dados iniciais de categorias e produtos para testes.
+
+## Executar o projeto
+
+Abra dois terminais na raiz do projeto.
+
+No primeiro:
 
 ```bash
-npm run dev
 php artisan serve
 ```
 
-Acesse:
+No segundo:
+
+```bash
+npm run dev
+```
+
+Depois acesse:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-## Comandos uteis
+## Testes
+
+Para rodar os testes automatizados:
 
 ```bash
 php artisan test
-php artisan route:list
-php artisan optimize:clear
-php artisan view:cache
 ```
 
-## Autor
+## Comandos uteis
 
-Joao Gabriel Lack  
-GitHub: [https://github.com/joaolack](https://github.com/joaolack)
+```bash
+php artisan optimize:clear
+php artisan route:list
+npm run build
+```
+
