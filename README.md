@@ -4,7 +4,7 @@ Sistema web em Laravel para controle de estoque, com cadastro de produtos, categ
 
 ## Requisitos
 
-- PHP 8.2 ou superior
+- PHP 8.4
 - Composer
 - Node.js e npm
 - Banco de dados MySQL ou SQLite
