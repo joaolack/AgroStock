@@ -7,6 +7,7 @@
         || $filters['action'] !== ''
         || $filters['date_from'] !== ''
         || $filters['date_to'] !== '';
+    $displayTimezone = config('app.display_timezone');
 
     $actionTone = function (string $action): array {
         return match ($action) {
@@ -281,8 +282,8 @@
                                 @endphp
                                 <tr class="transition-colors hover:bg-[#fbfdfb]">
                                     <td class="whitespace-nowrap px-5 py-4" style="color:#4a5c4c;">
-                                        <p class="font-semibold">{{ $log->created_at->timezone('America/Sao_Paulo')->format('d/m/Y') }}</p>
-                                        <p class="text-xs" style="color:#8a9e8c;">{{ $log->created_at->timezone('America/Sao_Paulo')->format('H:i') }}</p>
+                                        <p class="font-semibold">{{ $log->created_at->timezone($displayTimezone)->format('d/m/Y') }}</p>
+                                        <p class="text-xs" style="color:#8a9e8c;">{{ $log->created_at->timezone($displayTimezone)->format('H:i') }}</p>
                                     </td>
                                     <td class="whitespace-nowrap px-5 py-4">
                                         <p class="font-bold" style="color:#1a3d1f;">{{ $log->user?->name ?? 'Sistema' }}</p>
@@ -363,7 +364,7 @@
                                 <div class="min-w-0">
                                     <p class="text-sm font-bold" style="color:#1a3d1f;">{{ $log->description ?? 'Registro de auditoria' }}</p>
                                     <p class="mt-1 text-xs" style="color:#8a9e8c;">
-                                        {{ $log->created_at->timezone('America/Sao_Paulo')->format('d/m/Y H:i') }} · {{ $log->user?->name ?? 'Sistema' }}
+                                        {{ $log->created_at->timezone($displayTimezone)->format('d/m/Y H:i') }} · {{ $log->user?->name ?? 'Sistema' }}
                                     </p>
                                 </div>
                             </div>

@@ -7,6 +7,7 @@ use App\Models\ProductBatch;
 use App\Models\StockMovement;
 use App\Models\Supplier;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -80,6 +81,85 @@ class StockMovementTest extends TestCase
             'previous_quantity' => 10,
             'new_quantity' => 6,
         ]);
+    }
+
+    public function test_split_fifo_exit_is_displayed_in_consumption_order(): void
+    {
+        $user = User::factory()->create();
+        $product = Product::factory()->create([
+            'name' => 'Produto FIFO',
+            'stock_quantity' => 165,
+        ]);
+
+        ProductBatch::factory()->for($product)->create([
+            'number' => 'FIFO-001',
+            'original_quantity' => 25,
+            'quantity' => 25,
+            'expiration_date' => now()->addDay()->toDateString(),
+        ]);
+
+        ProductBatch::factory()->for($product)->create([
+            'number' => 'FIFO-002',
+            'original_quantity' => 140,
+            'quantity' => 140,
+            'expiration_date' => now()->addDays(2)->toDateString(),
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('stock-movements.store'), [
+                'product_id' => $product->id,
+                'quantity' => 40,
+                'type' => 'exit',
+            ])
+            ->assertRedirect(route('stock-movements.index'));
+
+        $this->assertSame(125, $product->refresh()->stock_quantity);
+
+        $this->actingAs($user)
+            ->get(route('stock-movements.index', [
+                'product_id' => $product->id,
+                'type' => 'exit',
+            ]))
+            ->assertOk()
+            ->assertSeeInOrder([
+                '165 -> 140',
+                '140 -> 125',
+            ], false);
+
+        $this->actingAs($user)
+            ->get(route('audit-logs.index', [
+                'module' => 'stock_movements',
+                'action' => 'exit',
+            ]))
+            ->assertOk()
+            ->assertSeeInOrder([
+                'Saida de 25 unidade(s)',
+                'Saida de 15 unidade(s)',
+            ]);
+    }
+
+    public function test_movement_history_displays_configured_brazil_display_time(): void
+    {
+        $this->assertSame('UTC', config('app.timezone'));
+        $this->assertSame('America/Sao_Paulo', config('app.display_timezone'));
+
+        $user = User::factory()->create();
+        $product = Product::factory()->create(['name' => 'Produto com horario']);
+        $batch = ProductBatch::factory()->for($product)->create();
+
+        StockMovement::factory()->create([
+            'product_id' => $product->id,
+            'product_batch_id' => $batch->id,
+            'user_id' => $user->id,
+            'created_at' => CarbonImmutable::parse('2026-06-22 15:30:00', 'UTC'),
+            'updated_at' => CarbonImmutable::parse('2026-06-22 15:30:00', 'UTC'),
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('stock-movements.index', ['product_id' => $product->id]))
+            ->assertOk()
+            ->assertSee('22/06/2026 12:30')
+            ->assertDontSee('22/06/2026 15:30');
     }
 
     public function test_exit_does_not_allow_negative_stock(): void

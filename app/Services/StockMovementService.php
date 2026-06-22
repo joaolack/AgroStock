@@ -73,6 +73,7 @@ class StockMovementService
         }
 
         $remaining = $quantity;
+        $movementTimestamp = now();
 
         foreach ($batches as $batch) {
             if ($remaining <= 0) {
@@ -97,6 +98,8 @@ class StockMovementService
                 'quantity' => $consumed,
                 'previous_quantity' => $movementPreviousQuantity,
                 'new_quantity' => $product->stock_quantity,
+                'created_at' => $movementTimestamp,
+                'updated_at' => $movementTimestamp,
             ]);
 
             $remaining -= $consumed;

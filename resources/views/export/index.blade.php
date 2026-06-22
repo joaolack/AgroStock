@@ -11,6 +11,7 @@
     ];
 
     $selectedReportType = old('report_type', $filters['report_type'] ?? 'general_stock');
+    $displayTimezone = config('app.display_timezone');
 @endphp
 
 <div class="flex min-h-screen flex-1 flex-col overflow-hidden">
@@ -272,7 +273,7 @@
                         @forelse ($histories as $history)
                             <tr class="transition-colors hover:bg-[#fbfdfb]">
                                 <td class="whitespace-nowrap px-5 py-4 font-semibold" style="color:#1a3d1f;">
-                                    {{ $history->created_at->timezone('America/Sao_Paulo')->format('d/m/Y H:i') }}
+                                    {{ $history->created_at->timezone($displayTimezone)->format('d/m/Y H:i') }}
                                 </td>
                                 <td class="px-5 py-4" style="color:#4a5c4c;">
                                     {{ $reportLabels[$history->report_type] ?? $history->report_type }}
@@ -301,7 +302,7 @@
                                     {{ $reportLabels[$history->report_type] ?? $history->report_type }}
                                 </h3>
                                 <p class="mt-1 text-xs" style="color:#8a9e8c;">
-                                    {{ $history->created_at->timezone('America/Sao_Paulo')->format('d/m/Y H:i') }}
+                                    {{ $history->created_at->timezone($displayTimezone)->format('d/m/Y H:i') }}
                                 </p>
                             </div>
                             <span class="inline-flex shrink-0 items-center rounded-full px-3 py-1 text-xs font-bold" style="background:#eaf6e9;color:#2d6a35;">

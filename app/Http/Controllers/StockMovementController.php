@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\StockMovement;
 use App\Models\Supplier;
 use App\Services\StockMovementService;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 
 class StockMovementController extends Controller
@@ -17,8 +18,10 @@ class StockMovementController extends Controller
 
     public function index(Request $request)
     {
+        $timezone = config('app.display_timezone');
         $stockMovements = StockMovement::with(['product', 'productBatch.supplier', 'user'])
-            ->orderBy('created_at', 'desc');
+            ->orderByDesc('created_at')
+            ->orderBy('id');
 
         if ($request->filled('product_id')) {
             $stockMovements->where('product_id', $request->product_id);
@@ -29,11 +32,23 @@ class StockMovementController extends Controller
         }
 
         if ($request->filled('date_from')) {
-            $stockMovements->whereDate('created_at', '>=', $request->date_from);
+            $stockMovements->where(
+                'created_at',
+                '>=',
+                CarbonImmutable::createFromFormat('Y-m-d', $request->date_from, $timezone)
+                    ->startOfDay()
+                    ->utc()
+            );
         }
 
         if ($request->filled('date_to')) {
-            $stockMovements->whereDate('created_at', '<=', $request->date_to);
+            $stockMovements->where(
+                'created_at',
+                '<=',
+                CarbonImmutable::createFromFormat('Y-m-d', $request->date_to, $timezone)
+                    ->endOfDay()
+                    ->utc()
+            );
         }
 
         $movements = $stockMovements->paginate(15);

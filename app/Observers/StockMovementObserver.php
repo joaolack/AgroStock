@@ -15,7 +15,7 @@ class StockMovementObserver
         $action = $movement->type === 'entry' ? 'entry' : 'exit';
         $productName = $movement->product?->name ?? "Produto #{$movement->product_id}";
 
-        app(AuditService::class)->record(
+        $auditLog = app(AuditService::class)->record(
             $movement,
             $action,
             'stock_movements',
@@ -34,5 +34,8 @@ class StockMovementObserver
             "{$typeLabel} de {$movement->quantity} unidade(s) registrada para {$productName}.",
             $movement->user_id
         );
+
+        $auditLog->created_at = $movement->created_at;
+        $auditLog->save();
     }
 }

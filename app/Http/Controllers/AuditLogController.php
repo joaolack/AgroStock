@@ -11,7 +11,7 @@ class AuditLogController extends Controller
 {
     public function index(Request $request)
     {
-        $timezone = 'America/Sao_Paulo';
+        $timezone = config('app.display_timezone');
         $filters = [
             'user_id' => trim((string) $request->query('user_id', '')),
             'module' => trim((string) $request->query('module', '')),
@@ -55,7 +55,9 @@ class AuditLogController extends Controller
             );
         }
 
-        $auditLogs = $auditLogsQuery->latest('created_at')
+        $auditLogs = $auditLogsQuery
+            ->orderByDesc('created_at')
+            ->orderBy('id')
             ->paginate(15)
             ->withQueryString();
 

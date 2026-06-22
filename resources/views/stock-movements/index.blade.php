@@ -4,6 +4,7 @@
 @php
     $showEntryErrors = old('type') === 'entry';
     $showExitErrors = old('type') === 'exit';
+    $displayTimezone = config('app.display_timezone');
 @endphp
 
 <div class="flex-1 flex flex-col min-h-screen overflow-hidden">
@@ -367,7 +368,7 @@
                             @forelse($movements as $movement)
                                 <tr class="hover:bg-gray-50 transition">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $movement->created_at->format('d/m/Y H:i') }}
+                                        {{ $movement->created_at->timezone($displayTimezone)->format('d/m/Y H:i') }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
                                         {{ $movement->product->name }}
@@ -445,7 +446,7 @@
                                 <div class="min-w-0">
                                     <h2 class="break-words text-base font-bold" style="color:#1a3d1f;">{{ $movement->product->name }}</h2>
                                     <p class="mt-1 text-xs" style="color:#8a9e8c;">
-                                        {{ $movement->created_at->format('d/m/Y H:i') }} · {{ $movement->user->name }}
+                                        {{ $movement->created_at->timezone($displayTimezone)->format('d/m/Y H:i') }} · {{ $movement->user->name }}
                                     </p>
                                 </div>
                                 <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold" style="{{ $typeTone[0] }}">
