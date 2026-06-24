@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductBatch;
+use App\Models\StockMovement;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -122,6 +123,87 @@ class AnalyticsAbcCurveTest extends TestCase
                 && $abcProduct
                 && $abcProduct['stock_quantity'] === 2
                 && $abcProduct['stock_value'] === 20.0;
+        });
+    }
+
+    public function test_stale_products_include_valid_stock_without_any_movement(): void
+    {
+        $category = Category::create([
+            'name' => 'Sementes',
+            'description' => null,
+        ]);
+
+        $product = Product::factory()
+            ->for($category)
+            ->create([
+                'name' => 'Produto sem movimento',
+                'stock_quantity' => 10,
+                'created_at' => now()->subDays(120),
+                'updated_at' => now()->subDays(120),
+            ]);
+
+        ProductBatch::factory()
+            ->for($product)
+            ->create([
+                'supplier_id' => null,
+                'quantity' => 10,
+                'original_quantity' => 10,
+                'expiration_date' => now()->addMonth()->toDateString(),
+            ]);
+
+        $response = $this->actingAs(User::factory()->create())
+            ->get(route('analytics.index', ['stale_days' => 90]));
+
+        $response->assertOk();
+        $response->assertViewHas('staleProducts', function ($staleProducts) {
+            $staleProduct = $staleProducts->firstWhere('name', 'Produto sem movimento');
+
+            return $staleProduct
+                && $staleProduct['has_movements'] === false
+                && $staleProduct['valid_stock_quantity'] === 10
+                && $staleProduct['days_without_movement'] >= 90;
+        });
+    }
+
+    public function test_stale_products_ignore_expired_stock(): void
+    {
+        $category = Category::create([
+            'name' => 'Adubos',
+            'description' => null,
+        ]);
+
+        $expiredProduct = Product::factory()
+            ->for($category)
+            ->create([
+                'name' => 'Produto vencido parado',
+                'stock_quantity' => 8,
+                'created_at' => now()->subDays(120),
+                'updated_at' => now()->subDays(120),
+            ]);
+
+        ProductBatch::factory()
+            ->for($expiredProduct)
+            ->create([
+                'supplier_id' => null,
+                'quantity' => 8,
+                'original_quantity' => 8,
+                'expiration_date' => now()->subDay()->toDateString(),
+            ]);
+
+        StockMovement::factory()
+            ->for($expiredProduct)
+            ->create([
+                'product_batch_id' => null,
+                'created_at' => now()->subDays(120),
+                'updated_at' => now()->subDays(120),
+            ]);
+
+        $response = $this->actingAs(User::factory()->create())
+            ->get(route('analytics.index', ['stale_days' => 90]));
+
+        $response->assertOk();
+        $response->assertViewHas('staleProducts', function ($staleProducts) {
+            return $staleProducts->firstWhere('name', 'Produto vencido parado') === null;
         });
     }
 }

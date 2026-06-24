@@ -14,6 +14,8 @@ class DashboardService
     public function data(): array
     {
         $productsWithAvailableStock = $this->productsWithAvailableStock();
+        [$movementStartDate, $movementEndDate] = $this->movementPeriod();
+
         $criticalStockItems = $productsWithAvailableStock
             ->filter(fn (Product $product) => (int) $product->available_stock_quantity <= (int) $product->minimum_stock)
             ->sortBy([
@@ -27,7 +29,10 @@ class DashboardService
 
         $exitsLast30Days = StockMovement::query()
             ->where('type', 'exit')
-            ->where('created_at', '>=', Carbon::now()->subDays(30)->startOfDay())
+            ->whereBetween('created_at', [
+                $movementStartDate->copy()->utc(),
+                $movementEndDate->copy()->utc(),
+            ])
             ->select('product_id', DB::raw('SUM(quantity) as quantity'))
             ->groupBy('product_id')
             ->pluck('quantity', 'product_id');
@@ -70,11 +75,13 @@ class DashboardService
             'closeToExpiry' => $closeToExpiry,
             'closeToExpiryCount' => $closeToExpiryCount,
             'totalProducts' => Product::count(),
-            'outOfStockProducts' => Product::where('stock_quantity', 0)->count(),
-            'totalStockValue' => Product::select(DB::raw('SUM(cost_price * stock_quantity) as total_cost'))
-                ->value('total_cost') ?? 0,
+            'outOfStockProducts' => $productsWithAvailableStock
+                ->filter(fn (Product $product) => (int) $product->available_stock_quantity === 0)
+                ->count(),
+            'totalStockValue' => $productsWithAvailableStock
+                ->sum(fn (Product $product) => (float) $product->cost_price * (int) $product->available_stock_quantity),
             'todayMovementsCount' => StockMovement::query()
-                ->whereBetween('created_at', [Carbon::now()->startOfDay(), Carbon::now()->endOfDay()])
+                ->whereBetween('created_at', $this->todayPeriodForDatabase())
                 ->count(),
             'movementSeries' => $movementSeries,
             'movementEntriesTotal' => $movementEntriesTotal,
@@ -111,18 +118,19 @@ class DashboardService
 
     private function movementSeries()
     {
-        $movementStartDate = Carbon::now()->subDays(29)->startOfDay();
-        $movementEndDate = Carbon::now()->endOfDay();
+        [$movementStartDate, $movementEndDate] = $this->movementPeriod();
+        $timezone = config('app.display_timezone');
 
         $movementRows = StockMovement::query()
-            ->whereBetween('created_at', [$movementStartDate, $movementEndDate])
-            ->selectRaw('DATE(created_at) as day')
-            ->selectRaw("SUM(CASE WHEN type = 'entry' THEN quantity ELSE 0 END) as entries")
-            ->selectRaw("SUM(CASE WHEN type = 'exit' THEN quantity ELSE 0 END) as exits")
-            ->groupBy('day')
-            ->orderBy('day')
+            ->whereBetween('created_at', [
+                $movementStartDate->copy()->utc(),
+                $movementEndDate->copy()->utc(),
+            ])
             ->get()
-            ->keyBy('day');
+            ->groupBy(fn (StockMovement $movement) => $movement->created_at
+                ->copy()
+                ->timezone($timezone)
+                ->toDateString());
 
         return collect(range(0, 29))->map(function (int $offset) use ($movementStartDate, $movementRows) {
             $date = $movementStartDate->copy()->addDays($offset);
@@ -131,10 +139,30 @@ class DashboardService
 
             return [
                 'day' => $date->format('d/m'),
-                'entries' => $row ? (int) $row->entries : 0,
-                'exits' => $row ? (int) $row->exits : 0,
+                'entries' => $row ? (int) $row->where('type', 'entry')->sum('quantity') : 0,
+                'exits' => $row ? (int) $row->where('type', 'exit')->sum('quantity') : 0,
             ];
         });
+    }
+
+    private function movementPeriod(): array
+    {
+        $now = Carbon::now(config('app.display_timezone'));
+
+        return [
+            $now->copy()->subDays(29)->startOfDay(),
+            $now->copy()->endOfDay(),
+        ];
+    }
+
+    private function todayPeriodForDatabase(): array
+    {
+        $now = Carbon::now(config('app.display_timezone'));
+
+        return [
+            $now->copy()->startOfDay()->utc(),
+            $now->copy()->endOfDay()->utc(),
+        ];
     }
 
     private function stockTrend(int $movementEntriesTotal, int $movementExitsTotal): array

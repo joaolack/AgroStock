@@ -208,11 +208,8 @@
                                                     @include('categories.partials.delete-blocked-modal', ['category' => $category])
                                                 </div>
                                             @else
-                                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="inline-block"
-                                                    onsubmit="return confirm('Tem certeza que deseja excluir esta categoria?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
+                                                <div x-data="{ open: false }" class="inline-block">
+                                                    <button type="button" @click="open = true"
                                                         class="inline-flex h-9 w-9 items-center justify-center rounded-xl border transition-all duration-200 hover:-translate-y-px hover:bg-red-50"
                                                         style="border-color:#fecaca;color:#dc2626;"
                                                         title="Excluir categoria"
@@ -223,7 +220,9 @@
                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 6l-1 14H6L5 6"/>
                                                         </svg>
                                                     </button>
-                                                </form>
+
+                                                    @include('categories.partials.delete-confirm-modal', ['category' => $category, 'context' => 'desktop'])
+                                                </div>
                                             @endif
                                         </div>
                                     </td>
@@ -286,11 +285,8 @@
                                         @include('categories.partials.delete-blocked-modal', ['category' => $category])
                                     </div>
                                 @else
-                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="inline-block"
-                                        onsubmit="return confirm('Tem certeza que deseja excluir esta categoria?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
+                                    <div x-data="{ open: false }" class="inline-block">
+                                        <button type="button" @click="open = true"
                                             class="inline-flex h-9 w-9 items-center justify-center rounded-xl border transition-all duration-200 hover:bg-red-50"
                                             style="border-color:#fecaca;color:#dc2626;"
                                             title="Excluir categoria"
@@ -301,7 +297,9 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 6l-1 14H6L5 6"/>
                                             </svg>
                                         </button>
-                                    </form>
+
+                                        @include('categories.partials.delete-confirm-modal', ['category' => $category, 'context' => 'mobile'])
+                                    </div>
                                 @endif
                             </div>
                         </div>

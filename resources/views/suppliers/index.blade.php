@@ -204,13 +204,11 @@
                                         @if ($supplier->active)
                                             <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold"
                                                 style="background:#dcfce7;color:#166534;">
-                                                <span class="h-1.5 w-1.5 rounded-full" style="background:#22c55e;"></span>
                                                 Ativo
                                             </span>
                                         @else
                                             <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold"
                                                 style="background:#f1f5f9;color:#475569;">
-                                                <span class="h-1.5 w-1.5 rounded-full" style="background:#94a3b8;"></span>
                                                 Inativo
                                             </span>
                                         @endif
@@ -252,11 +250,8 @@
                                                     @include('suppliers.partials.delete-blocked-modal', ['supplier' => $supplier])
                                                 </div>
                                             @else
-                                                <form action="{{ route('suppliers.destroy', $supplier) }}" method="POST" class="inline-block"
-                                                    onsubmit="return confirm('Tem certeza que deseja excluir este fornecedor?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
+                                                <div x-data="{ open: false }" class="inline-block">
+                                                    <button type="button" @click="open = true"
                                                         class="inline-flex h-9 w-9 items-center justify-center rounded-xl border transition-all duration-200 hover:-translate-y-px hover:bg-red-50"
                                                         style="border-color:#fecaca;color:#dc2626;"
                                                         title="Excluir fornecedor"
@@ -267,7 +262,9 @@
                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 6l-1 14H6L5 6"/>
                                                         </svg>
                                                     </button>
-                                                </form>
+
+                                                    @include('suppliers.partials.delete-confirm-modal', ['supplier' => $supplier, 'context' => 'desktop'])
+                                                </div>
                                             @endif
                                         </div>
                                     </td>
@@ -370,11 +367,8 @@
                                         @include('suppliers.partials.delete-blocked-modal', ['supplier' => $supplier])
                                     </div>
                                 @else
-                                    <form action="{{ route('suppliers.destroy', $supplier) }}" method="POST" class="inline-block"
-                                        onsubmit="return confirm('Tem certeza que deseja excluir este fornecedor?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
+                                    <div x-data="{ open: false }" class="inline-block">
+                                        <button type="button" @click="open = true"
                                             class="inline-flex h-9 w-9 items-center justify-center rounded-xl border transition-all duration-200 hover:bg-red-50"
                                             style="border-color:#fecaca;color:#dc2626;"
                                             title="Excluir fornecedor"
@@ -385,7 +379,9 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 6l-1 14H6L5 6"/>
                                             </svg>
                                         </button>
-                                    </form>
+
+                                        @include('suppliers.partials.delete-confirm-modal', ['supplier' => $supplier, 'context' => 'mobile'])
+                                    </div>
                                 @endif
                             </div>
                         </div>

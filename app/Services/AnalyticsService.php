@@ -92,8 +92,11 @@ class AnalyticsService
         return $this->analyticsRepository
             ->staleProducts($staleCutoffDate)
             ->map(function ($product) {
-                $lastMovementAt = Carbon::parse($product->last_movement_at);
-                $daysWithoutMovement = (int) $lastMovementAt
+                $lastActivityAt = Carbon::parse($product->last_activity_at);
+                $lastMovementAt = $product->last_movement_at
+                    ? Carbon::parse($product->last_movement_at)
+                    : null;
+                $daysWithoutMovement = (int) $lastActivityAt
                     ->copy()
                     ->startOfDay()
                     ->diffInDays(Carbon::now()->startOfDay());
@@ -101,8 +104,11 @@ class AnalyticsService
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
+                    'last_activity_at' => $lastActivityAt,
                     'last_movement_at' => $lastMovementAt,
                     'days_without_movement' => $daysWithoutMovement,
+                    'has_movements' => (bool) $product->has_movements,
+                    'valid_stock_quantity' => (int) $product->valid_stock_quantity,
                 ];
             });
     }

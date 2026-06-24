@@ -9,7 +9,6 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class ProductRepository
 {
@@ -145,8 +144,8 @@ class ProductRepository
 
     private function totalStockValue(): float
     {
-        return (float) (Product::select(DB::raw('SUM(cost_price * stock_quantity) as total_cost'))
-            ->value('total_cost') ?? 0);
+        return (float) $this->productsWithAvailableStock()
+            ->sum(fn (Product $product) => (float) $product->cost_price * (int) $product->available_stock_quantity);
     }
 
     private function withAvailableStock(Builder $query): Builder

@@ -127,11 +127,11 @@
         @endif
 
         <section class="grid grid-cols-1 gap-3 md:grid-cols-3">
-            <div class="overflow-hidden rounded-2xl border bg-white p-5 shadow-sm" style="border-color:#fecaca;">
+            <div class="overflow-hidden rounded-2xl border bg-white p-5 shadow-sm">
                 <div class="flex items-start justify-between gap-3">
                     <div>
-                        <p class="text-sm font-bold" style="color:#991b1b;">Vencidos</p>
-                        <p class="mt-3 text-3xl font-bold tracking-tight" style="color:#b91c1c;">{{ $summary['expired'] }}</p>
+                        <p class="text-sm font-bold">Vencidos</p>
+                        <p class="mt-3 text-3xl font-bold tracking-tight">{{ $summary['expired'] }}</p>
                     </div>
                     <span class="flex h-10 w-10 items-center justify-center rounded-xl" style="background:#fee2e2;color:#b91c1c;">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -141,14 +141,14 @@
                         </svg>
                     </span>
                 </div>
-                <p class="mt-2 text-xs" style="color:#b91c1c;">Itens que exigem ação imediata</p>
+                <p class="mt-2 text-xs">Itens que exigem ação imediata</p>
             </div>
 
-            <div class="overflow-hidden rounded-2xl border bg-white p-5 shadow-sm" style="border-color:#fde68a;">
+            <div class="overflow-hidden rounded-2xl border bg-white p-5 shadow-sm">
                 <div class="flex items-start justify-between gap-3">
                     <div>
-                        <p class="text-sm font-bold" style="color:#92400e;">Vence em 60 dias</p>
-                        <p class="mt-3 text-3xl font-bold tracking-tight" style="color:#b45309;">{{ $summary['soon'] }}</p>
+                        <p class="text-sm font-bold">Vence em 60 dias</p>
+                        <p class="mt-3 text-3xl font-bold tracking-tight">{{ $summary['soon'] }}</p>
                     </div>
                     <span class="flex h-10 w-10 items-center justify-center rounded-xl" style="background:#fef3c7;color:#b45309;">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -157,14 +157,14 @@
                         </svg>
                     </span>
                 </div>
-                <p class="mt-2 text-xs" style="color:#92400e;">Itens próximos do vencimento</p>
+                <p class="mt-2 text-xs">Itens próximos do vencimento</p>
             </div>
 
-            <div class="overflow-hidden rounded-2xl border bg-white p-5 shadow-sm" style="border-color:#bbf7d0;">
+            <div class="overflow-hidden rounded-2xl border bg-white p-5 shadow-sm">
                 <div class="flex items-start justify-between gap-3">
                     <div>
-                        <p class="text-sm font-bold" style="color:#166534;">Seguros</p>
-                        <p class="mt-3 text-3xl font-bold tracking-tight" style="color:#166534;">{{ $summary['safe'] }}</p>
+                        <p class="text-sm font-bold">Seguros</p>
+                        <p class="mt-3 text-3xl font-bold tracking-tight">{{ $summary['safe'] }}</p>
                     </div>
                     <span class="flex h-10 w-10 items-center justify-center rounded-xl" style="background:#dcfce7;color:#166534;">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -172,7 +172,7 @@
                         </svg>
                     </span>
                 </div>
-                <p class="mt-2 text-xs" style="color:#166534;">Itens fora da janela crítica</p>
+                <p class="mt-2 text-xs">Itens fora da janela crítica</p>
             </div>
         </section>
 
@@ -236,26 +236,19 @@
                                 <td class="px-4 py-4">
                                     <div class="flex justify-end">
                                         @if ($canWriteOff)
-                                            <form
-                                                method="POST"
-                                                action="{{ route('expiration-date.batches.write-off', $batch) }}"
-                                                class="flex items-center justify-end gap-2"
-                                                onsubmit="return confirm('Confirmar baixa de produto vencido neste lote?')"
-                                            >
-                                                @csrf
-                                                <input
-                                                    type="number"
-                                                    name="quantity"
-                                                    min="1"
-                                                    max="{{ $writeOffMaxQuantity }}"
-                                                    value="{{ $writeOffMaxQuantity }}"
-                                                    class="h-10 w-20 rounded-xl border-gray-300 text-sm focus:border-red-500 focus:ring-red-500"
-                                                >
-                                                <button type="submit"
+                                            <div x-data="{ open: false }" class="inline-flex justify-end">
+                                                <button type="button" @click="open = true"
                                                     class="inline-flex h-10 items-center justify-center rounded-xl bg-red-600 px-3 text-xs font-bold text-white transition hover:bg-red-700">
                                                     Dar baixa
                                                 </button>
-                                            </form>
+
+                                                @include('expiration_date.partials.write-off-confirm-modal', [
+                                                    'item' => $item,
+                                                    'batch' => $batch,
+                                                    'writeOffMaxQuantity' => $writeOffMaxQuantity,
+                                                    'context' => 'desktop',
+                                                ])
+                                            </div>
                                         @elseif (($item['status'] ?? '') === 'Vencido')
                                             <span class="text-xs font-semibold text-gray-500">Sem estoque</span>
                                         @else
@@ -338,27 +331,19 @@
 
                     <div class="mt-4 border-t pt-3" style="border-color:#edf4ee;">
                         @if ($canWriteOff)
-                            <form
-                                method="POST"
-                                action="{{ route('expiration-date.batches.write-off', $batch) }}"
-                                class="grid grid-cols-[minmax(76px,0.45fr)_minmax(120px,1fr)] gap-2"
-                                onsubmit="return confirm('Confirmar baixa de produto vencido neste lote?')"
-                            >
-                                @csrf
-                                <input
-                                    type="number"
-                                    name="quantity"
-                                    min="1"
-                                    max="{{ $writeOffMaxQuantity }}"
-                                    value="{{ $writeOffMaxQuantity }}"
-                                    class="h-11 w-full rounded-xl border-gray-300 text-sm focus:border-red-500 focus:ring-red-500"
-                                    aria-label="Quantidade para baixa"
-                                >
-                                <button type="submit"
-                                    class="inline-flex h-11 items-center justify-center rounded-xl bg-red-600 px-3 text-sm font-bold text-white transition hover:bg-red-700">
+                            <div x-data="{ open: false }">
+                                <button type="button" @click="open = true"
+                                    class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-red-600 px-3 text-sm font-bold text-white transition hover:bg-red-700">
                                     Dar baixa
                                 </button>
-                            </form>
+
+                                @include('expiration_date.partials.write-off-confirm-modal', [
+                                    'item' => $item,
+                                    'batch' => $batch,
+                                    'writeOffMaxQuantity' => $writeOffMaxQuantity,
+                                    'context' => 'mobile',
+                                ])
+                            </div>
                         @elseif (($item['status'] ?? '') === 'Vencido')
                             <p class="text-sm font-semibold text-gray-500">Sem estoque para baixa</p>
                         @else

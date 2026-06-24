@@ -246,7 +246,7 @@
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                         <h2 class="font-display text-lg font-bold" style="color:#1a3d1f;">Produtos parados</h2>
-                        <p class="text-sm" style="color:#8a9e8c;">Produtos em estoque sem movimentação há pelo menos X dias</p>
+                        <p class="text-sm" style="color:#8a9e8c;">Produtos com estoque v&aacute;lido sem movimenta&ccedil;&atilde;o h&aacute; pelo menos {{ $staleDays }} dias</p>
                     </div>
                     <form method="GET" action="{{ route('analytics.index') }}" class="flex flex-col gap-2 sm:flex-row sm:items-end">
                         <input type="hidden" name="period" value="{{ $period }}">
@@ -270,7 +270,7 @@
             <div class="p-5 sm:p-6">
                 @if ($staleProducts->isEmpty())
                     <div class="rounded-xl border border-dashed px-4 py-10 text-center" style="border-color:#d4e8d6;color:#8a9e8c;">
-                        Nenhum produto em estoque sem movimentação há {{ $staleDays }} dias ou mais.
+                        Nenhum produto com estoque válido sem movimentações há {{ $staleDays }} dias ou mais.
                     </div>
                 @else
                     <div class="grid gap-3 lg:grid-cols-2">
@@ -281,7 +281,12 @@
                                     está há <span class="font-bold">{{ $staleProduct['days_without_movement'] }} dias</span> sem movimentação.
                                 </p>
                                 <p class="mt-1 text-xs" style="color:#8a9e8c;">
-                                    Última movimentação em {{ $staleProduct['last_movement_at']->format('d/m/Y H:i') }}.
+                                    Estoque válido: {{ number_format($staleProduct['valid_stock_quantity'], 0, ',', '.') }}.
+                                    @if ($staleProduct['has_movements'])
+                                        Última movimentação em {{ $staleProduct['last_movement_at']->format('d/m/Y H:i') }}.
+                                    @else
+                                        Sem movimentação registrada desde o cadastro em {{ $staleProduct['last_activity_at']->format('d/m/Y H:i') }}.
+                                    @endif
                                 </p>
                             </div>
                         @endforeach

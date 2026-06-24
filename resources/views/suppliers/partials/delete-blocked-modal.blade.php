@@ -39,9 +39,6 @@
                     </div>
 
                     <div class="min-w-0 flex-1">
-                        <p class="text-[11px] font-bold uppercase tracking-[0.18em]" style="color:#c2410c;">
-                            Exclusão bloqueada
-                        </p>
                         <h3
                             id="supplier-delete-blocked-title-{{ $supplier->id }}"
                             class="mt-1 break-words font-display text-xl font-bold leading-tight"
@@ -50,7 +47,7 @@
                             Não é possível excluir este fornecedor
                         </h3>
                         <p class="mt-2 break-words text-sm leading-6" style="color:#5f715f;">
-                            Existem produtos vinculados a ele. Para manter a consistência do estoque, remova ou altere esses produtos antes de excluir o fornecedor.
+                            Existem produtos vinculados a ele. Remova ou altere esses produtos antes de excluir o fornecedor.
                         </p>
                     </div>
 
@@ -89,15 +86,6 @@
                             {{ $supplier->products_count === 1 ? 'produto' : 'produtos' }}
                         </p>
                     </div>
-                </div>
-
-                <div
-                    class="mt-4 rounded-2xl border p-4"
-                    style="border-color:#cfe7d1;background:#eef7ef;"
-                >
-                    <p class="break-words text-sm leading-6" style="color:#1a3d1f;">
-                        Próximo passo: abra a listagem de produtos e troque o fornecedor dos itens vinculados, ou remova os produtos que não serão mais usados.
-                    </p>
                 </div>
 
                 <div class="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">

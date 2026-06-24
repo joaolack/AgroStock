@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductBatch;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,6 +24,41 @@ class ProductCrudTest extends TestCase
         $response
             ->assertOk()
             ->assertViewHas('products', fn ($products) => $products->getCollection()->contains($product));
+    }
+
+    public function test_product_summary_stock_value_uses_only_valid_batches(): void
+    {
+        $expiredStockProduct = Product::factory()->create([
+            'stock_quantity' => 8,
+            'cost_price' => 10,
+        ]);
+        ProductBatch::factory()->for($expiredStockProduct)->create([
+            'original_quantity' => 8,
+            'quantity' => 8,
+            'expiration_date' => now()->subDay()->toDateString(),
+        ]);
+
+        $partiallyValidProduct = Product::factory()->create([
+            'stock_quantity' => 10,
+            'cost_price' => 5,
+        ]);
+        ProductBatch::factory()->for($partiallyValidProduct)->create([
+            'original_quantity' => 4,
+            'quantity' => 4,
+            'expiration_date' => now()->addMonth()->toDateString(),
+        ]);
+        ProductBatch::factory()->for($partiallyValidProduct)->create([
+            'original_quantity' => 6,
+            'quantity' => 6,
+            'expiration_date' => now()->subDay()->toDateString(),
+        ]);
+
+        $response = $this->actingAs(User::factory()->create())
+            ->get(route('products.index'));
+
+        $response
+            ->assertOk()
+            ->assertViewHas('totalStockValue', fn ($value) => (float) $value === 20.0);
     }
 
     public function test_product_can_be_created_with_valid_data(): void

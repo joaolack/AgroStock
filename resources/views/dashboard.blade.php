@@ -108,11 +108,6 @@
                 style="border-color:#d4e8d6;background:linear-gradient(135deg,#ffffff 0%,#f6fbf4 100%);">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                        <div class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.18em]"
-                            style="background:#eaf6e9;color:#2d6a35;">
-                            <span class="h-1.5 w-1.5 rounded-full" style="background:#4caf50;"></span>
-                            Últimos 30 dias
-                        </div>
                         <h2 class="mt-3 font-display text-xl font-bold tracking-tight sm:text-2xl" style="color:#142f18;">
                             Entradas x saídas
                         </h2>
@@ -293,7 +288,7 @@
                     </div>
 
                     @if ($criticalStockCount > 5)
-                        <a href="{{ route('products.index') }}"
+                        <a href="{{ route('products.index', ['stock_status' => 'Crítico']) }}"
                             class="mt-4 inline-flex w-full items-center justify-center rounded-xl border px-4 py-2.5 text-sm font-bold transition hover:bg-agro-pale"
                             style="border-color:#d4e8d6;color:#4a5c4c;">
                             Ver todos os {{ $criticalStockCount }} itens críticos
