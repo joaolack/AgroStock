@@ -16,15 +16,28 @@ class AnalyticsRepository
     {
         return Supplier::query()
             ->active()
-            ->leftJoin('products', 'products.supplier_id', '=', 'suppliers.id')
+            ->leftJoin('products', function ($join) {
+                $join->on('products.supplier_id', '=', 'suppliers.id')
+                    ->where('products.stock_quantity', '>', 0);
+            })
             ->select('suppliers.id', 'suppliers.name')
             ->selectRaw('COUNT(products.id) as products_count')
+            ->selectRaw('COALESCE(SUM(products.stock_quantity), 0) as stock_quantity')
             ->selectRaw('COALESCE(SUM(products.cost_price * products.stock_quantity), 0) as stock_value')
             ->groupBy('suppliers.id', 'suppliers.name')
-            ->orderByDesc('products_count')
+            ->havingRaw('COALESCE(SUM(products.cost_price * products.stock_quantity), 0) > 0')
             ->orderByDesc('stock_value')
+            ->orderByDesc('products_count')
             ->limit($limit)
             ->get();
+    }
+
+    public function currentStockValue(): float
+    {
+        return (float) Product::query()
+            ->where('stock_quantity', '>', 0)
+            ->selectRaw('COALESCE(SUM(cost_price * stock_quantity), 0) as stock_value')
+            ->value('stock_value');
     }
 
     public function categoryAnalysis(int $limit = 10): Collection
@@ -39,31 +52,6 @@ class AnalyticsRepository
             ->orderByDesc('stock_value')
             ->limit($limit)
             ->get();
-    }
-
-    public function supplierDependencyDistribution(): Collection
-    {
-        return Supplier::query()
-            ->active()
-            ->leftJoin('products', function ($join) {
-                $join->on('products.supplier_id', '=', 'suppliers.id')
-                    ->where('products.stock_quantity', '>', 0);
-            })
-            ->select('suppliers.name')
-            ->selectRaw('COALESCE(SUM(products.cost_price * products.stock_quantity), 0) as stock_value')
-            ->groupBy('suppliers.id', 'suppliers.name')
-            ->havingRaw('COALESCE(SUM(products.cost_price * products.stock_quantity), 0) > 0')
-            ->orderByDesc('stock_value')
-            ->get();
-    }
-
-    public function unassignedStockValue(): float
-    {
-        return (float) Product::query()
-            ->whereNull('supplier_id')
-            ->where('stock_quantity', '>', 0)
-            ->selectRaw('COALESCE(SUM(cost_price * stock_quantity), 0) as stock_value')
-            ->value('stock_value');
     }
 
     public function movementQuantityByType(Carbon $startDate, Carbon $endDate, string $type): int

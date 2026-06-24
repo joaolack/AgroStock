@@ -295,21 +295,87 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-1 gap-5 xl:grid-cols-2">
+        <section class="grid grid-cols-1 gap-5">
             <div class="overflow-hidden rounded-2xl border bg-white shadow-sm" style="border-color:#d4e8d6;">
                 <div class="border-b px-5 py-4" style="border-color:#d4e8d6;">
-                    <h2 class="font-display text-lg font-bold" style="color:#1a3d1f;">Distribuição de dependência</h2>
-                    <p class="text-sm" style="color:#8a9e8c;">Percentual do valor em estoque por fornecedor</p>
+                    <h2 class="font-display text-lg font-bold" style="color:#1a3d1f;">Ranking de fornecedores</h2>
+                    <p class="text-sm" style="color:#8a9e8c;">Valor em estoque, participação no total e nível de dependência</p>
                 </div>
 
                 <div class="p-5 sm:p-6">
-                    @if ($supplierDependencyDistribution->isEmpty())
+                    @if ($supplierRanking->isEmpty())
                         <div class="rounded-xl border border-dashed px-4 py-12 text-center" style="border-color:#d4e8d6;color:#8a9e8c;">
-                            Não há estoque com fornecedor para gerar a distribuição.
+                            Nenhum fornecedor encontrado para gerar o ranking.
                         </div>
                     @else
-                        <div class="relative h-[260px]">
-                            <canvas id="supplierDependencyChart"></canvas>
+                        <div class="mb-4 rounded-xl border px-4 py-3" style="border-color:#d4e8d6;background:#fbfdfb;">
+                            <p class="text-xs font-bold uppercase tracking-[0.14em]" style="color:#8a9e8c;">Base do cálculo</p>
+                            <p class="mt-1 text-lg font-bold" style="color:#1a3d1f;">R$ {{ number_format($supplierRankingTotalStockValue, 2, ',', '.') }}</p>
+                        </div>
+
+                        <div class="relative h-[320px]">
+                            <canvas id="supplierChart"></canvas>
+                        </div>
+
+                        <div class="mt-5 hidden overflow-x-auto rounded-2xl border md:block" style="border-color:#d4e8d6;">
+                            <table class="min-w-full divide-y divide-gray-100">
+                                <thead style="background:#f6fbf6;">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">Fornecedor</th>
+                                        <th class="px-4 py-3 text-right text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">Valor</th>
+                                        <th class="px-4 py-3 text-right text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">Dependência</th>
+                                        <th class="px-4 py-3 text-center text-xs font-bold uppercase tracking-[0.14em]" style="color:#4a5c4c;">Risco</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100 bg-white">
+                                    @foreach ($supplierRanking as $supplier)
+                                        @php
+                                            $dependencyStyles = [
+                                                'Alta' => ['bg' => '#fee2e2', 'text' => '#991b1b'],
+                                                'Moderada' => ['bg' => '#fef3c7', 'text' => '#92400e'],
+                                                'Baixa' => ['bg' => '#dcfce7', 'text' => '#166534'],
+                                            ][$supplier['dependency_level']];
+                                        @endphp
+                                        <tr class="transition-colors hover:bg-[#fbfdfb]">
+                                            <td class="whitespace-nowrap px-4 py-3 text-sm font-bold" style="color:#1a3d1f;">{{ $supplier['name'] }}</td>
+                                            <td class="whitespace-nowrap px-4 py-3 text-right text-sm" style="color:#4a5c4c;">R$ {{ number_format($supplier['stock_value'], 2, ',', '.') }}</td>
+                                            <td class="whitespace-nowrap px-4 py-3 text-right text-sm font-bold" style="color:#1a3d1f;">{{ number_format($supplier['dependency_percentage'], 1, ',', '.') }}%</td>
+                                            <td class="whitespace-nowrap px-4 py-3 text-center">
+                                                <span class="inline-flex min-w-20 items-center justify-center rounded-full px-2.5 py-1 text-xs font-bold" style="background:{{ $dependencyStyles['bg'] }};color:{{ $dependencyStyles['text'] }};">
+                                                    {{ $supplier['dependency_level'] }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-5 grid gap-3 md:hidden">
+                            @foreach ($supplierRanking as $supplier)
+                                @php
+                                    $dependencyStyles = [
+                                        'Alta' => ['bg' => '#fee2e2', 'text' => '#991b1b'],
+                                        'Moderada' => ['bg' => '#fef3c7', 'text' => '#92400e'],
+                                        'Baixa' => ['bg' => '#dcfce7', 'text' => '#166534'],
+                                    ][$supplier['dependency_level']];
+                                @endphp
+                                <article class="rounded-2xl border p-4" style="border-color:#d4e8d6;background:#fbfdfb;">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="min-w-0">
+                                            <h3 class="break-words text-sm font-bold" style="color:#1a3d1f;">{{ $supplier['name'] }}</h3>
+                                            <p class="mt-1 text-xs" style="color:#8a9e8c;">{{ $supplier['products_count'] }} produto{{ $supplier['products_count'] === 1 ? '' : 's' }} vinculado{{ $supplier['products_count'] === 1 ? '' : 's' }}</p>
+                                        </div>
+                                        <span class="inline-flex shrink-0 items-center justify-center rounded-full px-2.5 py-1 text-xs font-bold" style="background:{{ $dependencyStyles['bg'] }};color:{{ $dependencyStyles['text'] }};">
+                                            {{ $supplier['dependency_level'] }}
+                                        </span>
+                                    </div>
+                                    <div class="mt-3 flex items-end justify-between gap-3">
+                                        <p class="text-lg font-bold" style="color:#1a3d1f;">R$ {{ number_format($supplier['stock_value'], 2, ',', '.') }}</p>
+                                        <p class="text-sm font-bold" style="color:#4a5c4c;">{{ number_format($supplier['dependency_percentage'], 1, ',', '.') }}%</p>
+                                    </div>
+                                </article>
+                            @endforeach
                         </div>
                     @endif
                 </div>
@@ -332,25 +398,6 @@
                         </div>
                     @endif
                 </div>
-            </div>
-        </section>
-
-        <section class="overflow-hidden rounded-2xl border bg-white shadow-sm" style="border-color:#d4e8d6;">
-            <div class="border-b px-5 py-4" style="border-color:#d4e8d6;">
-                <h2 class="font-display text-lg font-bold" style="color:#1a3d1f;">Ranking de fornecedores</h2>
-                <p class="text-sm" style="color:#8a9e8c;">Top 10 por quantidade de produtos e valor total em estoque</p>
-            </div>
-
-            <div class="p-5 sm:p-6">
-                @if ($supplierRanking->isEmpty())
-                    <div class="rounded-xl border border-dashed px-4 py-12 text-center" style="border-color:#d4e8d6;color:#8a9e8c;">
-                        Nenhum fornecedor encontrado para gerar o ranking.
-                    </div>
-                @else
-                    <div class="relative h-[420px]">
-                        <canvas id="supplierChart"></canvas>
-                    </div>
-                @endif
             </div>
         </section>
 
@@ -454,101 +501,6 @@
             }
         </script>
 
-        @if ($supplierDependencyDistribution->isNotEmpty())
-        <script>
-            const supplierDependencyCtx = document.getElementById('supplierDependencyChart');
-            const supplierDependencyDistribution = @json($supplierDependencyDistribution);
-            const supplierDependencyPalette = [
-                '#2d6a35', '#4caf50', '#84cc16', '#f59e0b', '#d97706',
-                '#0ea5a4', '#14b8a6', '#22c55e', '#65a30d', '#15803d'
-            ];
-            const totalDependencyStock = supplierDependencyDistribution.reduce((total, item) => total + item.stock_value, 0);
-            const dependencyValueFormatter = new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            });
-
-            if (supplierDependencyCtx) {
-                new Chart(supplierDependencyCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Dependência'],
-                        datasets: supplierDependencyDistribution.map((supplier, index) => {
-                            const percent = totalDependencyStock > 0 ? (supplier.stock_value / totalDependencyStock) * 100 : 0;
-
-                            return {
-                                label: supplier.name,
-                                data: [percent],
-                                stockValue: supplier.stock_value,
-                                backgroundColor: supplierDependencyPalette[index % supplierDependencyPalette.length],
-                                borderColor: '#ffffff',
-                                borderWidth: 1,
-                                borderRadius: 6,
-                                borderSkipped: false,
-                                barPercentage: 0.55,
-                                categoryPercentage: 0.8
-                            };
-                        })
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label(context) {
-                                        const percent = context.parsed.x || 0;
-                                        const formattedValue = dependencyValueFormatter.format(context.dataset.stockValue || 0);
-
-                                        return `${context.dataset.label}: ${percent.toFixed(1)}% (${formattedValue})`;
-                                    }
-                                }
-                            },
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    color: '#1a3d1f',
-                                    font: {
-                                        weight: '600'
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                stacked: true,
-                                min: 0,
-                                max: 100,
-                                ticks: {
-                                    color: '#4a5c4c',
-                                    callback(value) {
-                                        return `${value}%`;
-                                    }
-                                },
-                                grid: {
-                                    color: 'rgba(138,158,140,0.16)'
-                                }
-                            },
-                            y: {
-                                stacked: true,
-                                ticks: {
-                                    color: '#1a3d1f',
-                                    font: {
-                                        weight: '600'
-                                    }
-                                },
-                                grid: {
-                                    display: false
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        </script>
-        @endif
-
         @if ($supplierRanking->isNotEmpty())
         <script>
             const supplierCtx = document.getElementById('supplierChart');
@@ -579,6 +531,7 @@
                     ]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     interaction: {
@@ -589,12 +542,16 @@
                         tooltip: {
                             callbacks: {
                                 label(context) {
-                                    return `${context.dataset.label}: ${supplierValueFormatter.format(context.parsed.y || 0)}`;
+                                    return `${context.dataset.label}: ${supplierValueFormatter.format(context.parsed.x || 0)}`;
                                 },
                                 afterLabel(context) {
                                     const supplier = supplierRanking[context.dataIndex];
 
-                                    return `Produtos vinculados: ${supplier.products_count}`;
+                                    return [
+                                        `Dependência: ${supplier.dependency_percentage.toFixed(1)}% (${supplier.dependency_level})`,
+                                        `Produtos vinculados: ${supplier.products_count}`,
+                                        `Quantidade em estoque: ${supplier.stock_quantity}`
+                                    ];
                                 }
                             }
                         },
@@ -604,25 +561,6 @@
                     },
                     scales: {
                         x: {
-                            ticks: {
-                                autoSkip: false,
-                                color: '#1a3d1f',
-                                maxRotation: 0,
-                                minRotation: 0,
-                                font: {
-                                    weight: '600'
-                                },
-                                callback(value) {
-                                    const label = this.getLabelForValue(value);
-
-                                    return label.length > 14 ? `${label.slice(0, 14)}...` : label;
-                                }
-                            },
-                            grid: {
-                                display: false
-                            }
-                        },
-                        y: {
                             beginAtZero: true,
                             ticks: {
                                 color: '#4a5c4c',
@@ -632,6 +570,23 @@
                             },
                             grid: {
                                 color: 'rgba(138,158,140,0.16)'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                autoSkip: false,
+                                color: '#1a3d1f',
+                                font: {
+                                    weight: '600'
+                                },
+                                callback(value) {
+                                    const label = this.getLabelForValue(value);
+
+                                    return label.length > 18 ? `${label.slice(0, 18)}...` : label;
+                                }
+                            },
+                            grid: {
+                                display: false
                             }
                         }
                     }

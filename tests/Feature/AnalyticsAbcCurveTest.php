@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductBatch;
 use App\Models\StockMovement;
+use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -205,5 +206,55 @@ class AnalyticsAbcCurveTest extends TestCase
         $response->assertViewHas('staleProducts', function ($staleProducts) {
             return $staleProducts->firstWhere('name', 'Produto vencido parado') === null;
         });
+    }
+
+    public function test_supplier_ranking_includes_dependency_percentage_and_level(): void
+    {
+        $category = Category::create([
+            'name' => 'Fertilizantes',
+            'description' => null,
+        ]);
+        $supplierA = Supplier::factory()->create(['name' => 'Fornecedor A']);
+        $supplierB = Supplier::factory()->create(['name' => 'Fornecedor B']);
+        $supplierC = Supplier::factory()->create(['name' => 'Fornecedor C']);
+
+        Product::factory()->for($category)->for($supplierA)->create([
+            'cost_price' => 10,
+            'stock_quantity' => 40,
+        ]);
+        Product::factory()->for($category)->for($supplierB)->create([
+            'cost_price' => 10,
+            'stock_quantity' => 20,
+        ]);
+        Product::factory()->for($category)->for($supplierC)->create([
+            'cost_price' => 10,
+            'stock_quantity' => 10,
+        ]);
+        Product::factory()->for($category)->create([
+            'supplier_id' => null,
+            'cost_price' => 10,
+            'stock_quantity' => 30,
+        ]);
+
+        $response = $this->actingAs(User::factory()->create())
+            ->get(route('analytics.index'));
+
+        $response->assertOk();
+        $response->assertViewHas('supplierRanking', function ($supplierRanking) {
+            $supplierA = $supplierRanking->firstWhere('name', 'Fornecedor A');
+            $supplierB = $supplierRanking->firstWhere('name', 'Fornecedor B');
+            $supplierC = $supplierRanking->firstWhere('name', 'Fornecedor C');
+
+            return $supplierA
+                && $supplierB
+                && $supplierC
+                && $supplierA['dependency_percentage'] === 40.0
+                && $supplierA['dependency_level'] === 'Alta'
+                && $supplierB['dependency_percentage'] === 20.0
+                && $supplierB['dependency_level'] === 'Moderada'
+                && $supplierC['dependency_percentage'] === 10.0
+                && $supplierC['dependency_level'] === 'Baixa';
+        });
+        $response->assertViewHas('supplierRankingTotalStockValue', 1000.0);
     }
 }

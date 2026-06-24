@@ -21,24 +21,11 @@ class AnalyticsService
         $staleDays = max(1, $staleDays);
         $staleCutoffDate = Carbon::now()->subDays($staleDays)->endOfDay();
 
-        $supplierDependencyDistribution = $this->analyticsRepository
-            ->supplierDependencyDistribution()
-            ->map(fn ($supplier) => [
-                'name' => $supplier->name,
-                'stock_value' => (float) $supplier->stock_value,
-            ]);
-
-        $unassignedStockValue = $this->analyticsRepository->unassignedStockValue();
-
-        if ($unassignedStockValue > 0) {
-            $supplierDependencyDistribution->push([
-                'name' => 'Sem fornecedor',
-                'stock_value' => $unassignedStockValue,
-            ]);
-        }
+        $currentStockValue = $this->analyticsRepository->currentStockValue();
 
         return [
-            'supplierRanking' => $this->supplierRanking(),
+            'supplierRanking' => $this->supplierRanking($currentStockValue),
+            'supplierRankingTotalStockValue' => $currentStockValue,
             'categoryAnalysis' => $this->categoryAnalysis(),
             'period' => $period,
             'startDate' => $startDate,
@@ -46,22 +33,40 @@ class AnalyticsService
             'entries' => $this->analyticsRepository->movementQuantityByType($startDate, $endDate, 'entry'),
             'exits' => $this->analyticsRepository->movementQuantityByType($startDate, $endDate, 'exit'),
             'movementSeries' => $this->movementSeries($startDate, $endDate),
-            'supplierDependencyDistribution' => $supplierDependencyDistribution,
             'staleDays' => $staleDays,
             'staleProducts' => $this->staleProducts($staleCutoffDate),
             'abcCurve' => $this->buildAbcCurve(),
         ];
     }
 
-    private function supplierRanking()
+    private function supplierRanking(float $currentStockValue)
     {
         return $this->analyticsRepository
             ->supplierRanking()
-            ->map(fn ($supplier) => [
-                'name' => $supplier->name,
-                'products_count' => (int) $supplier->products_count,
-                'stock_value' => (float) $supplier->stock_value,
-            ]);
+            ->map(function ($supplier) use ($currentStockValue) {
+                $stockValue = (float) $supplier->stock_value;
+                $dependencyPercentage = $currentStockValue > 0
+                    ? ($stockValue / $currentStockValue) * 100
+                    : 0.0;
+
+                return [
+                    'name' => $supplier->name,
+                    'products_count' => (int) $supplier->products_count,
+                    'stock_quantity' => (int) $supplier->stock_quantity,
+                    'stock_value' => $stockValue,
+                    'dependency_percentage' => $dependencyPercentage,
+                    'dependency_level' => $this->dependencyLevel($dependencyPercentage),
+                ];
+            });
+    }
+
+    private function dependencyLevel(float $dependencyPercentage): string
+    {
+        return match (true) {
+            $dependencyPercentage >= 40 => 'Alta',
+            $dependencyPercentage >= 20 => 'Moderada',
+            default => 'Baixa',
+        };
     }
 
     private function categoryAnalysis()
