@@ -256,6 +256,9 @@ const SupplierModal = {
      * Renderiza lista de produtos
      */
     renderProducts(products) {
+        const visibleProducts = products.slice(0, 5);
+        const hiddenProductsCount = products.length - visibleProducts.length;
+
         return `
             <section class="rounded-2xl border bg-white p-5" style="border-color:#d4e8d6;">
                 <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -268,7 +271,7 @@ const SupplierModal = {
 
                 ${products.length > 0 ? `
                     <div class="grid gap-3">
-                        ${products.map((product) => `
+                        ${visibleProducts.map((product) => `
                             <div class="flex flex-col gap-3 rounded-xl border bg-[#fbfdfb] px-4 py-3 transition hover:bg-[#eef7ef] sm:flex-row sm:items-center sm:justify-between" style="border-color:#d4e8d6;">
                                 <div class="min-w-0">
                                     <p class="truncate text-sm font-bold text-slate-900">${this.escapeHtml(product.name)}</p>
@@ -285,6 +288,11 @@ const SupplierModal = {
                             </div>
                         `).join('')}
                     </div>
+                    ${hiddenProductsCount > 0 ? `
+                        <div class="mt-3 rounded-xl border border-dashed px-4 py-3 text-center text-xs font-semibold" style="border-color:#d4e8d6;color:#6f7f71;background:#fbfdfb;">
+                            Mostrando ${visibleProducts.length} de ${products.length} produtos vinculados.
+                        </div>
+                    ` : ''}
                 ` : `
                     <div class="rounded-xl border border-dashed px-4 py-8 text-center text-sm" style="border-color:#d4e8d6;color:#8a9e8c;">
                         Nenhum produto vinculado a este fornecedor.
