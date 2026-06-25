@@ -133,7 +133,6 @@
 
                         <td class="whitespace-nowrap px-5 py-4">
                             <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold" style="{{ $stockTone[0] }}">
-                                <span class="h-1.5 w-1.5 rounded-full" style="{{ $stockTone[1] }}"></span>
                                 {{ $stockStatus }}
                             </span>
                         </td>

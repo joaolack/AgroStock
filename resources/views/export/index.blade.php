@@ -250,11 +250,6 @@
             <div class="border-b px-5 py-5 sm:px-6"
                 style="border-color:#d4e8d6;background:linear-gradient(135deg,#ffffff 0%,#f6fbf4 100%);">
                 <div>
-                    <div class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.18em]"
-                        style="background:#eaf6e9;color:#2d6a35;">
-                        <span class="h-1.5 w-1.5 rounded-full" style="background:#4caf50;"></span>
-                        Histórico
-                    </div>
                     <h2 class="mt-3 font-display text-xl font-bold tracking-tight" style="color:#142f18;">Exportações recentes</h2>
                     <p class="mt-1 text-sm" style="color:#6e876f;">Últimos relatórios gerados no sistema.</p>
                 </div>
